@@ -1,0 +1,9 @@
+#!name=PTT 跳過年齡驗證
+#!desc=需開啟 Rewrite 跟 MITM。 v20200627
+#!system=ios
+
+[Header Rewrite]
+^https://www.ptt.cc header-add Cookie over18=1
+
+[MITM]
+hostname = %APPEND% www.ptt.cc

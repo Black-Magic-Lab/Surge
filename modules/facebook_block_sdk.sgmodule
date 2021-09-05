@@ -1,0 +1,6 @@
+#!name=Facebook SDK 阻擋
+#!desc=不影響 Facebook App 本身，但會禁止第三方 App 使用 Facebook 登入。 v20210903
+#!system=ios
+
+[Rule]
+AND,((NOT,((USER-AGENT,*FBAN/FBIOS;*))), (NOT,((USER-AGENT,*FBAN/FBPageAdmin;*))), (NOT,((USER-AGENT,*FBAN/MessengerLiteForiOS;*))), (NOT,((USER-AGENT,Instagram*))), (NOT,((USER-AGENT,Messenger*))), (DOMAIN,graph.facebook.com)),REJECT
