@@ -1,0 +1,10 @@
+#!name=麥當勞自動簽到
+#!desc=每天早上自動簽到 v20210904
+
+[Script]
+mcdonalds_token.js = type=http-request,pattern=^https:\/\/mcdapi\.mcddailyapp\.com\.tw\/McDonaldAPI\/member\/updateRegisterInfo$,script-path=https://kinta.ma/surge/scripts/mcdonalds_token.js,script-update-interval=-1
+cron "3 7 * * *" script-path=https://kinta.ma/surge/scripts/mcdonalds_checkin.js, wake-system=1, timeout=30
+cron "4 7 * * *" script-path=https://kinta.ma/surge/scripts/mcdonalds_luckydraw.js, wake-system=1, timeout=30
+
+[MITM]
+hostname = %APPEND% mcdapi.mcddailyapp.com.tw
