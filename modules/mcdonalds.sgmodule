@@ -1,5 +1,5 @@
 #!name=麥當勞自動簽到
-#!desc=每天早上自動簽到 v20210904
+#!desc=每天早上自動簽到 & 參加活動。第一次使用先去個人資料那邊按修改，但什麼都不要改，直接儲存就可以獲得 token。 v20210923
 
 [Script]
 mcdonalds_token.js = type=http-request,pattern=^https:\/\/mcdapi\.mcddailyapp\.com\.tw\/McDonaldAPI\/member\/updateRegisterInfo$,script-path=https://kinta.ma/surge/scripts/mcdonalds_token.js,script-update-interval=-1
