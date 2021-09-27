@@ -136,22 +136,12 @@
                     <span class="url">來源: https://raw.githubusercontent.com/jimmyorz/Surge/master/TwitterImage.sgmodule</span>
                 </div>
             </div>
-             <div>
-                <div onclick="copyToClipBoard('shopee_token')">
-                    <label>
-                        <p>蝦皮拿 Token</p>
-                    </label>
-                    <span class="description">蝦皮自動簽到拿 Token，只需要做一次。</span><br>
-                    <span class="author">作者: hirakujira</span><br>
-                    <span class="url">來源: https://kinta.ma/surge</span>
-                </div>
-            </div>
             <div>
                 <div onclick="copyToClipBoard('shopee_checkin')">
                     <label>
                         <p>蝦皮每日自動簽到 & 開寶箱</p>
                     </label>
-                    <span class="description">自動簽到修改版，每天會自動更新 Cookie</span><br>
+                    <span class="description">自動簽到修改版，每天會自動更新 Cookie，第一次使用要去「我的」→「邀請我的朋友」儲存 token</span><br>
                     <span class="author">作者: hirakujira & jkgtw</span><br>
                     <span class="url">來源: https://kinta.ma/surge</span>
                 </div>
@@ -159,11 +149,21 @@
             <div>
                 <div onclick="copyToClipBoard('mcdonalds')">
                     <label>
-                        <p>麥當勞每日自動簽到</p>
+                        <p>麥當勞每日自動簽到 & 參加活動</p>
                     </label>
                     <span class="description">自動簽到，第一次使用先去個人資料那邊按修改，但什麼都不要改，直接儲存就可以獲得 token</span><br>
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://kinta.ma/surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/jkgtw/Surge/master/Modules/BooksDailyCheckin.sgmodule')">
+                    <label>
+                        <p>博客來每日自動簽到</p>
+                    </label>
+                    <span class="description">博客來自動簽到，第一次使用先去 e-coupon 頁面取得 token</span><br>
+                    <span class="author">作者: jkgtw</span><br>
+                    <span class="url">來源: https://github.com/jkgtw/Surge</span>
                 </div>
             </div>
             <div>
