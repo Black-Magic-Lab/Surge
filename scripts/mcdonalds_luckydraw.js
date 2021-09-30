@@ -22,6 +22,15 @@ var joinGameRequest = {
     body: null
 }
 
+var joinQuestionCheckRequest = {
+    url: "https://mcdapi.mcddailyapp.com.tw/McDonaldAPI/game/joinCheck",
+    headers: {
+        accessToken: $persistentStore.read("McdonaldsToken"),
+        "Content-Type": "application/json",
+    },
+    body: null,
+};
+
 $httpClient.post(carouselRequest, function (error, response, data) {
     if (error) {
         $notification.post("🧾 麥當勞獲取任務列表失敗 ❌", "", "連線錯誤‼️")
@@ -44,6 +53,12 @@ $httpClient.post(carouselRequest, function (error, response, data) {
                             gameId = game['id'];
                             joinGameRequest.body = { "gameId": gameId };
                             luckyDraw("🪒 麥當勞刮刮卡");
+                        }
+                        if (game["type"] === "QUESTION") {
+                            gameId = game["id"];
+                            const questionGameId = '{"gameId":' + gameId + "}";
+                            joinQuestionCheckRequest.body = aesEncrypt(questionGameId);
+                            joinQCheck();
                         }
                     }
                 }
@@ -92,6 +107,31 @@ function luckyDraw(eventPrefix) {
             } else {
                 $notification.post(eventPrefix + "Token 已過期‼️", "", "請重新登入 🔓");
                 $done();
+            }
+        }
+    });
+}
+
+function joinQCheck() {
+    $httpClient.post(joinQuestionCheckRequest, function (error, response, data) {
+        if (error) {
+            $notification.post("📃 檢查麥當勞問卷失敗 ❌", "", "連線錯誤‼️");
+            $done();
+        } else {
+            if (response.status == 200) {
+                let obj = JSON.parse(data);
+                if (obj["code"] === 615004) {
+                    console.log("📃 麥當勞問卷：" + obj["msg"]);
+                } else if (obj["code"] === 0) {
+                    $notification.post("📃 麥當勞有未完成的新問卷調查 🔔", "", "👉 請打開麥當勞 App 手動完成");
+                    //getQuestion();
+                } else if (obj["code"] !== 0) {
+                    $notification.post("📃 檢查麥當勞問卷失敗 ❌", "", obj["msg"]);
+                    $done();
+                } else {
+                    $notification.post("📃 麥當勞 Token 已過期‼️", "", "請重新登入 🔓");
+                    $done();
+                }
             }
         }
     });
