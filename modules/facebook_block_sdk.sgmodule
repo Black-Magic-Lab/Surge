@@ -1,5 +1,5 @@
 #!name=Facebook SDK 阻擋
-#!desc=不影響 Facebook App 本身，但會禁止第三方 App 使用 Facebook 登入。 v20210903
+#!desc=不影響 Facebook App 本身，但會禁止第三方 App 使用 Facebook 登入。iOS 15 由於系統預設行為變動，目前無法將 Facebook 自家 App 設為白名單。 v20210927
 #!system=ios
 
 [Rule]
