@@ -1,0 +1,5 @@
+#!name=iPhone 直營店庫存檢查
+#!desc=每分鐘檢查一次直營店庫存。 v20210929
+
+[Script]
+cron "* * * * *" script-path=https://kinta.ma/surge/scripts/iphone_check_store.js, wake-system=1, timeout=30
