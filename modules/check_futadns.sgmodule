@@ -1,0 +1,9 @@
+#!name=FutaDNS 檢查面板
+#!desc=檢查是否已連上 FutaDNS
+#!system=ios
+
+[Panel]
+CheckFutaDNSPanel=title="",content="",style=info,script-name=check_futadns.js,update-interval=1
+
+[Script]
+check_futadns.js=script-path=https://kinta.ma/surge/scripts/check_futadns.js,type=generic

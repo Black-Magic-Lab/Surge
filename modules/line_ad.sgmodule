@@ -1,0 +1,10 @@
+#!name=LINE 廣告阻擋
+#!desc=本地有快取，需一兩天才會消失，或者直接調時間。 v20200627
+#!system=ios
+
+[Rule]
+URL-REGEX,^https:\/\/a\.line\.me\/er\/la(ss|dg)\/v1\/event\/image,REJECT-TINYGIF
+URL-REGEX,^https:\/\/sch\.line\.me\/api\/v1\/ads$,REJECT
+
+[MITM]
+hostname = %APPEND% a.line.me, sch.line.me
