@@ -126,7 +126,8 @@ body.white {
 }
 
 body {
-    width: 320px
+    width: 100%;
+    max-width: 720px;
 }
 
 @media screen and (max-device-width: 767px) {
