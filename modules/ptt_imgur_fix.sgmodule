@@ -1,0 +1,10 @@
+#!name=PTT Imgur 修正
+#!desc=修正 PTT 網頁版無法顯示 Imgur 圖片的問題 v20210816
+
+[Header Rewrite]
+^https://imgur.com header-del Referer
+^https://m.imgur.com header-del Referer
+^https://i.imgur.com header-del Referer
+
+[MITM]
+hostname = %APPEND% imgur.com, m.imgur.com, i.imgur.com
