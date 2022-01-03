@@ -1,0 +1,12 @@
+{
+  "name": "codekit-project",
+  "version": "1.0.0",
+  "description": "CodeKit created this starter package.json file. You should customize it appropriately.",
+  "author": "",
+  "license": "UNLICENSED",
+  "repository": {},
+  "dependencies": {
+    "@zip.js/zip.js": "^2.3.17",
+    "crypto-js": "^4.1.1"
+  }
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<header>
+  <title>Mcdonald's Token Parser</title>
+  <meta charset="utf-8">
+</header>
+<body>
+  <div class="mobileHidden">
+    <p>本工具不上傳任何資料到伺服器，請安心使用。如有疑慮亦可直接斷網後使用。</p>
+    <p>請選擇從 iMazing 匯出的「麥當勞.imazingapp」</p>
+    <form id="fileForm">
+      <input type="file" name="imazingapp" id="fileInput" accept=".imazingapp">
+      <br>
+      <br>
+      <input type="submit" id="submitButton" value="取得 Token" disabled>
+    </form>
+  </div>
+  <div class="mobileShow">
+    <h1>本工具不支援 iPhone / iPad，請使用電腦瀏覽。</h1>
+  </div>
+  <div id="result"></div>
+</body>
+<script type="text/javascript" src="node_modules/crypto-js/crypto-js.js"></script>
+<script type="text/javascript" src="js/bplist.js"></script>
+<script type="text/javascript" src="js/jdataview.js"></script>
+<script type="module" src="js/main-min.js"></script>
+<style>
+  @media only screen and (hover: none) and (pointer: coarse) {
+    .mobileHidden {
+      display: none;
+    }
+  }
+  @media only screen and (hover: hover) and (pointer: fine) {
+    .mobileShow {
+      display: none;
+    }
+  }
+</style>
+</html>
