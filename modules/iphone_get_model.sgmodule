@@ -1,8 +1,8 @@
-#!name=iPhone 直營店庫存檢查 - 獲得機型代碼
+#!name=iPhone/iPad 直營店庫存檢查 - 獲得機型代碼
 #!desc=請用非 Safari 瀏覽器，在官網將您要的機型加入購物車，獲得機型代號後即可關閉此模組。 v20210929
 
 [Script]
-iphone_get_model.js = type=http-request,pattern=^https:\/\/www\.apple\.com\/tw\/shop\/buy-iphone\/,script-path=https://kinta.ma/surge/scripts/iphone_get_model.js,script-update-interval=-1
+iphone_get_model.js = type=http-request,pattern=^https:\/\/www\.apple\.com\/tw\/shop\/buy-(iphone|ipad)\/,script-path=https://kinta.ma/surge/scripts/iphone_get_model.js,script-update-interval=-1
 
 [MITM]
 hostname = %APPEND% www.apple.com
