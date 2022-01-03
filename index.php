@@ -145,13 +145,13 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/jimmyorz/Surge/master/TwitterImage.sgmodule')">
+                <div onclick="copyToClipBoard('twitter_image')">
                     <label>
                         <p>Twitter 圖片載入加速</p>
                     </label>
-                    <span class="description">直接指定 IP，開圖就會變快。找到方法的是我，但 jimmyorz 幫忙寫成了模組</span><br>
+                    <span class="description">直接指定 IP，開圖就會變快。</span><br>
                     <span class="author">作者: hirakujira</span><br>
-                    <span class="url">來源: https://github.com/jimmyorz/Surge</span>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surgee</span>
                 </div>
             </div>
             <div>
@@ -245,6 +245,29 @@
                     <span class="description">顯示目前是否成功連上 FutaDNS</span><br>
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/FutaGuard/FutaFilter</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('whosis_sayings')">
+                    <label>
+                        <p>「是誰在講幹話」資訊面板</p>
+                    </label>
+                    <span class="description">可以看到一堆幹話喔 :)</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+        </fieldset>
+        <label>其他</label>
+        <fieldset>
+            <div>
+                <div onclick="window.open('utils/mcdonalds_token')">
+                    <label>
+                        <p>麥當勞 Token 取得工具</p>
+                    </label>
+                    <span class="description">使用電腦取得麥當勞 App Token</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
             </div>
         </fieldset>
