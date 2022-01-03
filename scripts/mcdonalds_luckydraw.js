@@ -44,17 +44,36 @@ $httpClient.post(carouselRequest, function (error, response, data) {
                     let gameId = 0;
                     for (var i = 0; i < games.length; i++) {
                         const game = games[i];
+                        if (game['point'] > 0) {
+                            let name = '';
+                            if (game['type'] === 'ROULETTE') {
+                                name = '轉轉圈';
+                            }
+                            else if (game['type'] === 'SCRAPINGCARD') {
+                                name = '刮刮卡';
+                            }
+                            else if (game['type'] === 'ENVELOPE') {
+                                name = '翻翻卡';
+                            }
+                            $notification.post("💰 麥當勞任務" + name + "需花費" + game['point'] + "積分", "", "請打開 App 自行參加");
+                            continue;
+                        }
                         if (game['type'] === 'ROULETTE') {
                             gameId = game['id'];
                             joinGameRequest.body = { "gameId": gameId };
                             luckyDraw("🌀 麥當勞轉轉圈");
                         }
-                        if (game['type'] === 'SCRAPINGCARD') {
+                        else if (game['type'] === 'SCRAPINGCARD') {
                             gameId = game['id'];
                             joinGameRequest.body = { "gameId": gameId };
                             luckyDraw("🪒 麥當勞刮刮卡");
                         }
-                        if (game["type"] === "QUESTION") {
+                        else if (game["type"] === "ENVELOPE") {
+                            gameId = game["id"];
+                            joinGameRequest.body = { "gameId": gameId };
+                            luckyDraw("🤸‍♂️ 麥當勞翻翻卡");
+                        }
+                        else if (game["type"] === "QUESTION") {
                             gameId = game["id"];
                             const questionGameId = '{"gameId":' + gameId + "}";
                             joinQuestionCheckRequest.body = aesEncrypt(questionGameId);
