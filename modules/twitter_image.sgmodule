@@ -1,0 +1,6 @@
+#!name=Twitter Image Fix
+#!desc=解決 Twitter 圖片無法開啟或開啟緩慢的問題 v20211007
+
+[Host]
+pbs.twimg.com = 23.1.106.237
+abs.twimg.com = 23.1.106.237
