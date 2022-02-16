@@ -1,0 +1,8 @@
+#!name=Disney+ 雙語字幕
+#!desc=如需更換語言請自行複製後修改 second_lang 參數，預設為英文 v20220215
+
+[Script]
+DisneyPlus-Dualsub.js = type=http-response,pattern=https:\/\/.+media.dssott.com\/ps01\/disney\/.+(\.vtt|-all-.+\.m3u8.*),requires-body=true,max-size=307200,script-path=https://raw.githubusercontent.com/Neurogram-R/Surge/master/DisneyPlus-Dualsub.js
+
+[MITM]
+hostname = %APPEND% *.media.dssott.com
