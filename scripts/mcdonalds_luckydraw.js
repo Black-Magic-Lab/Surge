@@ -22,14 +22,7 @@ let joinGameRequest = {
   body: null
 }
 
-let getQuestionDetailRequest = {
-  url: 'https://mcdapi.mcddailyapp.com.tw/McDonaldAPI/h5/game/detail',
-  headers: {
-    accessToken: $persistentStore.read('McdonaldsToken'),
-    'Content-Type': 'application/json',
-  },
-  body: null,
-}
+let gameList = [];
 
 function getAllGames() {
   $httpClient.post(carouselRequest, function (error, response, data) {
@@ -38,12 +31,11 @@ function getAllGames() {
       $done();
     } else {
       if (response.status == 200) {
-        let obj = JSON.parse(data);
+        const obj = JSON.parse(data);
         if (obj.code === 0) {
           if (obj.data) {
             const games = JSON.parse(aesDecrypt(obj.data)).list;
-            let gameId = 0;
-            for (var i = 0; i < games.length; i++) {
+            for (let i = 0; i < games.length; i++) {
               const game = games[i];
               if (game.point > 0) {
                 let name = '';
@@ -63,30 +55,31 @@ function getAllGames() {
                 continue;
               }
               if (game.type === 'ROULETTE') {
-                gameId = game.id;
-                joinGameRequest.body = {
-                  'gameId': gameId
-                };
-                joinGame('🌀 麥當勞轉轉圈');
+                gameList.push({
+                  gameId: game.id, 
+                  gameName: '🌀 麥當勞轉轉圈'
+                });
               } else if (game.type === 'SCRAPINGCARD') {
-                gameId = game.id;
-                joinGameRequest.body = {
-                  'gameId': gameId
-                };
-                joinGame('🪒 麥當勞刮刮卡');
+                gameList.push({
+                  gameId: game.id, 
+                  gameName: '🪒 麥當勞刮刮卡'
+                });
               } else if (game.type === 'ENVELOPE') {
-                gameId = game.id;
-                joinGameRequest.body = {
-                  'gameId': gameId
-                };
-                joinGame('🤸‍♂️ 麥當勞翻翻卡');
-              } else if (game.type === 'QUESTION') {
-                gameId = game.id;
-                getQuestionDetailRequest.body = {
-                  'gameId': gameId
-                };
-                getQuestionDetails(gameId);
-              }
+                gameList.push({
+                  gameId: game.id, 
+                  gameName: '🤸‍♂️ 麥當勞翻翻卡'
+                });
+              } 
+            }
+            if (games.length) {
+              joinGame(0);
+            }
+            else {
+              $notification.post('🧾 麥當勞獲取任務列表失敗 ❌', 
+                '', 
+                '目前沒有可參加的任務'
+              );
+              $done();
             }
           } else {
             $notification.post('🧾 麥當勞獲取任務列表失敗 ❌', 
@@ -113,95 +106,58 @@ function getAllGames() {
   });
 }
 
-function joinGame(eventPrefix) {
+function joinGame(index) {
+  const gameId = gameList[index].gameId;
+  const gameName = gameList[index].gameName;
+  joinGameRequest.body = {
+    'gameId': gameId
+  };
   $httpClient.post(joinGameRequest, function (error, response, data) {
     if (error) {
-      $notification.post(eventPrefix + '失敗 ❌', 
+      $notification.post(gameName + '失敗 ❌', 
         '', 
         '連線錯誤‼️'
       );
-      $done();
     } else {
       if (response.status == 200) {
         let obj = JSON.parse(data);
         if (obj.code === 0) {
           if (obj.data.name) {
-            $notification.post(eventPrefix + '成功 ✅', 
+            $notification.post(gameName + '成功 ✅', 
               '', 
               '獲得 👉 ' + obj.data.name + ' 🍔'
             );
           } else {
-            $notification.post(eventPrefix + '成功 ✅', 
+            $notification.post(gameName + '成功 ✅', 
               '', 
               '請打開麥當勞 App 查看獲獎內容 🎊'
             );
-            $done();
           }
         } else if (obj.code === 615004) {
           // 重複參加
-          console.log(eventPrefix + obj.msg);
+          console.log(gameName + obj.msg);
           // $notification.post(eventPrefix + '失敗 ❌', 
           //   '', 
           //   obj.msg
           // );
-          $done();
         } else {
-          $notification.post(eventPrefix + '失敗 ❌', 
+          $notification.post(gameName + '失敗 ❌', 
             '', 
             obj.msg
           );
-          $done();
         }
       } else {
-        $notification.post(eventPrefix + 'Token 已過期‼️', 
+        $notification.post(gameName + 'Token 已過期‼️', 
           '', 
           '請重新登入 🔓'
         );
-        $done();
       }
     }
-  });
-}
-
-function getQuestionDetails(gameId) {
-  $httpClient.post(getQuestionDetailRequest, function (error, response, data) {
-    if (error) {
-      $notification.post('📃 獲得麥當勞問卷詳細資料失敗 ❌', 
-        '', 
-        '連線錯誤‼️'
-      );
+    if (index < gameList.length - 1) {
+      joinGame(index + 1);
+    }
+    else {
       $done();
-    } else {
-      if (response.status == 200) {
-        const obj = JSON.parse(data);
-        if (obj.code === 0) {
-          const questionList = obj.data.gameQuestionVo.gameQuestionListVo;
-          let questionRecordList = [];
-          questionList.forEach(question => {
-            const answers = question.gameQuestionAnswerListVo;
-            const randomAnswer = Math.floor(Math.random() * answers.length);
-            const record = {
-              'questionId': question.id,
-              'answerIds': [answers[randomAnswer].id],
-              'answer': answers[randomAnswer].answer,
-            };
-            questionRecordList.push(record);
-          });
-          const answers = {
-            'gameId': gameId,
-            'gameQuestionRecordList': questionRecordList,
-          };
-
-          joinGameRequest.body = answers;
-          joinGame('🧾 麥當勞填問卷');
-        } else {
-          $notification.post('📃 麥當勞 Token 已過期‼️', 
-            '', 
-            '請重新登入 🔓'
-          );
-          $done();
-        }
-      }
     }
   });
 }
