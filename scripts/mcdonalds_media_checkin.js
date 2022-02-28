@@ -4,83 +4,102 @@
 const aesKey = CryptoJS.enc.Utf8.parse('1s2unxaounk8zusv');
 const aesConfig = { words: [0, 0, 0, 0], sigBytes: 16, mode: CryptoJS.mode.ECB, pad: CryptoJS.pad.Pkcs7 };
 
-let checkMediaDetailRequest = {
-  url: "https://mcdapi.mcddailyapp.com.tw/McDonaldAPI/game/media/detail",
+const checkMediaDetailRequest = {
+  url: 'https://mcdapi.mcddailyapp.com.tw/McDonaldAPI/game/media/detail',
   headers: {
-    accessToken: $persistentStore.read("McdonaldsToken"),
-    "Content-Type": "application/json",
+    accessToken: $persistentStore.read('McdonaldsToken'),
+    'Content-Type': 'application/json',
   },
 };
 
-let checkMediaGameRequest = {
-  url: "https://mcdapi.mcddailyapp.com.tw/McDonaldAPI/game/joinCheck",
+let joinCheckRequest = {
+  url: 'https://mcdapi.mcddailyapp.com.tw/McDonaldAPI/game/joinCheck',
   headers: {
-    accessToken: $persistentStore.read("McdonaldsToken"),
-    "Content-Type": "application/json",
+    accessToken: $persistentStore.read('McdonaldsToken'),
+    'Content-Type': 'application/json',
   }
 };
 
 let joinGameRequest = {
-  url: "https://mcdapi.mcddailyapp.com.tw/McDonaldAPI/game/joinGame",
+  url: 'https://mcdapi.mcddailyapp.com.tw/McDonaldAPI/game/joinGame',
   headers: {
-    accessToken: $persistentStore.read("McdonaldsToken"),
-    "Content-Type": "application/json",
+    accessToken: $persistentStore.read('McdonaldsToken'),
+    'Content-Type': 'application/json',
   },
 };
 
-$httpClient.post(checkMediaDetailRequest, function (error, response, data) {
-  if (error) {
-    $notification.post("🎬 麥當勞看片賺分檢查失敗 ❌", "", "連線錯誤‼️");
-    $done();
-  } else {
-    if (response.status == 200) {
-      let obj = JSON.parse(data);
-      if (obj["code"] === 0) {
-        const returnData = JSON.parse(aesDecrypt(obj["data"]));
-        const gameId = returnData["gameMediaVo"]["gameId"];
-
-        checkMediaGameRequest.body = aesEncrypt('{"gameId":' + gameId + "}");
-        joinGameRequest.body = aesEncrypt('{"gameId":' + gameId + "}");
-        checkMedia();
-        $done();
-      } else {
-        $notification.post("🎬 麥當勞看片賺分檢查失敗 ❌", "", obj["msg"]);
-        $done();
-      }
-
-      $done();
-    } else {
-      $notification.post("🍟 麥當勞 Token 已過期‼️", "", "請重新登入 🔓");
-      $done();
-    }
-  }
-});
-
-function checkMedia() {
-  $httpClient.post(checkMediaGameRequest, function (error, response, data) {
+function checkMediaDetail() {
+  $httpClient.post(checkMediaDetailRequest, function (error, response, data) {
     if (error) {
-      $notification.post("🎬 麥當勞看片賺分失敗 ❌", "", "連線錯誤‼️");
+      $notification.post('🎬 麥當勞看片賺分檢查失敗 ❌', '', '連線錯誤‼️');
       $done();
     } else {
       if (response.status == 200) {
+        const obj = JSON.parse(data);
+        if (obj.code === 0) {
+          const returnData = JSON.parse(aesDecrypt(obj.data));
+          const gameId = returnData.gameMediaVo.gameId;
+          const aesBody = aesEncrypt('{"gameId":' + gameId + '}');
+          joinCheckRequest.body = aesBody;
+          joinGameRequest.body = aesBody;
+          checkMediaGame();
+        } else {
+          $notification.post('🎬 麥當勞看片賺分檢查失敗 ❌', 
+            '', 
+            obj.msg
+          );
+          $done();
+        }
+      } else {
+        $notification.post('🍟 麥當勞 Token 已過期‼️', 
+          '', 
+          '請重新登入 🔓'
+        );
+        $done();
+      }
+    }
+  });
+}
 
+function checkMediaGame() {
+  $httpClient.post(joinCheckRequest, function (error, response, data) {
+    if (error) {
+      $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
+        '', 
+        '連線錯誤‼️'
+      );
+      $done();
+    } else {
+      if (response.status == 200) {
         let obj = JSON.parse(data);
-        if (obj["code"] === 615004) {
-          // $notification.post("🎬 麥當勞看片賺分失敗 ❌", "", obj["msg"]);
-          console.log("🎬 麥當勞看片賺分：" + obj["msg"]);
-        } else if (obj["code"] === 0) {
-          //$notification.post("🎬 麥當勞看片賺分有未完成的 🔔","","👉 請打開麥當勞 App 手動完成");
+        if (obj.code === 0) {
           console.log('看片中，請稍後');
           sleep(16);
           console.log('看片完成，繼續執行');
           joinMediaGame();
-        } else if (obj["code"] !== 0) {
-          $notification.post("🎬 麥當勞看片賺分失敗 ❌", "", obj["msg"]);
+        } 
+        else if (obj.code === 615004) {
+          // 重複參加
+          console.log('🎬 麥當勞看片賺分：' + obj.msg);
+          // $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
+          //   '', 
+          //   obj.msg
+          // );
           $done();
         } else {
-          $notification.post("🎬 麥當勞 Token 已過期‼️", "", "請重新登入 🔓");
+          $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
+            '', 
+            obj.msg
+          );
           $done();
         }
+      }
+      else {
+        $notification.post('🎬 麥當勞 Token 已過期‼️', 
+          '', 
+          '請重新登入 🔓'
+        );
+        $done();
       }
     }
   });
@@ -89,30 +108,38 @@ function checkMedia() {
 function joinMediaGame() {
   $httpClient.post(joinGameRequest, function (error, response, data) {
     if (error) {
-      $notification.post("🎬 麥當勞看片賺分失敗 ❌", "", "連線錯誤‼️");
-      $done();
+      $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
+        '', 
+        '連線錯誤‼️'
+      );
     } else {
-      if (response.status == 200) {
-        let obj = JSON.parse(data);
-        if (obj["code"] === 0) {
-          const returnData = JSON.parse(aesDecrypt(obj["data"]));
-          const gameCheckPoint = returnData["point"];
-          $notification.post("🎬 麥當勞看片賺分成功 ✅", "", "獲得 👉 " + gameCheckPoint + " 分 🍔");
-
-          $done();
-        } else if (obj["code"] !== 0) {
-          $notification.post("🎬 麥當勞看片賺分失敗 ❌", "", obj["msg"]);
-          $done();
+      if (response.status === 200) {
+        const obj = JSON.parse(data);
+        if (obj.code === 0) {
+          const returnData = JSON.parse(aesDecrypt(obj.data));
+          const gameCheckPoint = returnData.point;
+          $notification.post('🎬 麥當勞看片賺分成功 ✅', 
+            '', 
+            '獲得 👉 ' + gameCheckPoint + ' 分 🍔'
+          );
+        } else if (obj.code !== 0) {
+          $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
+            '', 
+            obj.msg
+          );
         }
-
-        $done();
       } else {
-        $notification.post("🍟 麥當勞 Token 已過期‼️", "", "請重新登入 🔓");
-        $done();
+        $notification.post('🍟 麥當勞 Token 已過期‼️', 
+          '', 
+          '請重新登入 🔓'
+        );
       }
     }
   });
+  $done();
 }
+
+checkMediaDetail();
 
 function sleep(seconds) {
   var waitUntil = new Date().getTime() + seconds * 1000;
