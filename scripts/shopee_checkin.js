@@ -28,6 +28,7 @@ function updateSPC_EC() {
         '',
         '連線錯誤‼️'
       );
+      $done();
     } else {
       if (response.status == 200) {
         const cookie = $persistentStore.write(response.headers['Set-Cookie'].split('SPC_EC=')[1].split(';')[0], 'SPC_EC');
@@ -39,15 +40,16 @@ function updateSPC_EC() {
             '',
             '請重新登入'
           );
+          $done();
         }
       } else {
         $notification.post('蝦皮 SPC_EC Cookie 保存失敗‼️',
           '',
           '請重新登入'
         );
+        $done();
       }
     }
-    $done();
   });
 }
 
@@ -58,6 +60,7 @@ function updateCookie() {
         '',
         '連線錯誤‼️'
       );
+      $done();
     } else {
       if (response.status == 200) {
         const cookie = $persistentStore.write(
@@ -75,14 +78,15 @@ function updateCookie() {
             '',
             '請重新登入'
           );
+          $done();
         }
       } else {
         $notification.post('蝦皮 Cookie 保存失敗‼️',
           '',
           '請重新登入'
         );
+        $done();
       }
-      $done();
     }
   });
 }
@@ -105,6 +109,7 @@ function checkin() {
             '今日已領取 ' + coins + '💰💰💰'
           );
         } else {
+          console.log('蝦皮簽到失敗‼️ 本日已簽到‼️');
           $notification.post('蝦皮簽到失敗‼️',
             '',
             '本日已簽到‼️'
