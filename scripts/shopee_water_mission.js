@@ -59,9 +59,6 @@ function waterMission(index) {
             //   missions[index].missionName, 
             //   '任務成功 ✅',
             // );
-            if (index < missions.length - 1) {
-              waterMission(index + 1);
-            }
           } else if (obj.msg === 'lock failed.') {
             $notification.post('🍤 蝦皮水滴任務錯誤',
               missionName,
@@ -86,7 +83,10 @@ function waterMission(index) {
         );
       }
     }
-    if (index === missions.length - 1) {
+    if (index < missions.length - 1) {
+      waterMission(index + 1);
+    }
+    else {
       $notification.post('🍤 蝦皮水滴任務完成 ✅', '', '');
       $done();
     }
