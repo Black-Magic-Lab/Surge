@@ -1,6 +1,2 @@
-#!name=蝦皮自動滴水打卡
-#!desc=每天自動滴水打卡。需要同時開啟一般自動簽到模組才會生效。 v20220211
-
-[Script]
-cron "5 */11 * * *" script-path=https://kinta.ma/surge/scripts/shopee_water_checkin.js, wake-system=1, timeout=5
-cron "5 4 * * *" script-path=https://kinta.ma/surge/scripts/shopee_water_mission.js, wake-system=1, timeout=30
+#!name=蝦皮自動滴水打卡、做任務
+#!desc=本模組已無效，請改用新版自動澆水、做任務模組。 v20220227
