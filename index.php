@@ -141,7 +141,27 @@
                     </label>
                     <span class="description">自己 hosting 把中華民國國旗找回來了！</span><br>
                     <span class="author">作者: yichahucha</span><br>
-                    <span class="url">來源: https://github.com/yichahucha/surge/blob/master/nf_rating.js</span>
+                    <span class="url">來源: https://github.com/yichahucha/surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/Neurogram-R/Surge/master/module/Netflix-Dualsub.sgmodule')">
+                    <label>
+                        <p>Netflix 雙語字幕</p>
+                    </label>
+                    <span class="description">如需更換語言請自行複製後修改 second_lang 參數，預設為英文。</span><br>
+                    <span class="author">作者: Neurogram-R</span><br>
+                    <span class="url">來源: https://github.com/Neurogram-R/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/Neurogram-R/Surge/master/module/DisneyPlus-Dualsub.sgmodule')">
+                    <label>
+                        <p>Disney+ 雙語字幕</p>
+                    </label>
+                    <span class="description">如需更換語言請自行複製後修改 second_lang 參數，預設為英文。</span><br>
+                    <span class="author">作者: Neurogram-R</span><br>
+                    <span class="url">來源: https://github.com/Neurogram-R/Surge</span>
                 </div>
             </div>
             <div>
@@ -161,6 +181,16 @@
                     </label>
                     <span class="description">自動簽到修改版，每天會自動更新 Cookie，第一次使用要去「我的」→「邀請我的朋友」儲存 token</span><br>
                     <span class="author">作者: hirakujira & jkgtw</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('shopee_auto_water')">
+                    <label>
+                        <p>蝦蝦果園自動做任務 & 自動領獎勵 & 自動澆水</p>
+                    </label>
+                    <span class="description">每天自動做水滴任務，接近隔天午夜會自動把今天任務的獎勵全部用掉。每三小時自動澆水，每次換作物後需先手動澆水一次，讓 Surge 紀錄目前的作物。需要同時開啟每日自動簽到以獲得 token。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
             </div>
