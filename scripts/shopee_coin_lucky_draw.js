@@ -1,17 +1,19 @@
-const luckyRrawGetIdRequest = {
-  url: 'https://games.shopee.tw/gameplatform/api/v1/game/activity/e37b7dec5976a29c/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false',
-  headers: {
-    'Cookie': $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';',
-    'X-CSRFToken': $persistentStore.read('CSRFTokenSP'),
-  },
+const shopeeCookie = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';';
+const shopeeCSRFToken = $persistentStore.read('CSRFTokenSP');
+const shopeeHeaders = {
+  'Cookie': shopeeCookie,
+  'X-CSRFToken': shopeeCSRFToken,
 };
 
-let luckyRrawRequest = {
-  url: 'https://games.shopee.tw/luckydraw/api/v1/lucky/event/15d3b075799e64b2',
-  headers: {
-    'Cookie': $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';',
-    'X-CSRFToken': $persistentStore.read('CSRFTokenSP'),
-  },
+const luckyDrawBasicUrl = 'https://games.shopee.tw/luckydraw/api/v1/lucky/event/';
+const coinLuckyRrawGetIdRequest = {
+  url: 'https://games.shopee.tw/gameplatform/api/v1/game/activity/e37b7dec5976a29c/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false',
+  headers: shopeeHeaders,
+};
+
+let coinLuckyRrawRequest = {
+  url: '',
+  headers: shopeeHeaders,
   body: {
     request_id: (Math.random() * 10 ** 20).toFixed(0).substring(0, 16),
     app_id: 'E9VFyxwmtgjnCR8uhL',
@@ -21,8 +23,8 @@ let luckyRrawRequest = {
 };
 
 // 獲得寶箱 ID
-function luckyDrawGetId() {
-  $httpClient.get(luckyRrawGetIdRequest, function (error, response, data) {
+function coinLuckyDrawGetId() {
+  $httpClient.get(coinLuckyRrawGetIdRequest, function (error, response, data) {
     if (error) {
       $notification.post('🍤 蝦幣寶箱網址查詢',
         '',
@@ -31,22 +33,30 @@ function luckyDrawGetId() {
       $done();
     } else {
       if (response.status === 200) {
-        const obj = JSON.parse(data);
-        if (obj.msg !== 'success') {
-          $notification.post('🍤 蝦幣寶箱網址查詢',
+        try {
+          const obj = JSON.parse(data);
+          if (obj.msg === 'success') {
+            const eventUrl = obj.data.basic.event_code;;
+            coinLuckyRrawRequest.url = luckyDrawBasicUrl + eventUrl;
+            console.log('🍤 蝦幣寶箱新網址獲取成功： ' + coinLuckyRrawRequest.url);
+            // $notification.post('🍤 蝦幣寶箱新網址獲取成功： ', 
+            //   '', 
+            //   luckyRrawRequest.url
+            // );
+            coinLuckyDraw();
+          } else {
+            $notification.post('🍤 蝦幣寶箱網址查詢錯誤',
+              '',
+              obj.msg
+            );
+            $done();
+          }
+        } catch (error) {
+          $notification.post('🍤 蝦幣寶箱網址查詢錯誤',
             '',
-            '未知錯誤，請稍候再手動嘗試‼️'
+            error
           );
           $done();
-        } else {
-          const eventUrl = obj.data.basic.event_code;;
-          luckyRrawRequest.url = 'https://games.shopee.tw/luckydraw/api/v1/lucky/event/' + eventUrl;
-          console.log('🍤 蝦幣寶箱新網址獲取成功： ' + luckyRrawRequest.url);
-          // $notification.post('🍤 蝦幣寶箱新網址獲取成功： ', 
-          //   '', 
-          //   luckyRrawRequest.url
-          // );
-          luckyDraw();
         }
       } else {
         $notification.post('🍤 蝦皮 Cookie 已過期‼️',
@@ -59,8 +69,8 @@ function luckyDrawGetId() {
   });
 }
 
-function luckyDraw() {
-  $httpClient.post(luckyRrawRequest, function (error, response, data) {
+function coinLuckyDraw() {
+  $httpClient.post(coinLuckyRrawRequest, function (error, response, data) {
     if (error) {
       $notification.post('🍤 蝦幣寶箱',
         '',
@@ -97,4 +107,4 @@ function luckyDraw() {
   });
 }
 
-luckyDrawGetId();
+coinLuckyDrawGetId();

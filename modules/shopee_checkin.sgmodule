@@ -1,9 +1,10 @@
-#!name=蝦皮自動簽到
-#!desc=每天早上自動簽到 & 開寶箱。先到「我的」→「邀請我的朋友」取得 token。 v20220210
+#!name=蝦皮每日自動簽到 & 開寶箱
+#!desc=每天早上自動簽到 & 開蝦幣寶箱 & 開免運寶箱。第一次使用前先到「我的」→「邀請我的朋友」取得 token。 v20220303
 
 [Script]
-cron "6 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_checkin.js, wake-system=1, timeout=30
-cron "7 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_luckydraw.js, wake-system=1, timeout=30
+cron "6 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_checkin.js, wake-system=1, timeout=5
+cron "7 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_coin_lucky_draw.js, wake-system=1, timeout=10
+cron "7 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_shipping_lucky_draw.js, wake-system=1, timeout=10
 shopee_token.js = type=http-request,pattern=^https:\/\/mall\.shopee\.tw\/api\/v4\/microsite\/campaign_site_page,script-path=https://kinta.ma/surge/scripts/shopee_token.js,script-update-interval=-1
 
 [MITM]
