@@ -1,10 +1,13 @@
+const shopeeCookie = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';';
+const shopeeCSRFToken = $persistentStore.read('CSRFTokenSP');
+const shopeeHeaders = {
+  'Cookie': shopeeCookie,
+  'X-CSRFToken': shopeeCSRFToken,
+};
+
 const waterRequest = {
   url: 'https://games.shopee.tw/farm/api/orchard/crop/water?t=' + new Date().getTime(),
-  headers: {
-    'Cookie': $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';',
-    'X-CSRFToken': $persistentStore.read('CSRFTokenSP'),
-    'Content-Type': 'application/json',
-  },
+  headers: shopeeHeaders,
   body: $persistentStore.read('ShopeeCrop'),
 };
 

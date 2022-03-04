@@ -1,19 +1,18 @@
+const shopeeCookie = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';';
+const shopeeCSRFToken = $persistentStore.read('CSRFTokenSP');
+const shopeeHeaders = {
+  'Cookie': shopeeCookie,
+  'X-CSRFToken': shopeeCSRFToken,
+};
+
 const getSignInBundleListRequest = {
   url: 'https://games.shopee.tw/farm/api/sign_in_bundle/list?t=' + new Date().getTime(),
-  headers: {
-    'Cookie': $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';',
-    'X-CSRFToken': $persistentStore.read('CSRFTokenSP'),
-    'Content-Type': 'application/json',
-  },
+  headers: shopeeHeaders,
 };
 
 let claimSignInBundleRequest = {
   url: 'https://games.shopee.tw/farm/api/sign_in_bundle/claim?t=' + new Date().getTime(),
-  headers: {
-    'Cookie': $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';',
-    'X-CSRFToken': $persistentStore.read('CSRFTokenSP'),
-    'Content-Type': 'application/json',
-  },
+  headers: shopeeHeaders,
   body: {
     'day': 0,
     'forceClaim': true

@@ -1,3 +1,10 @@
+const shopeeCookie = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';';
+const shopeeCSRFToken = $persistentStore.read('CSRFTokenSP');
+const shopeeHeaders = {
+  'Cookie': shopeeCookie,
+  'X-CSRFToken': shopeeCSRFToken,
+};
+
 const refershRequest = {
   url: 'https://mall.shopee.tw/api/v4/client/refresh',
   headers: {
@@ -7,18 +14,12 @@ const refershRequest = {
 
 const accountInfoRequest = {
   url: 'https://shopee.tw/api/v2/user/account_info?from_wallet=false&skip_address=1&need_cart=1',
-  headers: {
-    Cookie: $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';',
-    'X-CSRFToken': $persistentStore.read('CSRFTokenSP'),
-  },
+  headers: shopeeHeaders,
 };
 
 const checkinRequest = {
   url: 'https://shopee.tw/mkt/coins/api/v2/checkin',
-  headers: {
-    'Cookie': $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';',
-    'X-CSRFToken': $persistentStore.read('CSRFTokenSP'),
-  }
+  headers: shopeeHeaders,
 };
 
 function updateSPC_EC() {

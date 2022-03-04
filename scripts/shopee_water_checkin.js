@@ -1,11 +1,12 @@
-const now = new Date().getTime();
+const shopeeCookie = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';';
+const shopeeCSRFToken = $persistentStore.read('CSRFTokenSP');
+const shopeeHeaders = {
+  'Cookie': shopeeCookie,
+  'X-CSRFToken': shopeeCSRFToken,
+};
 const request = {
-  url: 'https://games.shopee.tw/farm/api/task/action?t=' + now,
-  headers: {
-    'Cookie': $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';',
-    'X-CSRFToken': $persistentStore.read('CSRFTokenSP'),
-    'Content-Type': 'application/json',
-  },
+  url: 'https://games.shopee.tw/farm/api/task/action?t=' + new Date().getTime(),
+  headers: shopeeHeaders,
   body: { actionKey: 'act_Check_In' },
 };
 
