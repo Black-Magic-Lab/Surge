@@ -6,8 +6,24 @@ const shopeeHeaders = {
 };
 
 const luckyDrawBasicUrl = 'https://games.shopee.tw/luckydraw/api/v1/lucky/event/';
-const coinLuckyRrawGetIdRequest = {
-  url: 'https://games.shopee.tw/gameplatform/api/v1/game/activity/e37b7dec5976a29c/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false',
+
+const eventListRequest = {
+  url: 'https://mall.shopee.tw/api/v4/banner/batch_list',
+  headers: shopeeHeaders,
+  body: {
+    "types": [
+      {
+        "type": "coin_carousel"
+      },
+      {
+        "type": "coin_square"
+      }
+    ]
+  }
+};
+
+let coinLuckyRrawGetIdRequest = {
+  url: '',
   headers: shopeeHeaders,
 };
 
@@ -17,10 +33,52 @@ let coinLuckyRrawRequest = {
   body: {
     request_id: (Math.random() * 10 ** 20).toFixed(0).substring(0, 16),
     app_id: 'E9VFyxwmtgjnCR8uhL',
-    activity_code: 'e37b7dec5976a29c',
+    activity_code: '',
     source: 0,
   },
 };
+
+function eventListGetActivity() {
+  $httpClient.post(eventListRequest, function (error, response, data) {
+    if (error) {
+      $notification.post('🍤 蝦幣寶箱',
+        '',
+        '連線錯誤‼️'
+      );
+    } else {
+      if (response.status == 200) {
+        const obj = JSON.parse(data);
+        // console.log(data)
+        const bannerSets = obj.data.banners;
+        for (const bannerSet of bannerSets) {
+          for (const banner of bannerSet.banners) {
+            try {
+              const title = banner.navigate_params.navbar.title;
+              if (title.includes('蝦幣寶箱')) {
+                const re = /activity\/(.*)\?/i;
+                const found = banner.navigate_params.url.match(re);
+                const activityId = found[1];
+                console.log('活動 ID:' + activityId);
+                coinLuckyRrawGetIdRequest.url = 'https://games.shopee.tw/gameplatform/api/v1/game/activity/' + activityId + '/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false';
+                coinLuckyRrawRequest.body.activity_code = activityId;
+                coinLuckyDrawGetId();
+              }
+            } 
+            catch (e) {
+
+            }
+          }
+        }
+      } else {
+        $notification.post('🍤 蝦皮 Cookie 已過期‼️',
+          '',
+          '請重新抓取 🔓'
+        );
+      }
+    }
+    $done();
+  });
+}
 
 // 獲得寶箱 ID
 function coinLuckyDrawGetId() {
@@ -107,4 +165,5 @@ function coinLuckyDraw() {
   });
 }
 
-coinLuckyDrawGetId();
+eventListGetActivity();
+// coinLuckyDrawGetId();
