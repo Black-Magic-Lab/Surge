@@ -1,0 +1,9 @@
+#!name=是誰在講幹話
+#!desc=https://github.com/tasi788/Whosis-Sayings
+#!system=ios
+
+[Panel]
+WhosisSayingsPanel=title="",content="",style=info,script-name=whosis_sayings_panel.js,update-interval=1
+
+[Script]
+whosis_sayings_panel.js=script-path=https://kinta.ma/surge/scripts/whosis_sayings_panel.js,type=generic
