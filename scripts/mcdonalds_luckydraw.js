@@ -24,7 +24,16 @@ let joinGameRequest = {
 
 let gameList = [];
 
-function getAllGames() {
+function isEnabledUsePointModule() {
+  return new Promise((resolve) => {
+    $httpAPI('GET', 'v1/modules', null, (data) => {
+      const enabled = data.enabled;
+      resolve(enabled.includes('麥當勞自動簽到（花費積分）'));
+    });
+  });
+}
+
+function getAllGames(usePoint) {
   $httpClient.post(carouselRequest, function (error, response, data) {
     if (error) {
       $notification.post('🧾 麥當勞獲取任務列表失敗 ❌', '', '連線錯誤‼️')
@@ -37,7 +46,7 @@ function getAllGames() {
             const games = JSON.parse(aesDecrypt(obj.data)).list;
             for (let i = 0; i < games.length; i++) {
               const game = games[i];
-              if (game.point > 0) {
+              if (game.point > 0 && !usePoint) {
                 let name = '';
                 if (game.type === 'ROULETTE') {
                   name = '轉轉圈';
@@ -162,7 +171,9 @@ function joinGame(index) {
   });
 }
 
-getAllGames();
+isEnabledUsePointModule().then(usePoint => {
+  getAllGames(usePoint);
+});
 
 function aesDecrypt(base64String) {
   const bytes = CryptoJS.AES.decrypt(base64String, aesKey, aesConfig);

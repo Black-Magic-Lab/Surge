@@ -33,7 +33,16 @@ let getQuestionDetailRequest = {
 
 let gameList = [];
 
-function getAllQuestions() {
+function isEnabledUsePointModule() {
+  return new Promise((resolve) => {
+    $httpAPI('GET', 'v1/modules', null, (data) => {
+      const enabled = data.enabled;
+      resolve(enabled.includes('麥當勞自動簽到（花費積分）'));
+    });
+  });
+}
+
+function getAllQuestions(usePoint) {
   $httpClient.post(carouselRequest, function (error, response, data) {
     if (error) {
       $notification.post('🧾 麥當勞獲取問卷列表失敗 ❌', '', '連線錯誤‼️')
@@ -46,25 +55,21 @@ function getAllQuestions() {
             const games = JSON.parse(aesDecrypt(obj.data)).list;
             for (var i = 0; i < games.length; i++) {
               const game = games[i];
-              if (game.point > 0) {
-                let name = '';
-                if (game.type === 'QUESTION') {
-                  name = '填問卷';
-                }
-                $notification.post('💰 麥當勞問卷' + name + '需花費' + game.point + '積分', 
-                  '', 
-                  '請打開 App 自行參加'
-                );
-                continue;
-              }
               if (game.type === 'QUESTION') {
+                if (game.point > 0 && !usePoint) {
+                  $notification.post('💰 麥當勞填問卷需花費' + game.point + '積分', 
+                    '', 
+                    '請打開 App 自行參加'
+                  );
+                  continue;
+                }
                 gameList.push({
                   gameId: game.id, 
                   gameName: '🧾 麥當勞填問卷'
                 });
               }
             }
-            if (games.length) {
+            if (gameList.length) {
               getQuestionDetails(0);
             }
             else {
@@ -196,7 +201,9 @@ function joinGame(index) {
   });
 }
 
-getAllQuestions();
+isEnabledUsePointModule().then(usePoint => {
+  getAllQuestions(usePoint);
+})
 
 function aesDecrypt(base64String) {
   const bytes = CryptoJS.AES.decrypt(base64String, aesKey, aesConfig);
