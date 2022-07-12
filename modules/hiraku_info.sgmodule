@@ -1,0 +1,9 @@
+#!name=皮樂今天翻車了嗎
+#!desc=
+#!system=ios
+
+[Panel]
+HirakuInfoPanel=title="",content="",style=info,script-name=hiraku_info_panel.js,update-interval=1
+
+[Script]
+hiraku_info_panel.js=script-path=https://kinta.ma/surge/scripts/hiraku_info_panel.js,type=generic
