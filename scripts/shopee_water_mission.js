@@ -11,16 +11,42 @@ let request = {
   body: { actionKey: '' },
 };
 
-let missions = [
-  {
-    actionKey: 'act_play_bubble_game',
-    missionName: '🍤 玩蝦皮泡泡王任務'
-  },
-  {
-    actionKey: 'act_play_candy_game',
-    missionName: '🍤 玩蝦皮消消樂任務'
-  }
-];
+let missions = [];
+
+// if (new Date().getHours() < 12) {
+  
+// }
+// else {
+//   missions.push({
+//     actionKey: 'act_claim_water_in_shop',
+//     missionName: '🍤 前往賣場領取水滴'
+//   });
+// }
+
+missions.push({
+  actionKey: 'act_playrcmdgame',
+  missionName: '🍤 玩商城遊戲'
+});
+missions.push({
+  actionKey: 'act_play_candy_game',
+  missionName: '🍤 玩蝦皮消消樂任務'
+});
+missions.push({
+  actionKey: 'act_play_claw_game',
+  missionName: '🍤 玩蝦皮夾夾樂任務'
+});
+missions.push({
+  actionKey: 'act_play_knife_throw_game',
+  missionName: '🍤 玩蝦蝦飛刀任務'
+});
+missions.push({
+  actionKey: 'act_play_pet_game',
+  missionName: '🍤 玩蝦蝦寵物村'
+});
+missions.push({
+  actionKey: 'act_play_bubble_game',
+  missionName: '🍤 玩蝦皮泡泡王任務'
+});
 
 for (let i = 0; i < 10; i++) {
   missions.push({
