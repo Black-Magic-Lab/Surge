@@ -27,10 +27,19 @@ $httpClient.post(waterRequest, function (error, response, data) {
           const exp = obj.data.crop.exp;
           const levelExp = obj.data.crop.meta.config.levelConfig[state.toString()].exp;
           const remain = levelExp - exp;
-          $notification.post('🍤 蝦皮自動澆水成功 ✅',
-            '本次澆了：' + useNumber + ' 滴水💧',
-            '剩餘 ' + remain + ' 滴水成長至下一階段🌳'
-          );
+          if (remain < 50) {
+            $notification.post('🍤 蝦皮自動澆水成功 ✅',
+              '本次澆了：' + useNumber + ' 滴水💧',
+              '剩餘 ' + remain + ' 滴水收成🌳'
+            );
+          }
+          else {
+            console.log('🍤 蝦皮自動澆水成功 ✅ \n本次澆了：' + useNumber + ' 滴水💧，剩餘 ' + remain + ' 滴水成長至下一階段🌳');
+            // $notification.post('🍤 蝦皮自動澆水成功 ✅',
+            //   '本次澆了：' + useNumber + ' 滴水💧',
+            //   '剩餘 ' + remain + ' 滴水成長至下一階段🌳'
+            // );
+          }
         } else if (obj.msg === 'resource not enough') {
           $notification.post('🍤 蝦皮自動澆水',
             '',
@@ -41,6 +50,15 @@ $httpClient.post(waterRequest, function (error, response, data) {
             '',
             '種植作物錯誤，請先手動澆水一次‼️'
           );
+        } else if (obj.msg === 'invalid crop state') {
+          const cropState = parseInt($persistentStore.read('ShopeeCropState'));
+          if (cropState < 3) {
+            $persistentStore.write((cropState + 1).toString(), 'ShopeeCropState');
+            $notification.post('🍤 蝦皮自動澆水',
+              '',
+              '作物狀態錯誤，請看看是否已經收成‼️'
+            );
+          }
         } else {
           $notification.post('🍤 蝦皮自動澆水',
             '',
