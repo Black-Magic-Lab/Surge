@@ -1,7 +1,8 @@
 const body = JSON.parse($request.body);
 if (body && body.cropId && body.resourceId && body.s) {
   const saveCrop = $persistentStore.write($request.body, 'ShopeeCrop');
-  if (!saveCrop) {
+  const saveCropState = $persistentStore.write('0', 'ShopeeCropState');
+  if (!saveCrop || !saveCropState) {
     $notification.post('蝦蝦果園作物資料保存失敗‼️',
       '',
       '請稍後嘗試'

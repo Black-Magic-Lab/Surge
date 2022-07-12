@@ -1,5 +1,5 @@
-if ($request.headers['Cookie']) {
-  const cookie = $request.headers['Cookie'];
+const cookie = $request.headers['Cookie'] || $request.headers['cookie'];
+if (cookie) {
   const shopee_token = cookie.split('shopee_token=')[1].split(';')[0];
   const SPC_EC = cookie.split('SPC_EC=')[1].split(';')[0];
   const cstfToken = cookie.split('csrftoken=')[1].split(';')[0];
