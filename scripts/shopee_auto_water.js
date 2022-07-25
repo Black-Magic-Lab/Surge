@@ -27,7 +27,13 @@ $httpClient.post(waterRequest, function (error, response, data) {
           const exp = obj.data.crop.exp;
           const levelExp = obj.data.crop.meta.config.levelConfig[state.toString()].exp;
           const remain = levelExp - exp;
-          if (remain < 50) {
+          if (remain === 0) {
+            $notification.post('🍤 蝦皮自動澆水成功 ✅',
+              '本次澆了：' + useNumber + ' 滴水💧',
+              '種植完畢，作物可以收成啦🌳'
+            );
+          }
+          else if (remain < 50) {
             $notification.post('🍤 蝦皮自動澆水成功 ✅',
               '本次澆了：' + useNumber + ' 滴水💧',
               '剩餘 ' + remain + ' 滴水收成🌳'
