@@ -9,7 +9,8 @@
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="format-detection" content="telephone=no" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta property="og:image" content="icon.png">
+<meta property="og:image" content="favicon-120.png">
+<link rel="icon" href="favicon-120.png" sizes="120x120">
 <body class="pinstripe">
     <panel>
         <div id="header">
@@ -62,6 +63,16 @@
                 </div>
             </div>
             <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/FutaGuard/FutaFilter/master/Surge/futadns.sgmodule')">
+                    <label>
+                        <p>FutaDNS (futa.gg)</p>
+                    </label>
+                    <span class="description">DNS 公共服務，背後跑的是 AdGuard Home</span><br>
+                    <span class="author">作者: FutaFilter</span><br>
+                    <span class="url">來源: https://github.com/FutaGuard/FutaFilter</span>
+                </div>
+            </div>
+            <div>
                 <div onclick="copyToClipBoard('facebook_block_sdk')">
                     <label>
                         <p>Facebook SDK 阻擋</p>
@@ -101,6 +112,16 @@
                     <span class="url">來源: https://github.com/jkgtw/Surge</span>
                 </div>
             </div>
+            <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/ptntp/self-rule/main/Panel/Ecosia-to-Kagi.sgmodule')">
+                    <label>
+                        <p>Ecosia to Kagi</p>
+                    </label>
+                    <span class="description">把 Ecosia 搜尋轉址到 kagi.com</span><br>
+                    <span class="author">作者: ptntp</span><br>
+                    <span class="url">來源: https://github.com/ptntp/self-rule</span>
+                </div>
+            </div>
             <!-- <div>
                 <div onclick="copyToClipBoard('shopee_ad')">
                     <label>
@@ -132,6 +153,16 @@
                     <span class="description">修正 PTT 網頁版無法顯示 Imgur 圖片的問題</span><br>
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/VirgilClyne/iRingo/main/sgmodule/Weather.sgmodule')">
+                    <label>
+                        <p>天氣功能增強</p>
+                    </label>
+                    <span class="description">解鎖天氣資料類型，包括每小時降雨、空氣品質</span><br>
+                    <span class="author">作者: VirgilClyne</span><br>
+                    <span class="url">來源: https://github.com/VirgilClyne/iRingo</span>
                 </div>
             </div>
             <div>
@@ -177,9 +208,9 @@
             <div>
                 <div onclick="copyToClipBoard('shopee_checkin')">
                     <label>
-                        <p>蝦皮每日自動簽到 & 開寶箱</p>
+                        <p>蝦皮每日自動簽到</p>
                     </label>
-                    <span class="description">自動簽到修改版，每天會自動更新 Cookie，第一次使用要去「我的」→「邀請我的朋友」儲存 token</span><br>
+                    <span class="description">每天早上自動簽到 + 開蝦幣寶箱 + 開免運寶箱。第一次使用前先到「我的」→「邀請我的朋友」取得 token。</span><br>
                     <span class="author">作者: hirakujira & jkgtw</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
@@ -187,19 +218,39 @@
             <div>
                 <div onclick="copyToClipBoard('shopee_auto_water')">
                     <label>
-                        <p>蝦蝦果園自動做任務 & 自動領獎勵 & 自動澆水</p>
+                        <p>蝦蝦果園自動化</p>
                     </label>
-                    <span class="description">每天自動做水滴任務，接近隔天午夜會自動把今天任務的獎勵全部用掉。每三小時自動澆水，每次換作物後需先手動澆水一次，讓 Surge 紀錄目前的作物。需要同時開啟每日自動簽到以獲得 token。</span><br>
+                    <span class="description">每天自動做水滴任務，接近隔天午夜會自動把今天任務的獎勵全部用掉。每小時自動澆水，每次換作物後需先手動澆水一次，讓 Surge 紀錄目前的作物。需要同時開啟每日自動簽到以獲得 token。</span><br>
                     <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('mcdonalds_token')">
+                    <label>
+                        <p>麥當勞取得 token</p>
+                    </label>
+                    <span class="description">登入後先去個人資料那邊按修改，但什麼都不要改，直接儲存就可以獲得 token。或者根據網站教學文搭配 mcdonalds_set_token.js 手動設定 token。</span><br>
+                    <span class="author">作者: hirakujira & jkgtw</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
             </div>
             <div>
                 <div onclick="copyToClipBoard('mcdonalds')">
                     <label>
-                        <p>麥當勞每日自動簽到 & 參加活動</p>
+                        <p>麥當勞每日自動簽到</p>
                     </label>
-                    <span class="description">自動簽到，第一次使用先去個人資料那邊按修改，但什麼都不要改，直接儲存就可以獲得 token</span><br>
+                    <span class="description">每天自動簽到 + 參加活動。</span><br>
+                    <span class="author">作者: hirakujira & jkgtw</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('mcdonalds_use_point')">
+                    <label>
+                        <p>麥當勞每日自動簽到（花費積分）</p>
+                    </label>
+                    <span class="description">每天早上自動簽到 + 參加活動。此版本會自動參加花費積分的活動。</span><br>
                     <span class="author">作者: hirakujira & jkgtw</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
@@ -209,9 +260,19 @@
                     <label>
                         <p>博客來每日自動簽到</p>
                     </label>
-                    <span class="description">博客來自動簽到，第一次使用先去 e-coupon 頁面取得 token</span><br>
+                    <span class="description">博客來自動簽到，第一次使用先去「會員專區」→「我的優惠券」頁面取得 token</span><br>
                     <span class="author">作者: jkgtw</span><br>
                     <span class="url">來源: https://github.com/jkgtw/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('momo_checkin')">
+                    <label>
+                        <p>Momo 每日簽到</p>
+                    </label>
+                    <span class="description">每天早上自動簽到。第一次使用前先到「天天簽到」→「活動紀錄」取得 Cookie。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
             </div>
             <div>
@@ -268,6 +329,16 @@
                 </div>
             </div>
             <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/ptntp/self-rule/main/Panel/streamcheck.sgmodule')">
+                    <label>
+                        <p>串流媒體跨區檢查</p>
+                    </label>
+                    <span class="description">串流媒體跨區測試</span><br>
+                    <span class="author">作者: @Helge_0x00 & ptntp</span><br>
+                    <span class="url">來源: https://github.com/ptntp/self-rule</span>
+                </div>
+            </div>
+            <div>
                 <div onclick="copyToClipBoard('https://raw.githubusercontent.com/FutaGuard/FutaFilter/master/Surge/check_futadns.sgmodule')">
                     <label>
                         <p>FutaDNS 檢查面板</p>
@@ -293,9 +364,9 @@
             <div>
                 <div onclick="window.open('utils/mcdonalds_token')">
                     <label>
-                        <p>麥當勞 Token 取得工具</p>
+                        <p>麥當勞 token 取得工具</p>
                     </label>
-                    <span class="description">使用電腦取得麥當勞 App Token</span><br>
+                    <span class="description">使用電腦取得麥當勞 App token</span><br>
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
