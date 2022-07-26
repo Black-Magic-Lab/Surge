@@ -5,6 +5,9 @@ const shopeeHeaders = {
   'Cookie': shopeeCookie,
   'X-CSRFToken': shopeeCSRFToken,
 };
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦蝦果園道具商店水滴', subtitle, message, { 'url': 'shopeetw://' });
+};
 
 const claimGroceryStoreWaterRequest = {
   url: 'https://games.shopee.tw/farm/api/grocery_store/claim',
@@ -15,19 +18,11 @@ const claimGroceryStoreWaterRequest = {
 };
 
 function claimGroceryStoreWater() {
-  if (!shopeeGroceryStoreToken.length) {
-    $notification.post('🍤 蝦蝦果園領取商店水滴錯誤‼️',
-        '',
-        '無法取得 token，請先在特價商店領取一次水滴以儲存 token'
-      );
-    $done();
-    return;
-  }
   $httpClient.post(claimGroceryStoreWaterRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦蝦果園領取商店水滴錯誤‼️',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '領取失敗 ‼️',
+        '連線錯誤'
       );
     } else {
       if (response.status === 200) {
@@ -40,27 +35,27 @@ function claimGroceryStoreWater() {
             );
           }
           else if (obj.msg === 'has claimed') {
-            $notification.post('🍤 蝦蝦果園領取商店水滴錯誤‼️',
-              '',
-              '已經領過本日水滴',
+            shopeeNotify(
+              '領取失敗 ‼️',
+              '每日只能領一次'
             );
           }
           else {
-            $notification.post('🍤 蝦蝦果園領取商店水滴錯誤‼️',
-              '',
-              obj.msg,
+            shopeeNotify(
+              '領取失敗 ‼️',
+              obj.msg
             );
           }
         } catch (error) {
-          $notification.post('🍤 蝦蝦果園領取商店水滴錯誤‼️',
-            '',
-            error,
+          shopeeNotify(
+            '領取失敗 ‼️',
+            error
           );
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️',
-          '',
-          '請重新更新 Cookie 重試 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }
@@ -68,4 +63,13 @@ function claimGroceryStoreWater() {
   });
 }
 
-claimGroceryStoreWater();
+if (!shopeeGroceryStoreToken.length) {
+  shopeeNotify(
+    '領取失敗 ‼️',
+    '請先在道具商店領取一次水滴，以儲存 token'
+  );
+  $done();
+}
+else {
+  claimGroceryStoreWater();
+}

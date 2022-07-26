@@ -4,6 +4,9 @@ const shopeeHeaders = {
   'Cookie': shopeeCookie,
   'X-CSRFToken': shopeeCSRFToken,
 };
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦蝦果園執行任務', subtitle, message, { 'url': 'shopeetw://' });
+};
 
 let request = {
   url: '',
@@ -19,46 +22,46 @@ let missions = [];
 // else {
 //   missions.push({
 //     actionKey: 'act_claim_water_in_shop',
-//     missionName: '🍤 前往賣場領取水滴'
+//     missionName: '前往賣場領取水滴'
 //   });
 // }
 
 missions.push({
   actionKey: 'act_playrcmdgame',
-  missionName: '🍤 玩商城遊戲'
+  missionName: '玩商城遊戲'
 });
 missions.push({
   actionKey: 'act_play_candy_game',
-  missionName: '🍤 玩蝦皮消消樂任務'
+  missionName: '玩蝦皮消消樂'
 });
 missions.push({
   actionKey: 'act_play_claw_game',
-  missionName: '🍤 玩蝦皮夾夾樂任務'
+  missionName: '玩蝦皮夾夾樂'
 });
 missions.push({
   actionKey: 'act_play_knife_throw_game',
-  missionName: '🍤 玩蝦蝦飛刀任務'
+  missionName: '玩蝦蝦飛刀'
 });
 missions.push({
   actionKey: 'act_play_pet_game',
-  missionName: '🍤 玩蝦蝦寵物村'
+  missionName: '玩蝦蝦寵物村'
 });
 missions.push({
   actionKey: 'act_play_bubble_game',
-  missionName: '🍤 玩蝦皮泡泡王任務'
+  missionName: '玩蝦皮泡泡王'
 });
 
 for (let i = 0; i < 10; i++) {
   missions.push({
     actionKey: 'act_Receive_Water',
-    missionName: '🍤 收到站內朋友助水任務'
+    missionName: '收到站內朋友助水'
   });
 }
 
 for (let i = 0; i < 10; i++) {
   missions.push({
     actionKey: 'act_Help_Watering',
-    missionName: '🍤 幫站內朋友澆水任務'
+    missionName: '幫站內朋友澆水'
   });
 }
 
@@ -72,9 +75,9 @@ function waterMission(index) {
 
   $httpClient.post(request, function (error, response, data) {
     if (error) {
-      $notification.post(missionName + '失敗',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '執行 ' + missionName + ' 失敗 ‼️',
+        '連線錯誤'
       );
     } else {
       if (response.status === 200) {
@@ -82,31 +85,31 @@ function waterMission(index) {
           const obj = JSON.parse(data);
           if (obj.msg === 'success') {
             console.log(missions[index].missionName + '成功 ✅');
-            // $notification.post('🍤 蝦皮水滴任務', 
-            //   missions[index].missionName, 
-            //   '任務成功 ✅',
+            // shopeeNotify(
+            //   '執行成功 ✅',
+            //   '已完成 ' + missions[index].missionName
             // );
           } else if (obj.msg === 'lock failed.') {
-            $notification.post('🍤 蝦皮水滴任務錯誤',
-              missionName,
-              '連線請求過於頻繁',
+            shopeeNotify(
+              '執行 ' + missionName + ' 失敗 ‼️',
+              '連線請求過於頻繁'
             );
           } else {
-            $notification.post('🍤 蝦皮水滴任務錯誤',
-              missionName + '錯誤',
+            shopeeNotify(
+              '執行 ' + missionName + ' 失敗 ‼️',
               obj.msg
             );
           }
         } catch (error) {
-          $notification.post('🍤 蝦皮水滴任務錯誤',
-            missionName + '錯誤',
+          shopeeNotify(
+            '執行 ' + missionName + ' 失敗 ‼️',
             error
           );
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️',
-          '',
-          '請重新更新 Cookie 重試 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }
@@ -114,7 +117,10 @@ function waterMission(index) {
       waterMission(index + 1);
     }
     else {
-      $notification.post('🍤 蝦皮水滴任務完成 ✅', '', '');
+      shopeeNotify(
+        '已完成所有任務 ✅',
+        ''
+      );
       $done();
     }
   });

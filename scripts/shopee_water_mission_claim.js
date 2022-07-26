@@ -20,15 +20,18 @@ let claimRewardRequest = {
     "forceClaim": false,
   },
 };
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦蝦果園領取任務獎勵', subtitle, message, { 'url': 'shopeetw://' });
+};
 
 let claims = [];
 
 function getRewardList() {
   $httpClient.get(getListRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦蝦果園任務列表',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '取得列表失敗 ‼️',
+        '連線錯誤'
       );
     } else {
       if (response.status === 200) {
@@ -55,24 +58,24 @@ function getRewardList() {
             claimReward(0);
           }
           else {
-            console.log('🍤 蝦蝦果園沒有可領取的任務獎勵‼️');
-            // $notification.post('🍤 蝦蝦果園任務列表',
-            //   '',
-            //   '沒有可領取的任務獎勵‼️'
-            // );
+            console.log('沒有可領取的任務獎勵');
+            shopeeNotify(
+              '取得列表失敗 ‼️',
+              '沒有可領取的任務獎勵'
+            );
             $done();
           }
         } catch (error) {
-          $notification.post('🍤 蝦蝦果園任務列表',
-            '',
-            '獲得任務錯誤‼️' + error
+          shopeeNotify(
+            '取得列表失敗 ‼️',
+            error
           );
           $done();
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️',
-          '',
-          '請重新更新 Cookie 重試 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -87,36 +90,36 @@ function claimReward(index) {
   claimRewardRequest.body.taskId = taskId;
   $httpClient.post(claimRewardRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦蝦果園任務列表',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '領取失敗 ‼️',
+        '連線錯誤'
       );
     } else {
       if (response.status === 200) {
         try {
           const obj = JSON.parse(data);
           if (obj.msg === 'success') {
-            console.log('🍤 蝦蝦果園任務 ' + taskName + ' 領取成功 ✅');
-            // $notification.post('🍤 蝦蝦果園任務', 
-            //   taskName, 
-            //   '自動領取水滴成功',
+            console.log('領取 ' + taskName + ' 成功 💧');
+            // shopeeNotify(
+            //   '領取成功 💧',
+            //   '已領取 ' + taskName
             // );
           } else {
-            $notification.post('🍤 蝦蝦果園任務 ',
-              taskName,
-              ' 自動領取錯誤' + obj.msg + '‼️'
+            shopeeNotify(
+              '領取失敗 ‼️',
+              taskName + '\n' + obj.msg
             );
           }
         } catch (error) {
-          $notification.post('🍤 蝦蝦果園任務 ',
-            taskName,
-            ' 自動領取錯誤‼️'
+          shopeeNotify(
+            '領取失敗 ‼️',
+            taskName + '\n' + error
           );
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️',
-          '',
-          '請重新更新 Cookie 重試 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }
@@ -124,8 +127,8 @@ function claimReward(index) {
       claimReward(index + 1);
     }
     else {
-      $notification.post('🍤 蝦蝦果園任務自動領取完成 ✅',
-        '',
+      shopeeNotify(
+        '領取獎勵完成 ✅',
         ''
       );
       $done();

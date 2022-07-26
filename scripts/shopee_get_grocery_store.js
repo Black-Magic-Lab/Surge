@@ -1,20 +1,24 @@
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦蝦果園道具商店 token', subtitle, message, { 'url': 'shopeetw://' });
+};
+
 const body = JSON.parse($request.body);
 if (body && body.S) {
   const shopeeGroceryStoreToken = $persistentStore.write(body.S, 'ShopeeGroceryStoreToken');
   if (!shopeeGroceryStoreToken) {
-    $notification.post('蝦蝦果園商店水滴 token 保存失敗‼️',
-      '',
+    shopeeNotify(
+      '保存失敗 ‼️',
       '請稍後嘗試'
     );
   } else {
-    $notification.post('蝦蝦果園商店水滴 token 保存成功🌱',
-      '',
+    shopeeNotify(
+      '保存成功 🌱',
       ''
     );
   }
 } else {
-  $notification.post('蝦蝦果園商店水滴 token 保存失敗‼️',
-    '',
+  shopeeNotify(
+    'Cookie 已過期 ‼️',
     '請重新登入'
   );
 }

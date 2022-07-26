@@ -4,6 +4,9 @@ const shopeeHeaders = {
   'Cookie': shopeeCookie,
   'X-CSRFToken': shopeeCSRFToken,
 };
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦蝦果園每日簽到獎勵', subtitle, message, { 'url': 'shopeetw://' });
+};
 
 const getSignInBundleListRequest = {
   url: 'https://games.shopee.tw/farm/api/sign_in_bundle/list?t=' + new Date().getTime(),
@@ -22,9 +25,9 @@ let claimSignInBundleRequest = {
 function getSignInBundleList() {
   $httpClient.get(getSignInBundleListRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦蝦果園獲得今日獎勵列表',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '取得列表失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
@@ -34,10 +37,10 @@ function getSignInBundleList() {
           const day = obj.data.day;
           const claimed = obj.data.signInBundlePrizes[day - 1].claimed;
           if (claimed) {
-            console.log('🍤 蝦蝦果園今日已簽到‼️');
-            // $notification.post('🍤 蝦蝦果園今日簽到獎勵',
-            //   '',
-            //   '今日已簽到‼️'
+            console.log('今日已簽到');
+            // shopeeNotify(
+            //   '取得列表失敗 ‼️',
+            //   '今日已簽到'
             // );
             $done();
             return;
@@ -45,16 +48,16 @@ function getSignInBundleList() {
           claimSignInBundleRequest.body.day = day;
           claimSignInBundle(day);
         } catch (error) {
-          $notification.post('🍤 蝦蝦果園獲得今日簽到獎勵列表',
-            '',
-            '發生錯誤‼️' + error
+          shopeeNotify(
+            '取得列表失敗 ‼️',
+            error
           );
           $done();
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️',
-          '',
-          '請重新更新 Cookie 重試 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -65,9 +68,9 @@ function getSignInBundleList() {
 function claimSignInBundle() {
   $httpClient.post(claimSignInBundleRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦蝦果園今日簽到獎勵',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '簽到失敗 ‼️',
+        '請重新登入'
       );
     } else {
       if (response.status === 200) {
@@ -84,21 +87,27 @@ function claimSignInBundle() {
             else {
               prizeName = prize.prizeNum + ' 滴水 💧';
             }
-            $notification.post('🍤 蝦蝦果園今日簽到成功 ✅',
-            '',
-            '獲得 ' + prizeName
-          );
+            shopeeNotify(
+              '簽到成功 ✅',
+              '獲得 ' + prizeName
+            );
+          }
+          else {
+            shopeeNotify(
+              '簽到失敗 ‼️',
+              obj.msg
+            );
           }
         } catch (error) {
-          $notification.post('🍤 蝦蝦果園今日簽到獎勵',
-            '',
-            '獲得獎勵錯誤‼️' + error
+          shopeeNotify(
+            '簽到失敗 ‼️',
+            error
           );
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️',
-          '',
-          '請重新更新 Cookie 重試 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }

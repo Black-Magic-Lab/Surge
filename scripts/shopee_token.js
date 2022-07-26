@@ -1,3 +1,7 @@
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦皮 Cookie', subtitle, message, { 'url': 'shopeetw://' });
+};
+
 const cookie = $request.headers['Cookie'] || $request.headers['cookie'];
 if (cookie) {
   const shopee_token = cookie.split('shopee_token=')[1].split(';')[0];
@@ -10,19 +14,19 @@ if (cookie) {
   const saveCsrf = $persistentStore.write(cstfToken, 'CSRFTokenSP');
 
   if (!(saveCookie && saveToken && saveCsrf && saveSPC_EC)) {
-    $notification.post('蝦皮 Cookie 保存錯誤‼️',
-      '',
-      '請重新登入'
+    shopeeNotify(
+      '保存失敗 ‼️',
+      '請稍後嘗試'
     );
   } else {
-    $notification.post('蝦皮 Cookie 保存成功🎉',
-      '',
+    shopeeNotify(
+      '保存成功 🍪',
       ''
     );
   }
 } else {
-  $notification.post('蝦皮 Cookie 保存失敗‼️',
-    '',
+  shopeeNotify(
+    '保存失敗 ‼️',
     '請重新登入'
   );
 }

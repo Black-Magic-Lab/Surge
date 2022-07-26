@@ -9,41 +9,51 @@ const request = {
   headers: shopeeHeaders,
   body: { actionKey: 'act_Check_In' },
 };
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦蝦果園水滴任務', subtitle, message, { 'url': 'shopeetw://' });
+};
 
 $httpClient.post(request, function (error, response, data) {
   if (error) {
-    $notification.post('🍤 蝦蝦果園水滴任務打卡', 
-      '', 
-      '連線錯誤‼️'
+    shopeeNotify(
+      '打卡失敗 ‼️',
+      '連線錯誤'
     );
   } else {
     if (response.status === 200) {
-      const obj = JSON.parse(data);
-      if (obj.msg === 'success') {
-        $notification.post('🍤 蝦蝦果園', 
-          '', 
-          '水滴任務打卡成功 ✅'
-        );
-      } else if (obj.msg === 'false') {
-        $notification.post('🍤 蝦蝦果園水滴任務錯誤', 
-          '', 
-          '今日已經完成所有水滴任務打卡，每日只能打卡三次‼️'
-        );
-      } else if (obj.msg === 'task check in invalid time') {
-        $notification.post('🍤 蝦皮果園水滴任務錯誤', 
-          '', 
-          '打卡間隔少於三小時‼️'
-        );
-      } else {
-        $notification.post('🍤 蝦皮果園水滴任務錯誤', 
-          '', 
-          '錯誤訊息' + obj.msg
+      try {
+        const obj = JSON.parse(data);
+        if (obj.msg === 'success') {
+          shopeeNotify(
+            '打卡成功 ✅',
+            ''
+          );
+        } else if (obj.msg === 'false') {
+          shopeeNotify(
+            '打卡失敗 ‼️',
+            '每日只能打卡三次，今日已完成打卡任務'
+          );
+        } else if (obj.msg === 'task check in invalid time') {
+          shopeeNotify(
+            '打卡失敗 ‼️',
+            '打卡間隔少於三小時'
+          );
+        } else {
+          shopeeNotify(
+            '打卡失敗 ‼️',
+            obj.msg
+          );
+        }
+      } catch (error) {
+        shopeeNotify(
+          '打卡失敗 ‼️',
+          error
         );
       }
     } else {
-      $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️', 
-        '', 
-        '請重新更新 Cookie 重試 🔓'
+      shopeeNotify(
+        'Cookie 已過期 ‼️',
+        '請重新登入'
       );
     }
   }

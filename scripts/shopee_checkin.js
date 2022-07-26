@@ -4,6 +4,9 @@ const shopeeHeaders = {
   'Cookie': shopeeCookie,
   'X-CSRFToken': shopeeCSRFToken,
 };
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦皮簽到', subtitle, message, { 'url': 'shopeetw://' });
+};
 
 const refershRequest = {
   url: 'https://mall.shopee.tw/api/v4/client/refresh',
@@ -25,27 +28,30 @@ const checkinRequest = {
 function updateSPC_EC() {
   $httpClient.get(refershRequest, function (error, response, data) {
     if (error) {
-      $notification.post('蝦皮 SPC_EC Cookie',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        'SPC_EC 保存失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
       if (response.status == 200) {
         const cookie = $persistentStore.write(response.headers['Set-Cookie'].split('SPC_EC=')[1].split(';')[0], 'SPC_EC');
         if (cookie) {
-          // $notification.post('蝦皮 SPC_EC 保存成功🎉', '', '');
+          // shopeeNotify(
+          //   'SPC_EC 保存成功 🎉',
+          //   ''
+          // );
           updateCookie();
         } else {
-          $notification.post('蝦皮 SPC_EC Cookie 保存失敗‼️',
-            '',
+          shopeeNotify(
+            'SPC_EC 保存失敗 ‼️',
             '請重新登入'
           );
           $done();
         }
       } else {
-        $notification.post('蝦皮 SPC_EC Cookie 保存失敗‼️',
-          '',
+        shopeeNotify(
+          'SPC_EC 保存失敗 ‼️',
           '請重新登入'
         );
         $done();
@@ -57,9 +63,9 @@ function updateSPC_EC() {
 function updateCookie() {
   $httpClient.get(accountInfoRequest, function (error, response, data) {
     if (error) {
-      $notification.post('蝦皮 Cookie 保存失敗‼️',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        'Cookie 保存失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
@@ -70,20 +76,20 @@ function updateCookie() {
         );
         if (cookie) {
           checkin();
-          // $notification.post('蝦皮 Cookie 保存成功🎉', 
-          // '', 
-          // ''
+          // shopeeNotify(
+          //   'Cookie 更新成功 🍪',
+          //   ''
           // );
         } else {
-          $notification.post('蝦皮 Cookie 保存失敗‼️',
-            '',
+          shopeeNotify(
+            'Cookie 保存失敗 ‼️',
             '請重新登入'
           );
           $done();
         }
       } else {
-        $notification.post('蝦皮 Cookie 保存失敗‼️',
-          '',
+        shopeeNotify(
+          'Cookie 保存失敗 ‼️',
           '請重新登入'
         );
         $done();
@@ -95,9 +101,9 @@ function updateCookie() {
 function checkin() {
   $httpClient.post(checkinRequest, function (error, response, data) {
     if (error) {
-      $notification.post('蝦皮簽到失敗‼️',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '簽到失敗 ‼️',
+        '連線錯誤'
       );
     } else {
       if (response.status === 200) {
@@ -105,21 +111,21 @@ function checkin() {
         if (obj.data.success) {
           const coins = obj.data.increase_coins;
           const checkInDay = obj.data.check_in_day;
-          $notification.post('蝦皮已連續簽到 ' + checkInDay + ' 天',
-            '',
+          shopeeNotify(
+            '簽到成功，目前已連續簽到 ' + checkInDay + ' 天',
             '今日已領取 ' + coins + '💰💰💰'
           );
         } else {
-          console.log('蝦皮簽到失敗‼️ 本日已簽到‼️');
-          $notification.post('蝦皮簽到失敗‼️',
-            '',
-            '本日已簽到‼️'
+          console.log('本日已簽到 ‼️');
+          shopeeNotify(
+            '簽到失敗 ‼️',
+            '本日已簽到'
           );
         }
       } else {
-        $notification.post('蝦皮 Cookie 已過期‼️',
-          '',
-          '請重新登入 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }

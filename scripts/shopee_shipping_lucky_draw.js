@@ -4,19 +4,15 @@ const shopeeHeaders = {
   'Cookie': shopeeCookie,
   'X-CSRFToken': shopeeCSRFToken,
 };
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦皮免運寶箱', subtitle, message, { 'url': 'shopeetw://' });
+};
 
 const eventListRequest = {
   url: 'https://mall.shopee.tw/api/v4/banner/batch_list',
   headers: shopeeHeaders,
   body: {
-    "types": [
-      {
-        "type": "coin_carousel"
-      },
-      {
-        "type": "coin_square"
-      }
-    ]
+    'types': [{ 'type': 'coin_carousel' }, { 'type': 'coin_square' }]
   }
 };
 
@@ -50,10 +46,11 @@ let shippingLuckyRrawRequest = {
 function eventListGetActivity() {
   $httpClient.post(eventListRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 免運寶箱',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '無法獲得 banner 活動列表 ‼️',
+        '連線錯誤'
       );
+      $done();
     } else {
       if (response.status == 200) {
         const obj = JSON.parse(data);
@@ -63,19 +60,29 @@ function eventListGetActivity() {
           for (const banner of bannerSet.banners) {
             try {
               const title = banner.navigate_params.navbar.title;
+              const url = banner.navigate_params.url;
+              // console.log(title + ': ' + url);
               if (title.includes('免運寶箱')) {
                 foundEvent = true;
                 const re = /activity\/(.*)\?/i;
-                const found = banner.navigate_params.url.match(re);
+                let found = url.match(re);
+                if (!found) {
+                  const re = /activity\/(.*)/i;
+                  found = url.match(re);
+                }
                 const activityId = found[1];
-                console.log('活動 ID:' + activityId);
+                console.log('在 banner 找到活動 ID:' + activityId);
                 shippingLuckyRrawGetIdRequest.url = 'https://games.shopee.tw/gameplatform/api/v1/game/activity/' + activityId + '/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false';
                 shippingLuckyRrawRequest.body.activity_code = activityId;
                 shippingLuckyDrawGetId();
               }
-            } 
-            catch (e) {
-
+            }
+            catch (error) {
+              shopeeNotify(
+                '無法獲得 banner 活動列表 ‼️',
+                error
+              );
+              $done();
             }
           }
         }
@@ -84,25 +91,26 @@ function eventListGetActivity() {
           iframeListGetActivity();
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期‼️',
-          '',
-          '請重新抓取 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
+        $done();
       }
     }
-    $done();
   });
 }
 
 function iframeListGetActivity() {
   $httpClient.get(iframeListRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 免運寶箱',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '無法獲得 iframe 活動列表 ‼️',
+        '連線錯誤'
       );
+      $done();
     } else {
-      if (response.status == 200) {
+      if (response.status === 200) {
         const obj = JSON.parse(data);
         let foundEvent = false;
         const iframeList = obj.data.iframe_list;
@@ -110,25 +118,30 @@ function iframeListGetActivity() {
           if (iframe.title.includes('免運') && iframe.url.includes('luckydraw')) {
             foundEvent = true;
             const re = /activity\/(.*)\?/i;
-            const found = iframe.url.match(re);
+            let found = iframe.url.match(re);
+            if (!found) {
+              const re = /activity\/(.*)/i;
+              found = iframe.url.match(re);
+            }
             const activityId = found[1];
-            console.log('活動 ID:' + activityId);
+            console.log('在 iframe 找到活動 ID:' + activityId);
             shippingLuckyRrawGetIdRequest.url = 'https://games.shopee.tw/gameplatform/api/v1/game/activity/' + activityId + '/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false';
             shippingLuckyRrawRequest.body.activity_code = activityId;
             shippingLuckyDrawGetId();
           }
         }
         if (!foundEvent) {
-          console.log('在 iframe 找不到免運寶箱活動，結束')
+          console.log('在 iframe 找不到免運寶箱活動，結束');
+          $done();
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期‼️',
-          '',
-          '請重新抓取 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
+        $done();
       }
     }
-    $done();
   });
 }
 
@@ -136,9 +149,9 @@ function iframeListGetActivity() {
 function shippingLuckyDrawGetId() {
   $httpClient.get(shippingLuckyRrawGetIdRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦幣免運寶箱網址查詢',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '寶箱網址查詢失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
@@ -154,44 +167,44 @@ function shippingLuckyDrawGetId() {
                 module_id = item.module_id;
                 found = true;
                 break;
-              } 
+              }
             }
             if (found) {
               shippingLuckyRrawGetDailyChanceRequest.url = 'https://games.shopee.tw/gameplatform/api/v1/chance/35651/event/' + eventUrl + '/query?appid=E9VFyxwmtgjnCR8uhL&basic=false'
               shippingLuckyRrawRequest.url = 'https://games.shopee.tw/luckydraw/api/v1/lucky/event/' + eventUrl;
               // shippingLuckyRrawRequest.body.schedule_ldc_id = module_id;
-              console.log('🍤 蝦幣免運寶箱新網址獲取成功： ' + shippingLuckyRrawRequest.url + ' Module Id: ' + module_id);
-              // $notification.post('🍤 蝦幣免運寶箱新網址獲取成功： ', 
-              //   '', 
-              //   shippingLuckyRrawRequest.url
+              console.log('🍤 蝦皮免運寶箱網址查詢成功： ' + shippingLuckyRrawRequest.url + ' Module Id: ' + module_id);
+              // shopeeNotify(
+              //   '蝦皮免運寶箱網址查詢成功',
+              //   shippingLuckyRrawRequest.url + ' Module Id: ' + module_id
               // );
               shippingLuckyDrawGetChance();
             }
             else {
-              $notification.post('🍤 蝦幣免運寶箱網址查詢錯誤',
-                '',
-                '找不到免運寶箱活動'
+              shopeeNotify(
+                '寶箱網址查詢失敗 ‼️',
+                '找不到活動'
               );
               $done();
             }
           } else {
-            $notification.post('🍤 蝦幣免運寶箱網址查詢錯誤',
-              '',
+            shopeeNotify(
+              '寶箱網址查詢失敗 ‼️',
               obj.msg
             );
             $done();
           }
         } catch (error) {
-          $notification.post('🍤 蝦幣免運寶箱網址查詢錯誤',
-            '',
+          shopeeNotify(
+            '寶箱網址查詢失敗 ‼️',
             error
           );
           $done();
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期‼️',
-          '',
-          '請重新抓取 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -202,9 +215,9 @@ function shippingLuckyDrawGetId() {
 function shippingLuckyDrawGetChance() {
   $httpClient.get(shippingLuckyRrawGetDailyChanceRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 免運寶箱',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '查詢剩餘次數失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
@@ -215,25 +228,25 @@ function shippingLuckyDrawGetChance() {
             shippingLuckyDraw();
           }
           else {
-            console.log('🍤 今日已領過免運寶箱，每日只能免費領一次‼️');
-            $notification.post('🍤 今日已領過免運寶箱',
-              '',
-              '每日只能免費領一次‼️'
+            // 疑似不會跑到這邊
+            shopeeNotify(
+              '領取失敗 ‼️',
+              '每日只能免費領一次'
             );
+            $done();
           }
-          $done();
         }
         catch (error) {
-          $notification.post('🍤 免運寶箱領取錯誤‼️',
-            '',
+          shopeeNotify(
+            '查詢剩餘次數失敗 ‼️',
             error
           );
           $done();
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期‼️',
-          '',
-          '請重新抓取 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -244,9 +257,9 @@ function shippingLuckyDrawGetChance() {
 function shippingLuckyDraw() {
   $httpClient.post(shippingLuckyRrawRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 免運寶箱',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '領取失敗 ‼️',
+        '連線錯誤'
       );
     } else {
       if (response.status === 200) {
@@ -254,37 +267,37 @@ function shippingLuckyDraw() {
           const obj = JSON.parse(data);
           if (obj.msg === 'success') {
             const packageName = obj.data.package_name;
-            $notification.post('🍤 免運寶箱領取成功 ✅',
-              '',
+            shopeeNotify(
+              '領取成功 ✅',
               '獲得 👉 ' + packageName + ' 💎'
             );
           } else if (obj.msg === 'expired' || obj.msg === 'event already end') {
-            $notification.post('🍤 免運寶箱活動已過期 ❌',
-              '',
-              '請嘗試更新模組或腳本，或等待作者更新‼️'
+            shopeeNotify(
+              '領取失敗 ‼️',
+              '活動已過期。請嘗試更新模組或腳本，或等待作者更新'
             );
           } else if (obj.msg === 'no chance') {
-            $notification.post('🍤 今日已領過免運寶箱',
-              '',
-              '每日只能免費領一次‼️'
+            shopeeNotify(
+              '領取失敗 ‼️',
+              '每日只能免費領一次'
             );
           } else {
-            $notification.post('🍤 免運寶箱領取錯誤‼️',
-              '',
+            shopeeNotify(
+              '領取失敗 ‼️',
               obj.msg
             );
           }
         }
         catch (error) {
-          $notification.post('🍤 免運寶箱領取錯誤‼️',
-            '',
+          shopeeNotify(
+            '領取失敗 ‼️',
             error
           );
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期‼️',
-          '',
-          '請重新抓取 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }

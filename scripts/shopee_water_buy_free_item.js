@@ -17,14 +17,17 @@ let buyFreeItemRequest = {
     'propMetaId': 0,
   }
 }
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦蝦果園免費道具', subtitle, message, { 'url': 'shopeetw://' });
+};
 
 // 獲得特價商店道具列表
 function getWaterStoreItem() {
   $httpClient.get(waterStoreItemListRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦蝦果園特價道具查詢',
-        '',
-        '連線錯誤‼️' + error
+      shopeeNotify(
+        '取得道具列表失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
@@ -33,36 +36,41 @@ function getWaterStoreItem() {
           const obj = JSON.parse(data);
           if (obj.msg === 'success') {
             const props = obj.data.props;
+            let found = false;
             for (const prop of props) {
               if (prop.price === 0) {
-                if (prop.buyNum < prop.buyLimit)
-                {
+                found = true;
+                if (prop.buyNum < prop.buyLimit) {
                   buyFreeItemRequest.body.propMetaId = prop.propMetaId;
                   buyFreeItem(prop.name);
                 }
                 else {
-                  console.log('🍤 本日已購買免費 ' + prop.name);
+                  console.log('本日已購買免費 ' + prop.name);
                 }
               }
             }
+            if (!found) {
+              console.log('本日無免費道具');
+              $done();
+            }
           } else {
-            $notification.post('🍤 蝦蝦果園特價道具查詢錯誤',
-              '',
+            shopeeNotify(
+              '取得道具列表失敗 ‼️',
               obj.msg
             );
             $done();
           }
         } catch (error) {
-          $notification.post('🍤 蝦蝦果園特價道具查詢錯誤',
-            '',
+          shopeeNotify(
+            '取得道具列表失敗 ‼️',
             error
           );
           $done();
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期‼️',
-          '',
-          '請重新抓取 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -73,37 +81,37 @@ function getWaterStoreItem() {
 function buyFreeItem(itemName) {
   $httpClient.post(buyFreeItemRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦蝦果園購買免費道具',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '購買道具失敗 ‼️',
+        '連線錯誤'
       );
     } else {
       if (response.status === 200) {
         try {
           const obj = JSON.parse(data);
           if (obj.msg === 'success') {
-            $notification.post('🍤 蝦蝦果園購買免費道具購買成功 ✅',
-              '',
+            shopeeNotify(
+              '購買道具成功 ‼️',
               '獲得 👉 ' + itemName
             );
           }
           else {
-            $notification.post('🍤 蝦蝦果園購買免費道具失敗‼️',
-              '',
+            shopeeNotify(
+              '購買道具失敗 ‼️',
               obj.msg
             );
           }
         }
         catch (error) {
-          $notification.post('🍤 蝦蝦果園購買免費道具錯誤‼️',
-            '',
+          shopeeNotify(
+            '購買道具失敗 ‼️',
             error
           );
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期‼️',
-          '',
-          '請重新抓取 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }

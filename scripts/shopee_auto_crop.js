@@ -1,47 +1,38 @@
 const shopeeCookie = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';';
 const shopeeCSRFToken = $persistentStore.read('CSRFTokenSP');
-const shopeeCropToken = $persistentStore.read('ShopeeCropToken');
-let shopeeCropName = $persistentStore.read('ShopeeCropName');
+const shopeeCropToken = $persistentStore.read('ShopeeCropToken') || '';
+let shopeeCropName = $persistentStore.read('ShopeeCropName') || '';
 const shopeeHeaders = {
   'Cookie': shopeeCookie,
   'X-CSRFToken': shopeeCSRFToken,
+};
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦蝦果園自動種植', subtitle, message, { 'url': 'shopeetw://' });
+};
+
+const getSeedListRequest = {
+  url: 'https://games.shopee.tw/farm/api/orchard/crop/meta/get?t=' + new Date().getTime(),
+  headers: shopeeHeaders,
 };
 
 let createCropRequest = {
   url: 'https://games.shopee.tw/farm/api/orchard/crop/create?t=' + new Date().getTime(),
   headers: shopeeHeaders,
   body: {
-    'metaId' : 0,
+    'metaId': 0,
     's': shopeeCropToken
   }
 }
 
-let getSeedListRequest = {
-  url: 'https://games.shopee.tw/farm/api/orchard/crop/meta/get?t=' + new Date().getTime(),
-  headers: shopeeHeaders,
-};
-
-
 function getSeedList() {
-  if (shopeeCropToken.length < 64) {
-    $notification.post('🍤 蝦皮自動種植錯誤‼️',
-      '',
-      '請先種植任意種子以取得 token'
-    );
-    return;
-  }
-  if (!shopeeCropName.length) {
-    console.log('沒有指定作物名稱，預設使用大布丁')
-    shopeeCropName = '大布丁';
-  }
   $httpClient.get(getSeedListRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦皮自動種植失敗‼️',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '取得種子列表失敗 ‼️',
+        '請重新登入'
       );
       $done();
-    } 
+    }
     else {
       if (response.status === 200) {
         try {
@@ -55,8 +46,8 @@ function getSeedList() {
                 if (crop.config.startTime < new Date().getTime() && crop.config.endTime > new Date().getTime()) {
                   found = true;
                   if (crop.totalNum <= crop.curNum) {
-                    $notification.post('🍤 蝦皮自動種植錯誤‼️',
-                      '',
+                    shopeeNotify(
+                      '取得種子失敗 ‼️',
                       crop.name + ' 已經被搶購一空！'
                     );
                   }
@@ -69,30 +60,30 @@ function getSeedList() {
               }
             }
             if (found === false) {
-              $notification.post('🍤 蝦皮自動種植錯誤‼️',
-                '',
+              shopeeNotify(
+                '取得種子失敗 ‼️',
                 '今天沒有 ' + shopeeCropName + ' 的種子'
               );
             }
             $done();
           } else {
-            $notification.post('🍤 蝦皮自動種植錯誤‼️',
-              '',
+            shopeeNotify(
+              '取得種子列表失敗 ‼️',
               obj.msg
             );
             $done();
           }
         } catch (error) {
-          $notification.post('🍤 蝦皮自動種植錯誤‼️',
-            '',
+          shopeeNotify(
+            '取得種子列表失敗 ‼️',
             error
           );
           $done();
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️',
-          '',
-          '請重新更新 Cookie 重試 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -101,48 +92,48 @@ function getSeedList() {
 }
 
 function createCrop(cropName) {
-  $httpClient.post(createCropRequest, function(error, response, data) {
+  $httpClient.post(createCropRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🍤 蝦皮自動種植失敗‼️',
-        '',
-        '連線錯誤‼️'
+      shopeeNotify(
+        '自動種植失敗 ‼️',
+        '連線錯誤'
       );
-    } 
+    }
     else {
       if (response.status === 200) {
         try {
           const obj = JSON.parse(data);
           if (obj.msg === 'success') {
-            $notification.post('🍤 蝦皮自動種植成功 🌱',
-              '',
+            shopeeNotify(
+              '自動種植成功 🌱',
               '正在種植 ' + cropName
             );
           } else if (obj.msg === 'crop exist') {
-            $notification.post('🍤 蝦皮自動種植錯誤‼️',
-              '',
-              '目前有正在種的作物 ' + obj.data.crop.meta.name,
+            shopeeNotify(
+              '自動種植失敗 ‼️',
+              '目前有正在種的作物 ' + obj.data.crop.meta.name
             );
           } else if (obj.msg === 'crop is waiting') {
-            $notification.post('🍤 蝦皮自動種植錯誤‼️',
-              '',
+            shopeeNotify(
+              '自動種植失敗 ‼️',
               '尚未開放種植 ' + cropName,
             );
           } else {
-            $notification.post('🍤 蝦皮自動種植錯誤‼️',
-              '',
+            shopeeNotify(
+              '自動種植失敗 ‼️',
               obj.msg
             );
           }
         } catch (error) {
-          $notification.post('🍤 蝦皮自動種植錯誤‼️',
-            '',
+          shopeeNotify(
+            '自動種植失敗 ‼️',
             error
           );
         }
       } else {
-        $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️',
-          '',
-          '請重新更新 Cookie 重試 🔓'
+        shopeeNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }
@@ -155,5 +146,18 @@ function sleep(seconds) {
   while (new Date().getTime() < waitUntil) true;
 }
 
-sleep(1.0);
-getSeedList();
+if (shopeeCropToken.length < 64) {
+  shopeeNotify(
+    '發生錯誤 ‼️',
+    '請先種植任意種子以取得 token'
+  )
+  $done();
+}
+else {
+  if (!shopeeCropName.length) {
+    console.log('沒有指定作物名稱，預設使用大布丁')
+    shopeeCropName = '大布丁';
+  }
+  sleep(1.0);
+  getSeedList();
+}

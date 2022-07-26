@@ -4,6 +4,9 @@ const shopeeHeaders = {
   'Cookie': shopeeCookie,
   'X-CSRFToken': shopeeCSRFToken,
 };
+function shopeeNotify(subtitle = '', message = '') {
+  $notification.post('🍤 蝦蝦果園自動澆水', subtitle, message, { 'url': 'shopeetw://' });
+};
 
 const waterRequest = {
   url: 'https://games.shopee.tw/farm/api/orchard/crop/water?t=' + new Date().getTime(),
@@ -13,9 +16,9 @@ const waterRequest = {
 
 $httpClient.post(waterRequest, function (error, response, data) {
   if (error) {
-    $notification.post('🍤 蝦皮自動澆水',
-      '',
-      '連線錯誤‼️'
+    shopeeNotify(
+      '澆水失敗 ‼️',
+      '連線錯誤'
     );
   } else {
     if (response.status === 200) {
@@ -28,59 +31,59 @@ $httpClient.post(waterRequest, function (error, response, data) {
           const levelExp = obj.data.crop.meta.config.levelConfig[state.toString()].exp;
           const remain = levelExp - exp;
           if (remain === 0) {
-            $notification.post('🍤 蝦皮自動澆水成功 ✅',
-              '本次澆了：' + useNumber + ' 滴水💧',
-              '種植完畢，作物可以收成啦🌳'
+            shopeeNotify(
+              '澆水成功 ✅',
+              '種植完畢，作物可以收成啦 🌳'
             );
           }
           else if (remain < 50) {
-            $notification.post('🍤 蝦皮自動澆水成功 ✅',
-              '本次澆了：' + useNumber + ' 滴水💧',
-              '剩餘 ' + remain + ' 滴水收成🌳'
+            shopeeNotify(
+              '澆水成功 ✅',
+              '本次澆了：' + useNumber + ' 滴水 💧\n' + '剩餘 ' + remain + ' 滴水收成'
             );
           }
           else {
-            console.log('🍤 蝦皮自動澆水成功 ✅ \n本次澆了：' + useNumber + ' 滴水💧，剩餘 ' + remain + ' 滴水成長至下一階段🌳');
-            // $notification.post('🍤 蝦皮自動澆水成功 ✅',
-            //   '本次澆了：' + useNumber + ' 滴水💧',
-            //   '剩餘 ' + remain + ' 滴水成長至下一階段🌳'
+            console.log('本次澆了：' + useNumber + ' 滴水 💧\n' + '剩餘 ' + remain + ' 滴水成長至下一階段');
+            // shopeeNotify(
+            //   '澆水成功 ✅',
+            //   '本次澆了：' + useNumber + ' 滴水 💧\n' + '剩餘 ' + remain + ' 滴水成長至下一階段'
             // );
           }
         } else if (obj.msg === 'resource not enough') {
-          $notification.post('🍤 蝦皮自動澆水',
-            '',
-            '水壺目前沒水‼️'
+          shopeeNotify(
+            '澆水失敗 ‼️',
+            '水壺目前沒水'
           );
         } else if (obj.msg === 'invalid param') {
-          $notification.post('🍤 蝦皮自動澆水',
-            '',
-            '種植作物錯誤，請先手動澆水一次‼️'
+          shopeeNotify(
+            '澆水失敗 ‼️',
+            '作物狀態錯誤，請先手動澆水一次'
           );
         } else if (obj.msg === 'invalid crop state') {
           const cropState = parseInt($persistentStore.read('ShopeeCropState'));
           if (cropState < 3) {
             $persistentStore.write((cropState + 1).toString(), 'ShopeeCropState');
-            $notification.post('🍤 蝦皮自動澆水',
-              '',
-              '作物狀態錯誤，請看看是否已經收成‼️'
+            shopeeNotify(
+              '澆水失敗 ‼️',
+              '作物狀態錯誤，請檢查是否已收成'
             );
           }
         } else {
-          $notification.post('🍤 蝦皮自動澆水',
-            '',
+          shopeeNotify(
+            '澆水失敗 ‼️',
             obj.msg
           );
         }
       } catch (error) {
-        $notification.post('🍤 蝦皮自動澆水',
-          '',
-          '澆水失敗‼️' + error
+        shopeeNotify(
+          '澆水失敗 ‼️',
+          error
         );
       }
     } else {
-      $notification.post('🍤 蝦皮 Cookie 已過期或網路錯誤‼️',
-        '',
-        '請重新更新 Cookie 重試 🔓'
+      shopeeNotify(
+        'Cookie 已過期 ‼️',
+        '請重新登入'
       );
     }
   }
