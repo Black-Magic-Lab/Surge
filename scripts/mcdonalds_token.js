@@ -1,12 +1,25 @@
+function mcdonaldsNotify(subtitle = '', message = '') {
+  $notification.post('🍟 麥當勞 token', subtitle, message, { 'url': 'mcdonalds.app://' });
+};
+
 const accessToken = $request.headers['accessToken'] || $request.headers['accesstoken'];
 if (accessToken) {
-  var cookie = $persistentStore.write(accessToken, "McdonaldsToken");
+  let cookie = $persistentStore.write(accessToken, "McdonaldsToken");
   if (!cookie) {
-      $notification.post("麥當勞 Token 保存錯誤‼️", "", "請重新登入")
+    mcdonaldsNotify(
+      '保存失敗 ‼️',
+      '請稍後嘗試'
+    );
   } else {
-      $notification.post("麥當勞 Token 保存成功🎉", "", "")
+    mcdonaldsNotify(
+      '保存成功 🍪',
+      ''
+    );
   }
 } else {
-  $notification.post("麥當勞 Token 保存失敗‼️", "", "請重新登入")
+  mcdonaldsNotify(
+    '保存失敗 ‼️',
+    '請重新登入'
+  );
 }
 $done({})

@@ -1,6 +1,10 @@
 // prettier-ignore
 !(function (t, r) { 'object' == typeof exports ? (module.exports = exports = r()) : 'function' == typeof define && define.amd ? define([], r) : (t.CryptoJS = r()); })(this, loadCryptoJS());
 
+function mcdonaldsNotify(subtitle = '', message = '') {
+  $notification.post('🎬 麥當勞看片賺分', subtitle, message, { 'url': 'mcdonalds.app://' });
+};
+
 const aesKey = CryptoJS.enc.Utf8.parse('1s2unxaounk8zusv');
 const aesConfig = { words: [0, 0, 0, 0], sigBytes: 16, mode: CryptoJS.mode.ECB, pad: CryptoJS.pad.Pkcs7 };
 
@@ -31,29 +35,40 @@ let joinGameRequest = {
 function checkMediaDetail() {
   $httpClient.post(checkMediaDetailRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🎬 麥當勞看片賺分檢查失敗 ❌', '', '連線錯誤‼️');
+      mcdonaldsNotify(
+        '取得 ID 失敗 ‼️',
+        '連線錯誤'
+      );
       $done();
     } else {
       if (response.status == 200) {
-        const obj = JSON.parse(data);
-        if (obj.code === 0) {
-          const returnData = JSON.parse(aesDecrypt(obj.data));
-          const gameId = returnData.gameMediaVo.gameId;
-          const aesBody = aesEncrypt('{"gameId":' + gameId + '}');
-          joinCheckRequest.body = aesBody;
-          joinGameRequest.body = aesBody;
-          checkMediaGame();
-        } else {
-          $notification.post('🎬 麥當勞看片賺分檢查失敗 ❌', 
-            '', 
-            obj.msg
+        try {
+          const obj = JSON.parse(data);
+          if (obj.code === 0) {
+            const returnData = JSON.parse(aesDecrypt(obj.data));
+            const gameId = returnData.gameMediaVo.gameId;
+            const aesBody = aesEncrypt('{"gameId":' + gameId + '}');
+            joinCheckRequest.body = aesBody;
+            joinGameRequest.body = aesBody;
+            checkMediaGame();
+          } else {
+            mcdonaldsNotify(
+              '取得 ID 失敗 ‼️',
+              obj.msg
+            );
+            $done();
+          }
+        } catch (error) {
+          mcdonaldsNotify(
+            '取得 ID 失敗 ‼️',
+            error
           );
           $done();
         }
       } else {
-        $notification.post('🍟 麥當勞 Token 已過期‼️', 
-          '', 
-          '請重新登入 🔓'
+        mcdonaldsNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -64,40 +79,48 @@ function checkMediaDetail() {
 function checkMediaGame() {
   $httpClient.post(joinCheckRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
-        '', 
-        '連線錯誤‼️'
+      mcdonaldsNotify(
+        '看片失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
       if (response.status == 200) {
-        let obj = JSON.parse(data);
-        if (obj.code === 0) {
-          console.log('看片中，請稍後');
-          sleep(16);
-          console.log('看片完成，繼續執行');
-          joinMediaGame();
-        } 
-        else if (obj.code === 615004) {
-          // 重複參加
-          console.log('🎬 麥當勞看片賺分：' + obj.msg);
-          // $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
-          //   '', 
-          //   obj.msg
-          // );
-          $done();
-        } else {
-          $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
-            '', 
-            obj.msg
+        try {
+          let obj = JSON.parse(data);
+          if (obj.code === 0) {
+            console.log('看片中，請稍後');
+            sleep(16);
+            console.log('看片完成，繼續執行');
+            joinMediaGame();
+          }
+          else if (obj.code === 615004) {
+            // 重複參加
+            console.log('🎬 麥當勞看片賺分：' + obj.msg);
+            // mcdonaldsNotify(
+            //   '看片失敗 ‼️',
+            //   obj.msg
+            // );
+            $done();
+          } else {
+            mcdonaldsNotify(
+              '看片失敗 ‼️',
+              obj.msg
+            );
+            $done();
+          }
+        } catch (error) {
+          mcdonaldsNotify(
+            '看片失敗 ‼️',
+            error
           );
           $done();
         }
       }
       else {
-        $notification.post('🎬 麥當勞 Token 已過期‼️', 
-          '', 
-          '請重新登入 🔓'
+        mcdonaldsNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -108,30 +131,37 @@ function checkMediaGame() {
 function joinMediaGame() {
   $httpClient.post(joinGameRequest, function (error, response, data) {
     if (error) {
-      $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
-        '', 
-        '連線錯誤‼️'
+      mcdonaldsNotify(
+        '任務失敗 ‼️',
+        '連線錯誤'
       );
     } else {
       if (response.status === 200) {
-        const obj = JSON.parse(data);
-        if (obj.code === 0) {
-          const returnData = JSON.parse(aesDecrypt(obj.data));
-          const gameCheckPoint = returnData.point;
-          $notification.post('🎬 麥當勞看片賺分成功 ✅', 
-            '', 
-            '獲得 👉 ' + gameCheckPoint + ' 分 🍔'
-          );
-        } else if (obj.code !== 0) {
-          $notification.post('🎬 麥當勞看片賺分失敗 ❌', 
-            '', 
-            obj.msg
+        try {
+          const obj = JSON.parse(data);
+          if (obj.code === 0) {
+            const returnData = JSON.parse(aesDecrypt(obj.data));
+            const gameCheckPoint = returnData.point;
+            mcdonaldsNotify(
+              '任務成功 ✅',
+              '獲得 👉 ' + gameCheckPoint + ' 分 🍔'
+            );
+          } else {
+            mcdonaldsNotify(
+              '任務失敗 ‼️',
+              obj.msg
+            );
+          }
+        } catch (error) {
+          mcdonaldsNotify(
+            '任務失敗 ‼️',
+            error
           );
         }
       } else {
-        $notification.post('🍟 麥當勞 Token 已過期‼️', 
-          '', 
-          '請重新登入 🔓'
+        mcdonaldsNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }
