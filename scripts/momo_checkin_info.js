@@ -1,3 +1,7 @@
+function momoNotify(subtitle = '', message = '') {
+  $notification.post('🍑 Momo token', subtitle, message, { 'url': 'momo.app://' });
+};
+
 if ($request.method === 'POST') {
   const cookie = $request.headers['Cookie'] || $request.headers['cookie'];
   if (cookie && $request.body) {
@@ -9,24 +13,28 @@ if ($request.method === 'POST') {
         const saveCookie = $persistentStore.write(cookie, 'momoCookie');
         const saveBody = $persistentStore.write(JSON.stringify(body), 'momoBody');
         if (!(saveCookie && saveBody)) {
-          $notification.post('Momo Cookie 保存錯誤‼️',
-            '',
-            '請重新登入');
+          momoNotify(
+            '保存失敗 ‼️',
+            '請稍後嘗試'
+          );
         } else {
-          $notification.post('Momo Cookie 保存成功🎉',
-            '',
-            '');
+          momoNotify(
+            '保存成功 🍪',
+            ''
+          );
         }
       }
     } catch (error) {
-      $notification.post('Momo Cookie 保存錯誤‼️',
-        '',
-        error);
+      momoNotify(
+        '保存失敗 ‼️',
+        error
+      );
     }
   } else {
-    $notification.post('Momo Cookie 保存失敗‼️',
-      '',
-      '請重新登入');
+    momoNotify(
+      '保存失敗 ‼️',
+      '請重新登入'
+    );
   }
 }
 $done({})

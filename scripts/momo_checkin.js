@@ -2,6 +2,9 @@ const momoHeaders = {
   'Cookie': $persistentStore.read('momoCookie'),
   'Content-Type': 'application/json;charset=utf-8',
 };
+function momoNotify(subtitle = '', message = '') {
+  $notification.post('🍑 Momo 每日簽到', subtitle, message, { 'url': 'momo.app://' });
+};
 
 const mainPageRequest = {
   url: 'https://app.momoshop.com.tw/api/moecapp/goods/getMainPageV5',
@@ -38,9 +41,9 @@ let checkinRequest = {
 function getEventPageUrl() {
   $httpClient.post(mainPageRequest, function (error, response, data) {
     if (error) {
-      $notification.post('Momo 獲得活動頁面失敗‼️',
-        '',
-        '連線錯誤‼️'
+      momoNotify(
+        '取得活動頁面失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
@@ -73,26 +76,28 @@ function getEventPageUrl() {
               }
             }
             if (!found) {
+              console.log('找不到簽到活動頁面');
               $done();
             }
           } else {
-            $notification.post('Momo 獲得活動頁面失敗‼️',
-              '',
+            momoNotify(
+              '取得活動頁面失敗 ‼️',
               obj.resultMessage
             );
+            $done();
           }
         }
         catch (error) {
-          $notification.post('Momo 獲得活動頁面失敗‼️',
-            '',
+          momoNotify(
+            '取得活動頁面失敗 ‼️',
             error
           );
           $done();
         }
       } else {
-        $notification.post('Momo Cookie 已過期‼️',
-          '',
-          '請重新登入 🔓'
+        momoNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -103,9 +108,9 @@ function getEventPageUrl() {
 function getJavascriptUrl() {
   $httpClient.get(eventPageRequest, function (error, response, data) {
     if (error) {
-      $notification.post('Momo 獲得 JS URL 失敗‼️',
-        '',
-        '連線錯誤‼️'
+      momoNotify(
+        '取得 JS URL 失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
@@ -115,19 +120,19 @@ function getJavascriptUrl() {
           const found = data.match(re);
           const url = found[0];
           jsCodeRequest.url = url;
-          console.log('Momo 活動 JS URL 👉' + url);
+          console.log('活動 JS URL 👉' + url);
           getPromoCloudConfig();
         }
         catch (error) {
-          $notification.post('Momo 獲得 JS URL 失敗‼️',
-            '',
+          momoNotify(
+            '取得 JS URL 失敗 ‼️',
             error
           );
           $done();
         }
       } else {
-        $notification.post('Momo 獲得 JS URL 失敗‼️',
-          '',
+        momoNotify(
+          '取得 JS URL 失敗 ‼️',
           response.status
         );
         $done();
@@ -139,9 +144,9 @@ function getJavascriptUrl() {
 function getPromoCloudConfig() {
   $httpClient.get(jsCodeRequest, function (error, response, data) {
     if (error) {
-      $notification.post('Momo 獲得活動 ID 失敗‼️',
-        '',
-        '連線錯誤‼️'
+      momoNotify(
+        '取得活動 ID 失敗 ‼️',
+        '連線錯誤'
       );
       $done();
     } else {
@@ -156,16 +161,16 @@ function getPromoCloudConfig() {
           checkIn();
         }
         catch (error) {
-          $notification.post('Momo 獲得活動 ID 失敗‼️',
-            '',
+          momoNotify(
+            '取得活動 ID 失敗 ‼️',
             error
           );
           $done();
         }
       } else {
-        $notification.post('Momo Cookie 已過期‼️',
-          '',
-          '請重新登入 🔓'
+        momoNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
         $done();
       }
@@ -176,50 +181,49 @@ function getPromoCloudConfig() {
 function checkIn() {
   $httpClient.post(checkinRequest, function (error, response, data) {
     if (error) {
-      $notification.post('Momo 簽到失敗‼️',
-        '',
-        '連線錯誤‼️'
+      momoNotify(
+        '簽到失敗 ‼️',
+        '連線錯誤'
       );
     } else {
       if (response.status === 200) {
         const obj = JSON.parse(data);
         if (obj.data.status === 'OK') {
-          $notification.post('Momo 今日簽到成功 ✅',
-            '',
+          momoNotify(
+            '今日簽到成功 ✅',
             ''
           );
         } else if (obj.data.status === 'RA') {
-          console.log('Momo 簽到失敗‼️ 本日已簽到‼️');
-          $notification.post('Momo 簽到失敗‼️',
-            '',
-            '本日已簽到‼️'
-          );
+          console.log('本日已簽到');
+          // momoNotify(
+          //   '簽到失敗 ‼️',
+          //   '本日已簽到'
+          // );
         } else if (obj.data.status === 'D') {
-          $notification.post('Momo 簽到失敗‼️',
-            '',
-            '活動已過期‼️'
+          momoNotify(
+            '簽到失敗 ‼️',
+            '活動已到期'
           );
         } else if (obj.data.status === 'MAX') {
-          $notification.post('Momo 簽到失敗‼️',
-            '',
-            '簽到已達上限‼️'
+          momoNotify(
+            '簽到失敗 ‼️',
+            '簽到人數達到上限'
           );
         } else if (obj.data.status === 'EPN2') {
-          $notification.post('Momo 簽到失敗‼️',
-            '',
-            '活動不存在‼️'
+          momoNotify(
+            '簽到失敗 ‼️',
+            '活動不存在'
           );
         } else {
-          // console.log('Momo 簽到失敗‼️ 本日已簽到‼️');
-          $notification.post('Momo 簽到失敗‼️',
-            '',
+          momoNotify(
+            '簽到失敗 ‼️',
             obj.data.status
           );
         }
       } else {
-        $notification.post('Momo Cookie 已過期‼️',
-          '',
-          '請重新登入 🔓'
+        momoNotify(
+          'Cookie 已過期 ‼️',
+          '請重新登入'
         );
       }
     }
