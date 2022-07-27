@@ -1,0 +1,9 @@
+#!name=Momo 每日簽到
+#!desc=每天早上自動簽到。第一次使用前先到「首頁」→「滑動 Icon」→「天天簽到」→「活動紀錄」取得 Cookie v20220309
+
+[Script]
+cron "16 0 * * *" script-path=https://kinta.ma/surge/scripts/momo_checkin.js, wake-system=1, timeout=10
+momo_checkin_info.js = type=http-request,pattern=^https:\/\/event\.momoshop\.com\.tw\/punch\.PROMO$,script-path=https://kinta.ma/surge/scripts/momo_checkin_info.js,requires-body=true,script-update-interval=-1
+
+[MITM]
+hostname = %APPEND% event.momoshop.com.tw

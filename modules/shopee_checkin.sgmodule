@@ -1,11 +1,11 @@
-#!name=蝦皮每日自動簽到 & 開寶箱
-#!desc=每天早上自動簽到 & 開蝦幣寶箱 & 開免運寶箱。第一次使用前先到「我的」→「邀請我的朋友」取得 token。 v20220303
+#!name=蝦皮每日自動簽到
+#!desc=每天早上自動簽到 + 開蝦幣寶箱 + 開免運寶箱。第一次使用前先到「我的」→「邀請我的朋友」取得 token。 v20220614
 
 [Script]
-cron "6 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_checkin.js, wake-system=1, timeout=5
-cron "7 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_coin_lucky_draw.js, wake-system=1, timeout=10
-cron "7 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_shipping_lucky_draw.js, wake-system=1, timeout=10
-shopee_token.js = type=http-request,pattern=^https:\/\/mall\.shopee\.tw\/api\/v4\/microsite\/campaign_site_page,script-path=https://kinta.ma/surge/scripts/shopee_token.js,script-update-interval=-1
+cron "16 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_checkin.js, wake-system=1, timeout=5
+cron "17 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_coin_lucky_draw.js, wake-system=1, timeout=10
+cron "17 0 * * *" script-path=https://kinta.ma/surge/scripts/shopee_shipping_lucky_draw.js, wake-system=1, timeout=10
+shopee_token.js = type=http-request,pattern=^https:\/\/mall\.shopee\.tw\/api\/v4\/microsite\/(.*)&url=referral-program(.*),script-path=https://kinta.ma/surge/scripts/shopee_token.js,script-update-interval=-1
 
 [MITM]
 hostname = %APPEND% mall.shopee.tw

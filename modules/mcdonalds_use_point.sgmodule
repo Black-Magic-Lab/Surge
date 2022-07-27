@@ -1,5 +1,5 @@
-#!name=麥當勞自動簽到
-#!desc=每天早上自動簽到 + 參加活動。 v20220722
+#!name=麥當勞自動簽到（花費積分）
+#!desc=每天早上自動簽到 + 參加活動。此版本會自動參加花費積分的活動。v20220722
 
 [Script]
 cron "13 0 * * *" script-path=https://kinta.ma/surge/scripts/mcdonalds_checkin.js, wake-system=1, timeout=5
