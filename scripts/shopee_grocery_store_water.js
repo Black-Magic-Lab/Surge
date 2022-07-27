@@ -29,9 +29,9 @@ function claimGroceryStoreWater() {
         try {
           const obj = JSON.parse(data);
           if (obj.msg === 'success') {
-            $notification.post('🍤 蝦蝦果園領取商店水滴成功 ✅',
-              '',
-              '',
+            shopeeNotify(
+              '領取成功 ✅',
+              ''
             );
           }
           else if (obj.msg === 'has claimed') {
