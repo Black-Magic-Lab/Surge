@@ -1,0 +1,8 @@
+#!name=麥當勞繞過版本檢查
+#!desc=僅限 3.1.0 以下使用。 v20220728
+
+[Script]
+mcdonalds_version_bypass.js = type=http-request,pattern=^https:\/\/mcdapi\.mcddailyapp\.com\.tw\/McDonaldAPI\/(.*),script-path=https://kinta.ma/surge/scripts/mcdonalds_version_bypass.js,script-update-interval=-1
+
+[MITM]
+hostname = %APPEND% mcdapi.mcddailyapp.com.tw

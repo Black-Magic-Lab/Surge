@@ -231,7 +231,17 @@
                         <p>麥當勞取得 token</p>
                     </label>
                     <span class="description">登入後先去個人資料那邊按修改，但什麼都不要改，直接儲存就可以獲得 token。或者根據網站教學文搭配 mcdonalds_set_token.js 手動設定 token。</span><br>
-                    <span class="author">作者: hirakujira & jkgtw</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('mcdonalds_version_bypass')">
+                    <label>
+                        <p>麥當勞繞過版本檢查</p>
+                    </label>
+                    <span class="description">僅限 3.1.0 以下使用。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
             </div>
