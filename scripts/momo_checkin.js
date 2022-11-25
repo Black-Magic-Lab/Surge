@@ -33,7 +33,8 @@ let checkinRequest = {
   headers: {
     'Cookie': $persistentStore.read('momoCookie'),
     'Content-Type': 'application/json;charset=utf-8',
-    'User-Agent': 'momoshop'
+    'User-Agent': 'momoshop',
+    'Referer': '',
   },
   body: $persistentStore.read('momoBody'),
 };
@@ -59,6 +60,7 @@ function getEventPageUrl() {
                 const actionUrl = adInfo.action.actionValue;
                 console.log('Momo 簽到活動頁面 👉' + actionUrl);
                 found = true;
+                checkinRequest.headers.Referer = actionUrl;
                 eventPageRequest.url = actionUrl;
                 eventPageRequest.headers.cookie = '';
                 getJavascriptUrl();
@@ -116,7 +118,7 @@ function getJavascriptUrl() {
     } else {
       if (response.status === 200) {
         try {
-          const re = /https:\/\/(.*)\/promo-momo-punch\.js\?t=[0-9]{13}/i;
+          const re = /https:\/\/(.*)\/promo-cloud-setPunch-v003\.js\?t=[0-9]{13}/i;
           const found = data.match(re);
           const url = found[0];
           jsCodeRequest.url = url;
@@ -152,7 +154,7 @@ function getPromoCloudConfig() {
     } else {
       if (response.status === 200) {
         try {
-          const pNoRe = /promoCloudConfig\.pNo(.*)"(.*)"/i;
+          const pNoRe = /punchConfig\.pNo(.*)"(.*)"/i;
           const pNo = data.match(pNoRe)[2];
           console.log('Momo 活動 ID 👉' + pNo);
           let body = JSON.parse(checkinRequest.body);
