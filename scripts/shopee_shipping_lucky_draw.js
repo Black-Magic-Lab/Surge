@@ -62,7 +62,7 @@ function eventListGetActivity() {
               const title = banner.navigate_params.navbar.title;
               const url = banner.navigate_params.url;
               // console.log(title + ': ' + url);
-              if (title.includes('免運寶箱')) {
+              if (title.includes('抽免運券')) {
                 foundEvent = true;
                 const re = /activity\/(.*)\?/i;
                 let found = url.match(re);
@@ -115,7 +115,8 @@ function iframeListGetActivity() {
         let foundEvent = false;
         const iframeList = obj.data.iframe_list;
         for (const iframe of iframeList) {
-          if (iframe.title.includes('免運') && iframe.url.includes('luckydraw')) {
+          console.log(iframe.title + ': ' + iframe.url);
+          if ((iframe.title.includes('免運') || iframe.title.includes('--活動名稱--')) && iframe.url.includes('luckydraw')) {
             foundEvent = true;
             const re = /activity\/(.*)\?/i;
             let found = iframe.url.match(re);
@@ -124,7 +125,7 @@ function iframeListGetActivity() {
               found = iframe.url.match(re);
             }
             const activityId = found[1];
-            console.log('在 iframe 找到活動 ID:' + activityId);
+            // console.log('在 iframe 找到活動 ID:' + activityId);
             shippingLuckyRrawGetIdRequest.url = 'https://games.shopee.tw/gameplatform/api/v1/game/activity/' + activityId + '/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false';
             shippingLuckyRrawRequest.body.activity_code = activityId;
             shippingLuckyDrawGetId();

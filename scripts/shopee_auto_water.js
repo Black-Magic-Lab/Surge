@@ -39,7 +39,7 @@ $httpClient.post(waterRequest, function (error, response, data) {
           else if (remain < 50) {
             shopeeNotify(
               '澆水成功 ✅',
-              '本次澆了：' + useNumber + ' 滴水 💧\n' + '剩餘 ' + remain + ' 滴水收成'
+              '本次澆了：' + useNumber + ' 滴水 💧\n' + '剩餘 ' + remain + ' 滴水成長至下一階段'
             );
           }
           else {
@@ -82,8 +82,8 @@ $httpClient.post(waterRequest, function (error, response, data) {
       }
     } else {
       shopeeNotify(
-        'Cookie 已過期 ‼️',
-        '請重新登入'
+        '連線失敗 ‼️',
+        response.status
       );
     }
   }
