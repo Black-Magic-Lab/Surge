@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="cytyle-flat">
 <head>
     <title>Surge Modules</title>
 </head>
 <base target="_top" />
-<link rel="stylesheet" type="text/css" href="./style.css" />
-<script type="text/javascript" src="./style.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="format-detection" content="telephone=no" />
@@ -16,19 +15,20 @@
         <div id="header">
             <div id="icon">
                 <div>
-                    <span><img src="icon.png" style="width:100%"></span>
+                    <span><img alt="icon" src="icon.png" style="width:calc(min(59px, 100%));"></span>
                 </div>
             </div>
             <div id="content">
                 <p id="name">Surge Modules</p>
-                <p id="latest">iOS Surge 4 專用模組列表</p>
+                <p id="latest">iOS Surge 5 專用模組列表</p>
             </div>
         </div>
     </panel>
     <panel>
         <block style="font-size: 12px;">
-            <p>部份模組為網路上收集而來，並由本人重新上傳，用意為避免原作者因為被喝茶而撤掉，或者在更新版本中加入其他與功能無關之行為（例如收集使用者資料），此類模組已標上原作者與原始網址。</p>
+            <p>部份模組為網路上收集而來，請自行判定該模組內容與安全性，此類模組已標上原作者與原始網址。</p>
             <p>請點擊想安裝的模組，網址會自動複製到剪貼簿。</p>
+            <p>加入 <a href='https://t.me/kintama_surge'>Telegram 頻道</a>，再也不錯過更新訊息！</p>
         </block>
         <label>廣告阻擋與個資保護</label>
         <fieldset>
@@ -47,7 +47,17 @@
                     <label>
                         <p>LINE 去廣告</p>
                     </label>
-                    <span class="description">部份阻擋列表可能跟其他阻擋用模組重複，請留意</span><br>
+                    <span class="description">需啟用 MitM over HTTP/2。部份阻擋列表可能跟其他阻擋用模組重複，請留意</span><br>
+                    <span class="author">作者: jkgtw</span><br>
+                    <span class="url">來源: https://github.com/jkgtw/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/jkgtw/Surge/master/Modules/LINE-ADs-OLD.sgmodule')">
+                    <label>
+                        <p>LINE 去廣告（舊版）</p>
+                    </label>
+                    <span class="description">支援沒續約而不能開啟 MitM over HTTP/2 的授權。部份阻擋列表可能跟其他阻擋用模組重複，請留意</span><br>
                     <span class="author">作者: jkgtw</span><br>
                     <span class="url">來源: https://github.com/jkgtw/Surge</span>
                 </div>
@@ -92,6 +102,9 @@
                     <span class="url">來源: https://github.com/jimmyorz/Surge</span>
                 </div>
             </div>
+        </fieldset>
+        <label>搜尋引擎</label>
+        <fieldset>
             <div>
                 <div onclick="copyToClipBoard('https://raw.githubusercontent.com/jkgtw/Surge/master/Modules/Ecosia-to-Whoogle.sgmodule')">
                     <label>
@@ -122,16 +135,6 @@
                     <span class="url">來源: https://github.com/ptntp/self-rule</span>
                 </div>
             </div>
-            <!-- <div>
-                <div onclick="copyToClipBoard('shopee_ad')">
-                    <label>
-                        <p>蝦皮 App 去廣告</p>
-                    </label>
-                    <span class="description">實驗性模組，部份廣告需刪除 App 重裝才會消失，若造成異常請回報</span><br>
-                    <span class="author">作者: hirakujira</span><br>
-                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
-                </div>
-            </div> -->
         </fieldset>
         <label>功能增強</label>
         <fieldset>
@@ -160,7 +163,7 @@
                     <label>
                         <p>天氣功能增強</p>
                     </label>
-                    <span class="description">解鎖天氣資料類型，包括每小時降雨、空氣品質</span><br>
+                    <span class="description">解鎖天氣資料類型，包括每小時降雨、空氣品質。iOS 16 以上不可用。</span><br>
                     <span class="author">作者: VirgilClyne</span><br>
                     <span class="url">來源: https://github.com/VirgilClyne/iRingo</span>
                 </div>
@@ -248,7 +251,7 @@
             <div>
                 <div onclick="copyToClipBoard('mcdonalds')">
                     <label>
-                        <p>麥當勞每日自動簽到</p>
+                        <p>麥當勞每日自動簽到（已失效）</p>
                     </label>
                     <span class="description">每天自動簽到 + 參加活動。</span><br>
                     <span class="author">作者: hirakujira & jkgtw</span><br>
@@ -258,7 +261,7 @@
             <div>
                 <div onclick="copyToClipBoard('mcdonalds_use_point')">
                     <label>
-                        <p>麥當勞每日自動簽到（花費積分）</p>
+                        <p>麥當勞每日自動簽到（花費積分）（已失效）</p>
                     </label>
                     <span class="description">每天早上自動簽到 + 參加活動。此版本會自動參加花費積分的活動。</span><br>
                     <span class="author">作者: hirakujira & jkgtw</span><br>
@@ -278,7 +281,7 @@
             <div>
                 <div onclick="copyToClipBoard('momo_checkin')">
                     <label>
-                        <p>Momo 每日簽到</p>
+                        <p>Momo 每日簽到（停止維護）</p>
                     </label>
                     <span class="description">每天早上自動簽到。第一次使用前先到「天天簽到」→「活動紀錄」取得 Cookie。</span><br>
                     <span class="author">作者: hirakujira</span><br>
@@ -325,6 +328,26 @@
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
             </div>
+            <div>
+                <div onclick="copyToClipBoard('ozan_get_uuid')">
+                    <label>
+                        <p>Ozan 取得 UUID</p>
+                    </label>
+                    <span class="description">在可以登入 Ozan 的裝置安裝此模組。開啟 Ozan 看到跳 Surge 通知後，到 Surge 腳本編輯器，選擇左下角齒輪 → $persistentStore → OzanUUID，然後複製所有內容。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('ozan_fake_uuid')">
+                    <label>
+                        <p>Ozan 偽造 UUID</p>
+                    </label>
+                    <span class="description">在不能登入 Ozan 的裝置安裝此模組。複製可登入裝置的 OzanUUID 後，修改 ozan_set_uuid.js 的內容，並執行腳本即可使用。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
         </fieldset>
         <label>資訊面板</label>
         <fieldset>
@@ -356,6 +379,16 @@
                     <span class="description">顯示目前是否成功連上 FutaDNS</span><br>
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/FutaGuard/FutaFilter</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('binance_price')">
+                    <label>
+                        <p>幣安價格面板</p>
+                    </label>
+                    <span class="description">顯示最新幣安報價，請先去 binance_price_set_symbol.js 設定要顯示的幣種。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
             </div>
             <div>
