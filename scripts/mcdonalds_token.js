@@ -22,4 +22,7 @@ if (accessToken) {
     '請重新登入'
   );
 }
-$done({})
+
+$request.headers['version'] = '3.9.9';
+$request.headers['appVersion'] = '3.9.9';
+$done($request);

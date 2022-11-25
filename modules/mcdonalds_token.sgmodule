@@ -1,5 +1,5 @@
 #!name=麥當勞取得 token
-#!desc=登入後先去個人資料那邊按修改，但什麼都不要改，直接儲存就可以獲得 token。或者根據網站教學文搭配 mcdonalds_set_token.js 手動設定 token。 v20220722
+#!desc=此模組優先度必須比「麥當勞繞過版本檢查」高，才會生效。登入後先去個人資料那邊按修改，但什麼都不要改，直接儲存就可以獲得 token。或者根據網站教學文搭配 mcdonalds_set_token.js 手動設定 token。 v20220722
 
 [Script]
 mcdonalds_token.js = type=http-request,pattern=^https:\/\/mcdapi\.mcddailyapp\.com\.tw\/McDonaldAPI\/member\/updateRegisterInfo$,script-path=https://kinta.ma/surge/scripts/mcdonalds_token.js,script-update-interval=-1
