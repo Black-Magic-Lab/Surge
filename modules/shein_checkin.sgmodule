@@ -1,0 +1,9 @@
+#!name=SHEIN 每日自動簽到
+#!desc=每天自動簽到，第一次使用請先手動簽到一次以取得token。 v20221126
+
+[Script]
+[SHEIN]每日簽到 = type=cron, cronexp="22 0 * * *", script-path=https://kinta.ma/surge/scripts/shein_checkin.js, wake-system=1, timeout=5
+[SHEIN]取得token = type=http-request, pattern=^https:\/\/api\-shein\.shein\.com\/h5\/check_in\?.*, script-path=https://kinta.ma/surge/scripts/shein_token.js
+
+[MITM]
+hostname = %APPEND% api-shein.shein.com
