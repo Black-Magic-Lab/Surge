@@ -108,6 +108,17 @@ function createCrop(cropName) {
               '自動種植成功 🌱',
               '正在種植 ' + cropName
             );
+
+            const user_id = shopeeCookie.split('SPC_U=')[1].split(';')[0];
+            const cropId = obj.data.crop.id;
+            const saveShopeeUid = $persistentStore.write(user_id, 'Shopee_SPC_U');
+            let shopeeCrop = JSON.parse($persistentStore.read('ShopeeCrop'));
+            if (shopeeCrop) {
+              shopeeCrop.cropId = cropId;
+            } else {
+              shopeeCrop = {'cropId': cropId};
+            }
+            const saveShopeeCrop = $persistentStore.write(JSON.stringify(shopeeCrop), 'ShopeeCrop');
           } else if (obj.msg === 'crop exist') {
             shopeeNotify(
               '自動種植失敗 ‼️',
@@ -158,6 +169,6 @@ else {
     console.log('沒有指定作物名稱，預設使用大布丁')
     shopeeCropName = '大布丁';
   }
-  sleep(1.0);
+  sleep(0.5);
   getSeedList();
 }
