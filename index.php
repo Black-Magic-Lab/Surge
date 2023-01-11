@@ -213,7 +213,7 @@
                     <label>
                         <p>蝦皮每日自動簽到</p>
                     </label>
-                    <span class="description">每天早上自動簽到 + 開蝦幣寶箱 + 開免運寶箱。第一次使用前先到「我的」→「邀請我的朋友」取得 token。</span><br>
+                    <span class="description">每天早上自動簽到 + 開蝦幣寶箱 + 開免運寶箱。第一次使用前先到「我的」→「蝦皮實名認證」取得 token。</span><br>
                     <span class="author">作者: hirakujira & jkgtw</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
@@ -274,6 +274,16 @@
                         <p>博客來每日自動簽到</p>
                     </label>
                     <span class="description">博客來自動簽到，第一次使用先去「會員專區」→「我的優惠券」頁面取得 token</span><br>
+                    <span class="author">作者: jkgtw</span><br>
+                    <span class="url">來源: https://github.com/jkgtw/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('shein_checkin')">
+                    <label>
+                        <p>SHEIN 每日自動簽到</p>
+                    </label>
+                    <span class="description">每天自動簽到，第一次使用請先手動簽到一次以取得token</span><br>
                     <span class="author">作者: jkgtw</span><br>
                     <span class="url">來源: https://github.com/jkgtw/Surge</span>
                 </div>
@@ -404,6 +414,26 @@
         </fieldset>
         <label>其他</label>
         <fieldset>
+            <div>
+                <div onclick="copyToClipBoard('surge_check')">
+                    <label>
+                        <p>Surge 功能檢查模組</p>
+                    </label>
+                    <span class="description">安裝後點擊下方的「功能檢查頁面」觀看結果</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="window.open('https://kinta.ma/surge/utils/surge_check')">
+                    <label>
+                        <p>Surge 功能檢查頁面</p>
+                    </label>
+                    <span class="description">點我觀看結果</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
             <div>
                 <div onclick="window.open('utils/mcdonalds_token')">
                     <label>
