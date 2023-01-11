@@ -40,10 +40,16 @@ function claimGroceryStoreWater() {
               '每日只能領一次'
             );
           }
+          else if (obj.code === 409004) {
+            shopeeNotify(
+              '領取失敗 ‼️',
+              '請檢查作物是否已經收成'
+            );
+          }
           else {
             shopeeNotify(
               '領取失敗 ‼️',
-              obj.msg
+              obj.code + ' ' + obj.msg
             );
           }
         } catch (error) {
