@@ -70,6 +70,10 @@ function eventListGetActivity() {
                   const re = /activity\/(.*)/i;
                   found = url.match(re);
                 }
+                if (!found) {
+                  const re = /activity=(.*)&/i;
+                  found = url.match(re);
+                }
                 const activityId = found[1];
                 console.log('在 banner 找到活動 ID:' + activityId);
                 shippingLuckyRrawGetIdRequest.url = 'https://games.shopee.tw/gameplatform/api/v1/game/activity/' + activityId + '/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false';
@@ -122,6 +126,10 @@ function iframeListGetActivity() {
             let found = iframe.url.match(re);
             if (!found) {
               const re = /activity\/(.*)/i;
+              found = iframe.url.match(re);
+            }
+            if (!found) {
+              const re = /activity=(.*)&/i;
               found = iframe.url.match(re);
             }
             const activityId = found[1];
