@@ -1,8 +1,8 @@
 #!name=Ozan 取得 UUID
-#!desc=在可以登入 Ozan 的裝置安裝此模組。開啟 Ozan 看到跳 Surge 通知後，到 Surge 腳本編輯器，選擇左下角齒輪 → $persistentStore → OzanUUID，然後複製所有內容。 v20220829
+#!desc=在可以登入 Ozan 的裝置安裝此模組。開啟 Ozan 看到跳 Surge 通知後，到 Surge 腳本編輯器，選擇左下角齒輪 → $persistentStore → OzanUUID，然後複製所有內容。 v20221125
 
 [Script]
-ozan_get_uuid.js = type=http-request,pattern=^https:\/\/op-prod-tr\.ozan\.com\/api\/users\/me$,script-path=https://kinta.ma/surge/scripts/ozan_get_uuid.js,script-update-interval=-1
+[Ozan]取得舊裝置UUID = type=http-request, pattern=^https:\/\/(op-prod-tr\.ozan|secure\.ozanlimited)\.com\/api\/users\/me$, script-path=https://kinta.ma/surge/scripts/ozan_get_uuid.js
 
 [MITM]
-hostname = %APPEND% op-prod-tr.ozan.com
+hostname = %APPEND% op-prod-tr.ozan.com, secure.ozanlimited.com
