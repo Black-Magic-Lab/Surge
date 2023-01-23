@@ -1,9 +1,9 @@
 #!name=Surge 功能檢查
-#!desc=前往 https://kinta.ma/surge，找到「功能檢查頁面」，點擊頁面觀看結果 v20221129
+#!desc=前往 https://kinta.ma/surge，找到「功能檢查頁面」，點擊頁面觀看結果 v20220114
 #!system=ios
 
 [Header Rewrite]
-^https:\/\/kinta\.ma\/surge\/utils\/surge_check\/$ header-add X-Surge-Rewrite 1
+^https:\/\/kinta\.ma\/surge\/utils\/surge_check\/$ header-add X-Hiraku-Rewrite 1
 
 [Script]
 [Surge功能檢查]修改請求 = type=http-request, pattern=^https:\/\/kinta\.ma\/surge\/utils\/surge_check\/$, script-path=https://kinta.ma/surge/scripts/surge_check.js

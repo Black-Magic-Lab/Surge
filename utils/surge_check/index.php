@@ -22,7 +22,7 @@
               <?php
               $rewrite_success = false;
               foreach (getallheaders() as $name => $value) {
-                if ($name === "X-Surge-Rewrite") {
+                if ($name === "X-Hiraku-Rewrite") {
                   if ($value === "1") {
                     $rewrite_success = true;
                     break;
@@ -43,7 +43,7 @@
               <?php
               $script_success = false;
               foreach (getallheaders() as $name => $value) {
-                if ($name === "X-Surge-Script") {
+                if ($name === "X-Hiraku-Script") {
                   if ($value === "1") {
                     $script_success = true;
                     break;
