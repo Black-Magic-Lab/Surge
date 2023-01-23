@@ -1,2 +1,8 @@
 .DS_Store
+node_modules
+
 blackmagic/*
+
+# Ignore php mysql config file
+configuration.php
+connect.php
