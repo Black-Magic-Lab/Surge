@@ -1,128 +1,83 @@
-const sheinHeaders = {
-  'Token': $persistentStore.read('SheinToken'),
-  'Language': 'zh-tw',
-};
+let showNotification = true;
+let token = null;
 
-function sheinNotify(subtitle = '', message = '') {
+function surgeNotify(subtitle = '', message = '') {
   $notification.post('SHEIN 簽到', subtitle, message, {
     'url': ''
   });
 };
 
-const checkinRequest = {
-  url: 'https://api-shein.shein.com/h5/check_in/check',
-  headers: {
-    'token': $persistentStore.read('SheinToken'),
-    'siteuid': 'iosshtw',
+function handleError(error) {
+  if (Array.isArray(error)) {
+    console.log(`❌ ${error[0]} ${error[1]}`);
+    if (showNotification) {
+      surgeNotify(error[0], error[1]);
+    }
+  } else {
+    console.log(`❌ ${error}`);
+    if (showNotification) {
+      surgeNotify(error);
+    }
   }
-};
+}
 
-const historyRequest = {
-  url: 'https://api-shein.shein.com/h5/check_in/check_history?sw_site=iosshtw&sw_lang=zh-tw&activityType=&checkFrom=app&timezone=Asia%2FTaipei&siteUID=iosshtw&currency=TWD&language=zh-tw',
-  headers: {
-    'Token': $persistentStore.read('SheinToken'),
-    'Language': 'zh-tw',
-  }
-};
+async function preCheck() {
+  return new Promise((resolve, reject) => {
+    const sheinToken = $persistentStore.read('SheinToken');
+    if (!sheinToken || sheinToken.length === 0) {
+      return reject(['檢查失敗 ‼️', '找不到 token']);
+    }
+    token = sheinToken;
+    return resolve();
+  });
+}
 
-function checkin() {
-  $httpClient.get(checkinRequest, function (error, response, data) {
-    if (error) {
-      sheinNotify(
-        '簽到失敗 ‼️',
-        '連線錯誤'
-      );
-      $done();
-    } else {
-      if (response.status === 200) {
-        if (response.status === 200) {
-          const obj = JSON.parse(data);
-          try {
+async function checkIn() {
+  return new Promise((resolve, reject) => {
+    try {
+      const request = {
+        url: 'https://api-shein.shein.com/h5/check_in/check',
+        headers: {
+          'token': token,
+          'siteuid': 'iosshtw',
+        }
+      };
+      $httpClient.get(request, function (error, response, data) {
+        if (error) {
+          return reject(['簽到失敗 ‼️', '連線錯誤']);
+        } else {
+          if (response.status === 200) {
+            const obj = JSON.parse(data);
             if (obj.info.check_success === 1) {
-              sheinNotify(
-                '簽到成功 ✅',
-                '獲得 ' + obj.info.daily_reward + ' 積分'
-              );
+              return resolve(obj.info.daily_reward);
             } else if (obj.info.check_success === 2) {
-              sheinNotify(
-                '簽到失敗 ‼️',
-                '今日已簽到'
-              );
+              showNotification = false;
+              return reject(['簽到失敗 ‼️', '今日已簽到']);
             } else {
-              sheinNotify(
-                '簽到失敗 ‼️',
-                'Error: ' + obj.info.check_success
-              );
+              return reject(['簽到失敗 ‼️', 'Error: ' + obj.info.check_success]);
             }
-          } catch (e) {
-            sheinNotify(
-              '簽到失敗 ‼️',
-              e
-            );
+          } else {
+            return reject(['簽到失敗 ‼️', response.status]);
           }
         }
-        // checkinHistory();
-      } else {
-        sheinNotify(
-          'Cookie 已過期 ‼️',
-          '請重新登入'
-        );
-        $done();
-      }
+      });
+    } catch (error) {
+      return reject(['簽到失敗 ‼️', error]);
     }
-    $done();
   });
 }
 
-function checkinHistory() {
-  $httpClient.get(historyRequest, function (error, response, data) {
-    if (error) {
-      sheinNotify(
-        '檢查簽到紀錄失敗 ‼️',
-        '連線錯誤' + e
-      );
-    } else {
-      if (response.status === 200) {
-        const obj = JSON.parse(data);
-        try {
-          const historyList = obj.body.info.check_history_list;
-          const today = new Date().toLocaleDateString("zh-TW", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-          }).replaceAll('/', '-');
-          for (const history of historyList) {
-            if (history.check_date == today) {
-              if (history.is_check) {
-                sheinNotify(
-                  '簽到成功，獲得 ' + history.reward + '積分',
-                  '連線錯誤'
-                );
-              } else {
-                sheinNotify(
-                  '檢查簽到紀錄失敗 ‼️',
-                  '今日未能成功簽到'
-                );
-              }
-              break;
-            }
-          }
-        } catch (e) {
-          sheinNotify(
-            '檢查簽到紀錄失敗 ‼️',
-            e
-          );
-          $done();
-        }
-      } else {
-        sheinNotify(
-          'Cookie 已過期 ‼️',
-          '請重新登入'
-        );
-      }
-    }
-    $done();
-  });
-}
+(async () => {
+  console.log('ℹ️ SHEIN 自動簽到 v20230115.1');
+  try {
+    await preCheck();
+    console.log('✅ 檢查成功');
+    await checkIn();
+    console.log('✅ 簽到成功');
 
-checkin();
+    surgeNotify('簽到成功 ✅', '');
+  } catch (error) {
+    handleError(error);
+  }
+  $done();
+})();
