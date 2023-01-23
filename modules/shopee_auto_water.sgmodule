@@ -1,17 +1,16 @@
 #!name=蝦蝦果園自動化
-#!desc=每天自動做水滴任務，接近隔天午夜會自動把今天任務的獎勵全部用掉。每小時自動澆水，每次換作物後需先手動澆水一次，讓 Surge 紀錄目前的作物。道具商店水滴需先手動領一次，往後會自動領。需要同時開啟每日自動簽到以獲得 token。 v20221129v2
+#!desc=每天自動做水滴任務，接近隔天午夜會自動把今天任務的獎勵全部用掉。每小時自動澆水，每次換作物後需先手動澆水一次，讓 Surge 紀錄目前的作物。道具商店水滴需先手動領一次，往後會自動領。需要同時開啟每日自動簽到以獲得 token。 v20230119
 
 [Script]
 [蝦蝦果園]自動收成 = type=cron, cronexp="0 * * * *", script-path=https://kinta.ma/surge/scripts/shopee_auto_harvest.js, wake-system=1, timeout=5
 [蝦蝦果園]打卡任務 = type=cron, cronexp="10 0,4,8 * * *", script-path=https://kinta.ma/surge/scripts/shopee_water_checkin.js, wake-system=1, timeout=5
-#[蝦蝦果園]水滴任務 = type=cron, cronexp="18 0 * * *", script-path=https://kinta.ma/surge/scripts/shopee_water_mission.js, wake-system=1, timeout=30
 [蝦蝦果園]購買免費道具 = type=cron, cronexp="19 0 * * *", script-path=https://kinta.ma/surge/scripts/shopee_water_buy_free_item.js, wake-system=1, timeout=5
 [蝦蝦果園]自動澆水 = type=cron, cronexp="14 * * * *", script-path=https://kinta.ma/surge/scripts/shopee_auto_water.js, wake-system=1, timeout=5
 [蝦蝦果園]每日簽到獎勵 = type=cron, cronexp="50 23 * * *", script-path=https://kinta.ma/surge/scripts/shopee_water_signin_bundle.js, wake-system=1, timeout=5
 [蝦蝦果園]領取水滴任務獎勵 = type=cron, cronexp="50 23 * * *", script-path=https://kinta.ma/surge/scripts/shopee_water_mission_claim.js, wake-system=1, timeout=15
 [蝦蝦果園]道具商店水滴 = type=cron, cronexp="50 15,19,23 * * *", script-path=https://kinta.ma/surge/scripts/shopee_grocery_store_water.js, wake-system=1, timeout=5
 [蝦蝦果園]取得作物資料 = type=http-request, pattern=^https:\/\/games\.shopee\.tw\/farm\/api\/orchard\/crop\/water(.*),script-path=https://kinta.ma/surge/scripts/shopee_get_crop.js, requires-body=true
-[蝦蝦果園]取得道具商店token = type=http-request, pattern=^https:\/\/games\.shopee\.tw\/farm\/api\/grocery_store\/claim,script-path=https://kinta.ma/surge/scripts/shopee_get_grocery_store_token.js, requires-body=true
+[蝦蝦果園]取得道具商店token = type=http-request, pattern=^https:\/\/games\.shopee\.tw\/farm\/api\/grocery_store\/(rn_)?claim,script-path=https://kinta.ma/surge/scripts/shopee_get_grocery_store_token.js, requires-body=true
 
 [MITM]
 hostname = %APPEND% games.shopee.tw

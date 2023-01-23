@@ -1,144 +1,169 @@
-const shopeeCookie = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';';
-const shopeeCSRFToken = $persistentStore.read('CSRFTokenSP');
-const shopeeHeaders = {
-  'Cookie': shopeeCookie,
-  'X-CSRFToken': shopeeCSRFToken,
-};
+let showNotification = true;
+let config = null;
+let rewards = [];
 
-const getListRequest = {
-  url: 'https://games.shopee.tw/farm/api/task/listV2?t=' + new Date().getTime(),
-  headers: shopeeHeaders,
-};
-
-let claimRewardRequest = {
-  url: 'https://games.shopee.tw/farm/api/task/reward/claim?t=' + new Date().getTime(),
-  headers: shopeeHeaders,
-  body: {
-    "taskId": null,
-    "taskFinishNum": 1,
-    "isNewUserTask": false,
-    "forceClaim": false,
-  },
-};
-function shopeeNotify(subtitle = '', message = '') {
+function surgeNotify(subtitle = '', message = '') {
   $notification.post('🍤 蝦蝦果園領取任務獎勵', subtitle, message, { 'url': 'shopeetw://' });
 };
 
-let claims = [];
+function handleError(error) {
+  if (Array.isArray(error)) {
+    console.log(`❌ ${error[0]} ${error[1]}`);
+    if (showNotification) {
+      surgeNotify(error[0], error[1]);
+    }
+  } else {
+    console.log(`❌ ${error}`);
+    if (showNotification) {
+      surgeNotify(error);
+    }
+  }
+}
 
-function getRewardList() {
-  $httpClient.get(getListRequest, function (error, response, data) {
-    if (error) {
-      shopeeNotify(
-        '取得列表失敗 ‼️',
-        '連線錯誤'
-      );
-    } else {
-      if (response.status === 200) {
-        try {
-          const obj = JSON.parse(data);
-          const taskGroups = obj.data.userTasks;
-          for (let i = 0; i < taskGroups.length; i++) {
-            const taskList = taskGroups[i];
-            for (let j = 0; j < taskList.length; j++) {
-              const task = taskList[j];
-              const taskId = task.taskInfo.Id;
-              const taskName = task.taskInfo.taskName;
-              claimRewardRequest.body.taskId = taskId;
-              if (task.canReward === true) {
-                claims.push({
-                  taskId: taskId,
-                  taskName: taskName
-                });
+function getSaveObject(key) {
+  const string = $persistentStore.read(key);
+  return !string || string.length === 0 ? {} : JSON.parse(string);
+}
+
+function isEmptyObject(obj) {
+  return Object.keys(obj).length === 0 && obj.constructor === Object ? true : false;
+}
+
+function cookieToString(cookieObject) {
+  let string = '';
+  for (const [key, value] of Object.entries(cookieObject)) {
+    string += `${key}=${value};`
+  }
+  return string;
+}
+
+async function delay(seconds) {
+  console.log(`⏰ 等待 ${seconds} 秒`);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, seconds * 1000);
+  });
+}
+
+async function preCheck() {
+  return new Promise((resolve, reject) => {
+    const shopeeInfo = getSaveObject('ShopeeInfo');
+    if (isEmptyObject(shopeeInfo)) {
+      return reject(['檢查失敗 ‼️', '沒有新版 token']);
+    }
+    const shopeeHeaders = {
+      'Cookie': cookieToString(shopeeInfo.token),
+      'Content-Type': 'application/json',
+    }
+    config = {
+      shopeeInfo: shopeeInfo,
+      shopeeHeaders: shopeeHeaders,
+    }
+    return resolve();
+  });
+}
+
+async function getRewardList() {
+  return new Promise((resolve, reject) => {
+    try {
+      const getListRequest = {
+        url: `https://games.shopee.tw/farm/api/task/listV2?t=${new Date().getTime()}`,
+        headers: config.shopeeHeaders,
+      };
+      $httpClient.get(getListRequest, function (error, response, data) {
+        if (error) {
+          return reject(['取得列表失敗 ‼️', '連線錯誤']);
+        } else {
+          if (response.status === 200) {
+            const obj = JSON.parse(data);
+            const taskGroups = obj.data.userTasks;
+            for (let i = 0; i < taskGroups.length; i++) {
+              const taskList = taskGroups[i];
+              for (let j = 0; j < taskList.length; j++) {
+                const task = taskList[j];
+                const taskId = task.taskInfo.Id;
+                const taskName = task.taskInfo.taskName;
+                if (task.canReward === true) {
+                  rewards.push({
+                    taskId: taskId,
+                    taskName: taskName
+                  });
+                }
               }
             }
-          }
-          // 獲得列表完畢，執行領取
-          if (claims.length) {
-            claimReward(0);
-          }
-          else {
-            console.log('沒有可領取的任務獎勵');
-            shopeeNotify(
-              '取得列表失敗 ‼️',
-              '沒有可領取的任務獎勵'
-            );
-            $done();
-          }
-        } catch (error) {
-          shopeeNotify(
-            '取得列表失敗 ‼️',
-            error
-          );
-          $done();
-        }
-      } else {
-        shopeeNotify(
-          'Cookie 已過期 ‼️',
-          '請重新登入'
-        );
-        $done();
-      }
-    }
-  });
-}
-
-function claimReward(index) {
-  sleep(0.5);
-  const taskId = claims[index].taskId;
-  const taskName = claims[index].taskName;
-  claimRewardRequest.body.taskId = taskId;
-  $httpClient.post(claimRewardRequest, function (error, response, data) {
-    if (error) {
-      shopeeNotify(
-        '領取失敗 ‼️',
-        '連線錯誤'
-      );
-    } else {
-      if (response.status === 200) {
-        try {
-          const obj = JSON.parse(data);
-          if (obj.msg === 'success') {
-            console.log('領取 ' + taskName + ' 成功 💧');
-            // shopeeNotify(
-            //   '領取成功 💧',
-            //   '已領取 ' + taskName
-            // );
+            if (rewards.length) {
+              console.log(`✅ 取得列表成功，總共有 ${rewards.length} 個任務可領取獎勵`);
+              return resolve();
+            }
+            else {
+              return reject(['取得列表失敗 ‼️', '沒有可領取的獎勵']);
+            }
           } else {
-            shopeeNotify(
-              '領取失敗 ‼️',
-              taskName + '\n' + obj.msg
-            );
+            return reject(['取得列表失敗 ‼️', response.status]);
           }
-        } catch (error) {
-          shopeeNotify(
-            '領取失敗 ‼️',
-            taskName + '\n' + error
-          );
         }
-      } else {
-        shopeeNotify(
-          'Cookie 已過期 ‼️',
-          '請重新登入'
-        );
-      }
-    }
-    if (index < claims.length - 1) {
-      claimReward(index + 1);
-    }
-    else {
-      shopeeNotify(
-        '領取獎勵完成 ✅',
-        ''
-      );
-      $done();
+      });
+    } catch (error) {
+      return reject(['取得列表失敗 ‼️', error]);
     }
   });
 }
 
-function sleep(seconds) {
-  const waitUntil = new Date().getTime() + seconds * 1000;
-  while (new Date().getTime() < waitUntil) true;
+async function claimReward(reward) {
+  return new Promise((resolve, reject) => {
+    try {
+      const taskId = reward.taskId;
+      const taskName = reward.taskName;
+
+      const claimRewardRequest = {
+        url: `https://games.shopee.tw/farm/api/task/reward/claim?t=${new Date().getTime()}`,
+        headers: config.shopeeHeaders,
+        body: {
+          taskId: taskId,
+          taskFinishNum: 1,
+          isNewUserTask: false,
+          forceClaim: false,
+        },
+      };
+
+      $httpClient.post(claimRewardRequest, function (error, response, data) {
+        if (error) {
+          return reject(['領取失敗 ‼️', '連線錯誤']);
+        } else {
+          if (response.status === 200) {
+            const obj = JSON.parse(data);
+            if (obj.msg === 'success') {
+              console.log(`✅ 領取「${taskName}」成功`);
+              return resolve();
+            } else {
+              return reject(['領取失敗 ‼️', `無法領取「${taskName}」，錯誤代號：${obj.code}，訊息：${obj.msg}`]);
+            }
+          } else {
+            return reject(['領取失敗 ‼️', response.status]);
+          }
+        }
+      });
+    } catch (error) {
+      return reject(['領取失敗 ‼️', error]);
+    }
+  });
 }
 
-getRewardList();
+(async () => {
+  console.log('ℹ️ 蝦蝦果園領取任務獎勵 v20230119.1');
+  try {
+    await preCheck();
+    await getRewardList();
+
+    for (let i = 0; i < rewards.length; i++) {
+      await delay(0.5);
+      await claimReward(rewards[i]);
+    }
+    console.log('✅ 領取所有獎勵')
+    surgeNotify('已領取所有獎勵 ✅', '');
+  } catch (error) {
+    handleError(error);
+  }
+  $done();
+})();

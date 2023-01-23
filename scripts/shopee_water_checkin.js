@@ -1,61 +1,104 @@
-const shopeeCookie = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';';
-const shopeeCSRFToken = $persistentStore.read('CSRFTokenSP');
-const shopeeHeaders = {
-  'Cookie': shopeeCookie,
-  'X-CSRFToken': shopeeCSRFToken,
-};
-const request = {
-  url: 'https://games.shopee.tw/farm/api/task/action?t=' + new Date().getTime(),
-  headers: shopeeHeaders,
-  body: { actionKey: 'act_Check_In' },
-};
-function shopeeNotify(subtitle = '', message = '') {
+let showNotification = true;
+let config = null;
+
+function surgeNotify(subtitle = '', message = '') {
   $notification.post('🍤 蝦蝦果園水滴任務', subtitle, message, { 'url': 'shopeetw://' });
 };
 
-$httpClient.post(request, function (error, response, data) {
-  if (error) {
-    shopeeNotify(
-      '打卡失敗 ‼️',
-      '連線錯誤'
-    );
+function handleError(error) {
+  if (Array.isArray(error)) {
+    console.log(`❌ ${error[0]} ${error[1]}`);
+    if (showNotification) {
+      surgeNotify(error[0], error[1]);
+    }
   } else {
-    if (response.status === 200) {
-      try {
-        const obj = JSON.parse(data);
-        if (obj.msg === 'success') {
-          shopeeNotify(
-            '打卡成功 ✅',
-            ''
-          );
-        } else if (obj.msg === 'false') {
-          shopeeNotify(
-            '打卡失敗 ‼️',
-            '每日只能打卡三次，今日已完成打卡任務'
-          );
-        } else if (obj.msg === 'task check in invalid time') {
-          shopeeNotify(
-            '打卡失敗 ‼️',
-            '打卡間隔少於三小時'
-          );
-        } else {
-          shopeeNotify(
-            '打卡失敗 ‼️',
-            obj.msg
-          );
-        }
-      } catch (error) {
-        shopeeNotify(
-          '打卡失敗 ‼️',
-          error
-        );
-      }
-    } else {
-      shopeeNotify(
-        'Cookie 已過期 ‼️',
-        '請重新登入'
-      );
+    console.log(`❌ ${error}`);
+    if (showNotification) {
+      surgeNotify(error);
     }
   }
+}
+
+function getSaveObject(key) {
+  const string = $persistentStore.read(key);
+  return !string || string.length === 0 ? {} : JSON.parse(string);
+}
+
+function isEmptyObject(obj) {
+  return Object.keys(obj).length === 0 && obj.constructor === Object ? true : false;
+}
+
+function cookieToString(cookieObject) {
+  let string = '';
+  for (const [key, value] of Object.entries(cookieObject)) {
+    string += `${key}=${value};`
+  }
+  return string;
+}
+
+async function preCheck() {
+  return new Promise((resolve, reject) => {
+    const shopeeInfo = getSaveObject('ShopeeInfo');
+    if (isEmptyObject(shopeeInfo)) {
+      return reject(['檢查失敗 ‼️', '沒有新版 token']);
+    }
+    const shopeeHeaders = {
+      'Cookie': cookieToString(shopeeInfo.token),
+      'Content-Type': 'application/json',
+    }
+    config = {
+      shopeeInfo: shopeeInfo,
+      shopeeHeaders: shopeeHeaders,
+    }
+    return resolve();
+  });
+}
+
+async function checkIn() {
+  return new Promise((resolve, reject) => {
+    try {
+      const request = {
+        url: 'https://games.shopee.tw/farm/api/task/action?t=' + new Date().getTime(),
+        headers: config.shopeeHeaders,
+        body: { actionKey: 'act_Check_In' },
+      };
+      $httpClient.post(request, function (error, response, data) {
+        if (error) {
+          return reject(['打卡失敗 ‼️', '連線錯誤']);
+        } else {
+          if (response.status === 200) {
+            const obj = JSON.parse(data);
+            if (obj.msg === 'success') {
+              return resolve();
+            } else if (obj.msg === 'false') {
+              return reject(['打卡失敗 ‼️', '每日只能打卡三次，今日已完成打卡任務']);
+            } else if (obj.msg === 'task check in invalid time') {
+              return reject(['打卡失敗 ‼️', '打卡間隔少於三小時']);
+            } else {
+              return reject(['打卡失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);
+            }
+          } else {
+            return reject(['打卡失敗 ‼️', response.status]);
+          }
+        }
+      });
+    } catch (error) {
+      return reject(['打卡失敗 ‼️', error]);
+    }
+  });
+}
+
+(async () => {
+  console.log('ℹ️ 蝦蝦果園自動打卡 v20230115.1');
+  try {
+    await preCheck();
+    console.log('✅ 檢查成功');
+    await checkIn();
+    console.log('✅ 打卡成功');
+
+    surgeNotify('打卡成功 ✅', '');
+  } catch (error) {
+    handleError(error);
+  }
   $done();
-});
+})();

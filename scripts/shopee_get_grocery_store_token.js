@@ -3,8 +3,8 @@ function shopeeNotify(subtitle = '', message = '') {
 };
 
 const body = JSON.parse($request.body);
-if (body && body.S) {
-  const shopeeGroceryStoreToken = $persistentStore.write(body.S, 'ShopeeGroceryStoreToken');
+if (body && body.s) {
+  const shopeeGroceryStoreToken = $persistentStore.write(body.s, 'ShopeeGroceryStoreToken');
   if (!shopeeGroceryStoreToken) {
     shopeeNotify(
       '保存失敗 ‼️',
