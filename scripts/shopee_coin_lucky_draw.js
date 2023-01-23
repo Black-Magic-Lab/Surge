@@ -1,181 +1,205 @@
-const shopeeCookie = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';';
-const shopeeCSRFToken = $persistentStore.read('CSRFTokenSP');
-const shopeeHeaders = {
-  'Cookie': shopeeCookie,
-  'X-CSRFToken': shopeeCSRFToken,
-};
-function shopeeNotify(subtitle = '', message = '') {
+let showNotification = true;
+let config = null;
+let getIdRequest = null;
+let luckyDrawRequest = null;
+
+function surgeNotify(subtitle = '', message = '') {
   $notification.post('🍤 蝦幣寶箱', subtitle, message, { 'url': 'shopeetw://' });
 };
 
-const luckyDrawBasicUrl = 'https://games.shopee.tw/luckydraw/api/v1/lucky/event/';
-const eventListRequest = {
-  url: 'https://mall.shopee.tw/api/v4/banner/batch_list',
-  headers: shopeeHeaders,
-  body: {
-    'types': [{ 'type': 'coin_carousel' }, { 'type': 'coin_square' }]
-  },
-};
+function handleError(error) {
+  if (Array.isArray(error)) {
+    console.log(`❌ ${error[0]} ${error[1]}`);
+    if (showNotification) {
+      surgeNotify(error[0], error[1]);
+    }
+  } else {
+    console.log(`❌ ${error}`);
+    if (showNotification) {
+      surgeNotify(error);
+    }
+  }
+}
 
-let coinLuckyRrawGetIdRequest = {
-  url: '',
-  headers: shopeeHeaders,
-};
+function getSaveObject(key) {
+  const string = $persistentStore.read(key);
+  return !string || string.length === 0 ? {} : JSON.parse(string);
+}
 
-let coinLuckyRrawRequest = {
-  url: '',
-  headers: shopeeHeaders,
-  body: {
-    request_id: (Math.random() * 10 ** 20).toFixed(0).substring(0, 16),
-    app_id: 'E9VFyxwmtgjnCR8uhL',
-    activity_code: '',
-    source: 0,
-  },
-};
+function isEmptyObject(obj) {
+  return Object.keys(obj).length === 0 && obj.constructor === Object ? true : false;
+}
 
-function eventListGetActivity() {
-  $httpClient.post(eventListRequest, function (error, response, data) {
-    if (error) {
-      shopeeNotify(
-        '無法取得活動列表 ‼️',
-        '連線錯誤'
-      );
-      $done();
-    } else {
-      if (response.status == 200) {
-        const obj = JSON.parse(data);
-        // console.log(data)
-        const bannerSets = obj.data.banners;
-        let foundId = false;
-        for (const bannerSet of bannerSets) {
-          for (const banner of bannerSet.banners) {
-            try {
-              const title = banner.navigate_params.navbar.title;
-              const url = banner.navigate_params.url;
-              // console.log(title + ': ' + url);
-              if (title.includes('蝦幣寶箱') || title.includes('天天領蝦幣')) {
-                const re = /activity\/(.*)\?/i;
-                let found = url.match(re);
-                if (!found) {
-                  const re = /activity\/(.*)/i;
-                  found = url.match(re);
+function cookieToString(cookieObject) {
+  let string = '';
+  for (const [key, value] of Object.entries(cookieObject)) {
+    string += `${key}=${value};`
+  }
+  return string;
+}
+
+async function preCheck() {
+  return new Promise((resolve, reject) => {
+    const shopeeInfo = getSaveObject('ShopeeInfo');
+    if (isEmptyObject(shopeeInfo)) {
+      return reject(['檢查失敗 ‼️', '沒有新版 token']);
+    }
+    const shopeeHeaders = {
+      'Cookie': cookieToString(shopeeInfo.token),
+      'Content-Type': 'application/json',
+    }
+    config = {
+      shopeeInfo: shopeeInfo,
+      shopeeHeaders: shopeeHeaders,
+    }
+    return resolve();
+  });
+}
+
+async function eventListGetActivity() {
+  return new Promise((resolve, reject) => {
+    try {
+      const request = {
+        url: 'https://mall.shopee.tw/api/v4/banner/batch_list',
+        headers: config.shopeeHeaders,
+        body: {
+          types: [{ 'type': 'coin_carousel' }, { 'type': 'coin_square' }],
+        },
+      };
+
+      $httpClient.post(request, function (error, response, data) {
+        if (error) {
+          return reject(['無法取得活動列表 ‼️', '連線錯誤']);
+        } else {
+          if (response.status == 200) {
+            const obj = JSON.parse(data);
+            const bannerSets = obj.data.banners;
+            let foundId = false;
+            for (const bannerSet of bannerSets) {
+              for (const banner of bannerSet.banners) {
+                const title = banner.navigate_params.navbar.title;
+                const url = banner.navigate_params.url;
+                // console.log(`活動名稱: ${title}，網址: ${url}`);
+                if (title.includes('蝦幣寶箱') || title.includes('天天領蝦幣')) {
+                  const re = /activity\/(.*)\??/i;
+                  const found = url.match(re);
+                  const activityId = found[1];
+                  foundId = true;
+                  console.log(`✅ 找到蝦幣寶箱活動，活動名稱: ${title}，活動頁面 ID: ${activityId}`);
+
+                  // 取得活動代碼
+                  getIdRequest = {
+                    url: `https://games.shopee.tw/gameplatform/api/v1/game/activity/${activityId}/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false`,
+                    headers: config.shopeeHeaders,
+                  };
+
+                  // 真正領取蝦幣
+                  luckyDrawRequest = {
+                    url: '',
+                    headers: config.shopeeHeaders,
+                    body: {
+                      request_id: (Math.random() * 10 ** 20).toFixed(0).substring(0, 16),
+                      app_id: 'E9VFyxwmtgjnCR8uhL',
+                      activity_code: activityId,
+                      source: 0,
+                    },
+                  };
+                  return resolve();
                 }
-                const activityId = found[1];
-                foundId = true;
-                console.log('活動 ID:' + activityId);
-                coinLuckyRrawGetIdRequest.url = 'https://games.shopee.tw/gameplatform/api/v1/game/activity/' + activityId + '/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false';
-                coinLuckyRrawRequest.body.activity_code = activityId;
-                coinLuckyDrawGetId();
               }
             }
-            catch (error) {
-              shopeeNotify(
-                '無法取得活動列表 ‼️',
-                error
-              );
-              $done();
+            if (!foundId) {
+              reject(['找不到蝦幣寶箱活動 ‼️', '']);
             }
-          }
-        }
-        if (foundId === false) {
-          console.log('找不到蝦幣寶箱活動');
-          $done();
-        }
-      } else {
-        shopeeNotify(
-          'Cookie 已過期 ‼️',
-          '請重新登入'
-        );
-        $done();
-      }
-    }
-  });
-}
-
-// 獲得寶箱 ID
-function coinLuckyDrawGetId() {
-  $httpClient.get(coinLuckyRrawGetIdRequest, function (error, response, data) {
-    if (error) {
-      shopeeNotify(
-        '網址查詢失敗 ‼️',
-        '連線錯誤'
-      );
-      $done();
-    } else {
-      if (response.status === 200) {
-        try {
-          const obj = JSON.parse(data);
-          if (obj.msg === 'success') {
-            const eventUrl = obj.data.basic.event_code;;
-            coinLuckyRrawRequest.url = luckyDrawBasicUrl + eventUrl;
-            console.log('網址查詢成功： ' + coinLuckyRrawRequest.url);
-            // shopeeNotify(
-            //   '網址查詢成功 🔗',
-            //   coinLuckyRrawRequest.url
-            // );
-            coinLuckyDraw();
           } else {
-            shopeeNotify(
-              '網址查詢失敗 ‼️',
-              obj.msg
-            );
-            $done();
+            return reject(['無法取得活動列表 ‼️', response.status]);
           }
-        } catch (error) {
-          shopeeNotify(
-            '網址查詢失敗 ‼️',
-            error
-          );
-          $done();
         }
-      } else {
-        shopeeNotify(
-          'Cookie 已過期 ‼️',
-          '請重新登入'
-        );
-        $done();
-      }
+      });
+    } catch (error) {
+      return reject(['無法取得活動列表 ‼️', error]);
     }
   });
 }
 
-function coinLuckyDraw() {
-  $httpClient.post(coinLuckyRrawRequest, function (error, response, data) {
-    if (error) {
-      shopeeNotify(
-        '領取失敗 ‼️',
-        '連線錯誤'
-      );
-    } else {
-      if (response.status == 200) {
-        const obj = JSON.parse(data);
-        if (obj.msg === 'success') {
-          const packageName = obj.data.package_name;
-          shopeeNotify(
-            '領取成功 ✅',
-            '獲得 👉 ' + packageName + ' 💎'
-          );
+async function coinLuckyDrawGetId() {
+  return new Promise((resolve, reject) => {
+    try {
+      $httpClient.get(getIdRequest, function (error, response, data) {
+        if (error) {
+          return reject(['活動代碼查詢失敗 ‼️', '連線錯誤']);
+        } else {
+          if (response.status === 200) {
+            const obj = JSON.parse(data);
+            if (obj.msg === 'success') {
+              const code = obj.data.basic.event_code;
+              console.log(`✅ 活動代碼: ${code}`);
+              luckyDrawRequest.url = `https://games.shopee.tw/luckydraw/api/v1/lucky/event/${code}`;
+              return resolve();
+            } else {
+              return reject(['活動代碼查詢失敗 ‼️', obj.msg]);
+            }
+          } else {
+            return reject(['活動代碼查詢失敗 ‼️', response.status]);
+          }
         }
-        else if (obj.msg === 'no chance') {
-          shopeeNotify(
-            '領取失敗 ‼️',
-            '每日只能領一次'
-          );
-        } else if (obj.msg === 'expired' || obj.msg === 'event already end') {
-          shopeeNotify(
-            '領取失敗 ‼️',
-            '活動已過期。請嘗試更新模組或腳本，或等待作者更新'
-          );
-        }
-      } else {
-        shopeeNotify(
-          'Cookie 已過期 ‼️',
-          '請重新登入'
-        );
-      }
+      });
+    } catch (error) {
+      return reject(['活動代碼查詢失敗 ‼️', error]);
     }
-    $done();
   });
 }
 
-eventListGetActivity();
+async function coinLuckyDraw() {
+  return new Promise((resolve, reject) => {
+    try {
+      $httpClient.post(luckyDrawRequest, function (error, response, data) {
+        if (error) {
+          return reject(['領取失敗 ‼️', '連線錯誤']);
+        } else {
+          if (response.status == 200) {
+            const obj = JSON.parse(data);
+            if (obj.msg === 'success') {
+              const packageName = obj.data.package_name;
+              return resolve(packageName);
+            }
+            else if (obj.code === 102000) {
+              showNotification = false;
+              return reject(['領取失敗 ‼️', '每日只能領一次']);
+            } else if (obj.msg === 'expired' || obj.msg === 'event already end') {
+              return reject(['領取失敗 ‼️', '活動已過期。請嘗試更新模組或腳本，或等待作者更新。']);
+            } else {
+              return reject(['領取失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);
+            }
+          } else {
+            return reject(['領取失敗 ‼️', response.status]);
+          }
+        }
+      });
+    } catch (error) {
+      return reject(['領取失敗 ‼️', error]);
+    }
+  });
+}
+
+(async () => {
+  console.log('ℹ️ 蝦幣寶箱 v20230116.1');
+  try {
+    await preCheck();
+    console.log('✅ 檢查成功');
+    await eventListGetActivity();
+    console.log('✅ banner 取得活動列表');
+    await coinLuckyDrawGetId();
+    console.log('✅ 取得活動代碼');
+    const reward = await coinLuckyDraw();
+    console.log('✅ 領取成功');
+    console.log(`ℹ️ 獲得 👉 ${reward} 💎`);
+    surgeNotify(
+      '領取成功 ✅',
+      `獲得 👉 ${reward} 💎`
+    );
+  } catch (error) {
+    handleError(error);
+  }
+  $done();
+})();
