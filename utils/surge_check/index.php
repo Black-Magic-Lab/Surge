@@ -65,7 +65,42 @@
         </div>
       </div>
     </main>
+   <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+      <div style="margin-left:auto; margin-right:auto;">
+        請先安裝檢測專用模組，以正確顯示本頁結果
+      </div>
+      <div>
+        安裝連結：
+        <span onclick="copyToClipBoard('surge_check')">Surge</span>
+        、
+        <span onclick="window.open('loon://import?plugin=https://kinta.ma/loon/plugins/loon_check.plugin')">Loon</span>
+      </div>
+    </div>
   </div>
 </body>
+<script>
+    function copyToClipBoard(module_name) {
+        /* Get the text field */
+        var copyText = "https://kinta.ma/surge/modules/" + module_name + ".sgmodule";
+        if (module_name.includes('http')) {
+            copyText = module_name;
+        }
+        var dummy = document.createElement("textarea");
+        dummy.type = "hidden";
+        // to avoid breaking orgain page when copying more words
+        // cant copy when adding below this code
+        document.body.appendChild(dummy);
+        //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". – Eduard
+        dummy.value = copyText;
+        dummy.select();
+        dummy.setSelectionRange(0, 99999); /*For mobile devices*/
 
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+        dummy.style.display = 'none';
+
+        /* Alert the copied text */
+        alert("網址已複製：" + dummy.value);
+    }
+</script>
 </html>
