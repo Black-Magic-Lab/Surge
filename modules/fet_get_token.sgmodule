@@ -1,0 +1,8 @@
+#!name=遠傳心生活取得 token
+#!desc=操作步驟：1. 啟用本模組。2. 登出「遠傳心生活」，再重新登入。3. 登入後會跳出「成功取得 token 」通知。4. 關閉本模組。5. 刪除遠傳心生活 App。6. 重新安裝 App 並登入。未按照步驟操作會造成登入衝突導致失效。 v20230114
+
+[Script]
+[遠傳心生活]取得token = type=http-response, pattern=^https\:\/\/dspapi\.fetnet\.net:1443\/dsp\/token-proxy\/super-app\/token$, script-path=https://kinta.ma/surge/scripts/fet_token.js, requires-body=true
+
+[MITM]
+hostname = %APPEND% dspapi.fetnet.net:1443

@@ -1,0 +1,5 @@
+#!name=遠傳心生活自動簽到
+#!desc=請先確定關閉取得 token 功能。 v20220114
+
+[Script]
+[遠傳心生活]每日簽到 = type=cron, cronexp="25 0 * * *", script-path=https://kinta.ma/surge/scripts/fet_checkin.js, wake-system=1, timeout=10
