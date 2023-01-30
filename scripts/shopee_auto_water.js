@@ -68,37 +68,37 @@ async function water() {
           return reject(['澆水失敗 ‼️', '連線錯誤']);
         } else {
           if (response.status === 200) {
-              const obj = JSON.parse(data);
-              if (obj.msg === 'success') {
-                const useNumber = obj.data.useNumber;
-                const state = obj.data.crop.state;
-                const exp = obj.data.crop.exp;
-                const levelExp = obj.data.crop.meta.config.levelConfig[state.toString()].exp;
-                const remain = levelExp - exp;
-                return resolve({
-                  state: state,
-                  useNumber: useNumber,
-                  remain: remain,
-                });
-              } else if (obj.msg === 'resource not enough') {
-                showNotification = false;
-                return reject(['澆水失敗 ‼️', '水壺目前沒水']);
-              } else if (obj.msg === 'invalid param') {
-                return reject(['澆水失敗 ‼️', '作物狀態錯誤，請先手動澆水一次']);
-              } else if (obj.msg === 'invalid crop state') {
-                return reject(['澆水失敗 ‼️', '作物狀態錯誤，請檢查是否已收成']);
-                // 出錯三次之後才跳警告
-                // const cropState = parseInt($persistentStore.read('ShopeeCropState'));
-                // if (cropState < 3) {
-                //   $persistentStore.write((cropState + 1).toString(), 'ShopeeCropState');
-                //   surgeNotify(
-                //     '澆水失敗 ‼️',
-                //     '作物狀態錯誤，請檢查是否已收成'
-                //   );
-                // }
-              } else {
-                return reject(['澆水失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);
-              }
+            const obj = JSON.parse(data);
+            if (obj.code === 0) {
+              const useNumber = obj.data.useNumber;
+              const state = obj.data.crop.state;
+              const exp = obj.data.crop.exp;
+              const levelExp = obj.data.crop.meta.config.levelConfig[state.toString()].exp;
+              const remain = levelExp - exp;
+              return resolve({
+                state: state,
+                useNumber: useNumber,
+                remain: remain,
+              });
+            } else if (obj.code === 409000) {
+              showNotification = false;
+              return reject(['澆水失敗 ‼️', '水壺目前沒水']);
+            } else if (obj.code === 403005) {
+              return reject(['澆水失敗 ‼️', '作物狀態錯誤，請先手動澆水一次']);
+            } else if (obj.code === 409004) {
+              return reject(['澆水失敗 ‼️', '作物狀態錯誤，請檢查是否已收成']);
+              // 出錯三次之後才跳警告
+              // const cropState = parseInt($persistentStore.read('ShopeeCropState'));
+              // if (cropState < 3) {
+              //   $persistentStore.write((cropState + 1).toString(), 'ShopeeCropState');
+              //   surgeNotify(
+              //     '澆水失敗 ‼️',
+              //     '作物狀態錯誤，請檢查是否已收成'
+              //   );
+              // }
+            } else {
+              return reject(['澆水失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);
+            }
           } else {
             return reject(['澆水失敗 ‼️', response.status]);
           }
@@ -123,7 +123,7 @@ async function water() {
     } else {
       console.log(`本次澆了： ${result.useNumber} 滴水 💧，剩餘 ${result.remain} 滴水成長至下一階段`);
     }
-    
+
     if (result.remain === 0) {
       surgeNotify(
         '澆水成功 ✅',

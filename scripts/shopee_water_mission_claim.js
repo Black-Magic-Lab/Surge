@@ -133,9 +133,11 @@ async function claimReward(reward) {
         } else {
           if (response.status === 200) {
             const obj = JSON.parse(data);
-            if (obj.msg === 'success') {
+            if (obj.code === 0) {
               console.log(`✅ 領取「${taskName}」成功`);
               return resolve();
+            } else if (obj.code === 409004) {
+              return reject(['領取失敗 ‼️', `無法領取「${taskName}」。作物狀態錯誤，請檢查是否已收成`]);
             } else {
               return reject(['領取失敗 ‼️', `無法領取「${taskName}」，錯誤代號：${obj.code}，訊息：${obj.msg}`]);
             }
