@@ -42,6 +42,18 @@ async function preCheck() {
     if (isEmptyObject(shopeeInfo)) {
       return reject(['檢查失敗 ‼️', '沒有新版 token']);
     }
+
+    let currentCrop = null;
+    const shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
+    if (isEmptyObject(shopeeFarmInfo)) {
+      console.log('⚠️ 沒有新版蝦蝦果園資訊，使用舊版');
+      currentCrop = JSON.parse($persistentStore.read('ShopeeCrop')) || {};
+      // return reject(['檢查失敗 ‼️', '沒有新版 token']);
+    } else {
+      currentCrop = shopeeFarmInfo.currentCrop;
+      console.log('ℹ️ 找到新版蝦蝦果園資訊');
+    }
+
     const shopeeHeaders = {
       'Cookie': cookieToString(shopeeInfo.token),
       'Content-Type': 'application/json',
@@ -49,8 +61,33 @@ async function preCheck() {
     config = {
       shopeeInfo: shopeeInfo,
       shopeeHeaders: shopeeHeaders,
+      currentCrop: currentCrop,
     }
     return resolve();
+  });
+}
+
+async function updatePersistentStore() {
+  return new Promise((resolve, reject) => {
+    try {
+      let shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
+      const currentCrop = JSON.parse($persistentStore.read('ShopeeCrop')) || {};
+      const autoCropSeedName = $persistentStore.read('ShopeeCropName') || '';
+      const groceryStoreToken = $persistentStore.read('ShopeeGroceryStoreToken') || '';
+
+      shopeeFarmInfo.currentCrop = currentCrop;
+      shopeeFarmInfo.autoCropSeedName = autoCropSeedName;
+      shopeeFarmInfo.groceryStoreToken = groceryStoreToken;
+
+      const save = $persistentStore.write(JSON.stringify(shopeeFarmInfo, null, 4), 'ShopeeFarmInfo');
+      if (!save) {
+        return reject(['保存失敗 ‼️', '無法更新作物資料']);
+      } else {
+        return resolve();
+      }
+    } catch (error) {
+      return reject(['更新儲存資料失敗 ‼️', error]);
+    }
   });
 }
 
@@ -60,7 +97,7 @@ async function water() {
       const waterRequest = {
         url: 'https://games.shopee.tw/farm/api/orchard/crop/water?t=' + new Date().getTime(),
         headers: config.shopeeHeaders,
-        body: $persistentStore.read('ShopeeCrop'),
+        body: config.currentCrop,
       };
 
       $httpClient.post(waterRequest, function (error, response, data) {
@@ -111,10 +148,12 @@ async function water() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦蝦果園自動澆水 v20230115.1');
+  console.log('ℹ️ 蝦蝦果園自動澆水 v20230131.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');
+    await updatePersistentStore();
+    console.log('✅ 更新儲存資料成功');
     const result = await water();
     console.log('✅ 澆水成功');
 

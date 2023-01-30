@@ -85,7 +85,8 @@ async function getWaterStoreItem() {
                     return resolve(prop.name);
                   }
                   else {
-                    console.log(`ℹ️ 本日已購買免費${prop.name}`);
+                    showNotification = false;
+                    return reject(['沒有可購買的免費道具 ‼️', `本日已購買免費${prop.name}`]);
                   }
                 }
               }
@@ -107,7 +108,7 @@ async function getWaterStoreItem() {
   });
 }
 
-async function buyFreeItem(itemName) {
+async function buyFreeItem() {
   return new Promise((resolve, reject) => {
     try {
       $httpClient.post(buyFreeItemRequest, function (error, response, data) {
@@ -117,7 +118,7 @@ async function buyFreeItem(itemName) {
           if (response.status === 200) {
             const obj = JSON.parse(data);
             if (obj.msg === 'success') {
-              return resolve(itemName);
+              return resolve();
             }
             else {
               return reject(['購買道具失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);
@@ -134,13 +135,13 @@ async function buyFreeItem(itemName) {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦蝦果園免費道具 v20230115.1');
+  console.log('ℹ️ 蝦蝦果園免費道具 v20230128.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');
-    await getWaterStoreItem();
+    const itemName = await getWaterStoreItem();
     console.log('✅ 取得特價商店道具列表成功');
-    const itemName = await buyFreeItem();
+    await buyFreeItem();
     console.log('✅ 購買免費道具成功');
     console.log(`ℹ️ 獲得 ${itemName}`);
     surgeNotify(

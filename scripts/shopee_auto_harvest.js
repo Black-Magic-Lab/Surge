@@ -42,6 +42,18 @@ async function preCheck() {
     if (isEmptyObject(shopeeInfo)) {
       return reject(['檢查失敗 ‼️', '沒有新版 token']);
     }
+
+    let currentCrop = null;
+    const shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
+    if (isEmptyObject(shopeeFarmInfo)) {
+      console.log('⚠️ 沒有新版蝦蝦果園資訊，使用舊版');
+      currentCrop = JSON.parse($persistentStore.read('ShopeeCrop')) || {};
+      // return reject(['檢查失敗 ‼️', '沒有新版 token']);
+    } else {
+      currentCrop = shopeeFarmInfo.currentCrop;
+      console.log('ℹ️ 找到新版蝦蝦果園資訊');
+    }
+
     const shopeeHeaders = {
       'Cookie': cookieToString(shopeeInfo.token),
       'Content-Type': 'application/json',
@@ -49,6 +61,7 @@ async function preCheck() {
     config = {
       shopeeInfo: shopeeInfo,
       shopeeHeaders: shopeeHeaders,
+      currentCrop: currentCrop,
     }
     return resolve();
   });
@@ -60,7 +73,7 @@ async function harvest() {
       const request = {
         url: 'https://games.shopee.tw/farm/api/orchard/crop/harvest',
         headers: config.shopeeHeaders,
-        body: $persistentStore.read('ShopeeCrop'),
+        body: config.currentCrop,
       };
 
       $httpClient.post(request, function (error, response, data) {
@@ -99,7 +112,7 @@ async function harvest() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦蝦果園自動收成 v20230115.1');
+  console.log('ℹ️ 蝦蝦果園自動收成 v20230124.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');
