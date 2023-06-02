@@ -58,7 +58,7 @@ async function checkin() {
   return new Promise((resolve, reject) => {
     try {
       const request = {
-        url: 'https://shopee.tw/mkt/coins/api/v2/checkin',
+        url: 'https://shopee.tw/mkt/coins/api/v2/checkin_new',
         headers: config.shopeeHeaders,
       };
 
