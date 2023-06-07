@@ -1,10 +1,10 @@
 #!name=幣安價格面板
-#!desc=顯示最新幣安報價，請先去 binance_price_set_symbol.js 設定要顯示的幣種。
+#!desc=顯示最新幣安報價，請先去「[幣安價格]設定幣種」設定要顯示的幣種。 v20230203
 #!system=ios
 
 [Script]
-binance_price_panel.js=script-path=https://kinta.ma/surge/scripts/binance_price_panel.js,type=generic
-binance_price_set_symbol.js=script-path=https://kinta.ma/surge/scripts/binance_price_set_symbol.js,type=generic
+[幣安價格]資訊面板=script-path=https://kinta.ma/surge/scripts/binance_price_panel.js,type=generic
+[幣安價格]設定幣種=script-path=https://kinta.ma/surge/scripts/binance_price_set_symbol.js,type=generic
 
 [Panel]
-BinancePricePanel=title="",content="",style=info,script-name=binance_price_panel.js,update-interval=1
+BinancePricePanel=title="",content="",style=info,script-name=[幣安價格]資訊面板,update-interval=1
