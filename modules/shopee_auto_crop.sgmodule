@@ -1,10 +1,9 @@
 #!name=蝦蝦果園自動搶種子
-#!desc=使用前先手動載入「[蝦蝦果園]設定搶種子名稱」，按照提示設定作物名稱並執行後，再去隨便種一個作物以取得 token。往後當果園沒有作物時就會自動搶設定的種子。 v20220726
+#!desc=使用前先手動載入「[蝦蝦果園]設定搶種子名稱」，按照提示設定作物名稱並執行後，再去隨便種一個作物以取得 token。往後當果園沒有作物時就會自動搶設定的種子。 v20230210
 
 [Script]
 [蝦蝦果園]自動種植 = type=cron, cronexp="0 0 * * *", script-path=https://kinta.ma/surge/scripts/shopee_auto_crop.js, wake-system=1, timeout=30
-[蝦蝦果園]取得種子token = type=http-request, pattern=^https:\/\/games\.shopee\.tw\/farm\/api\/orchard\/crop\/create(.*), script-path=https://kinta.ma/surge/scripts/shopee_get_crop_token.js, requires-body=true
-[蝦蝦果園]設定搶種子名稱 = script-path=https://kinta.ma/surge/scripts/shopee_set_crop_name.js
+[蝦蝦果園]設定搶種子名稱 = script-path=https://kinta.ma/surge/scripts/shopee_set_auto_crop_seed_name.js
 
 [MITM]
 hostname = %APPEND% games.shopee.tw

@@ -1,0 +1,8 @@
+#!name=蝦蝦果園品牌水滴
+#!desc=點一下品牌商店後自動獲得水滴 v20220308（未成功）
+
+[Script]
+[蝦蝦果園]自動獲得品牌水滴 = type=http-request, pattern=^https:\/\/mall\.shopee\.tw\/api\/v4\/shop\/get_shop_tab$, script-path=https://kinta.ma/surge/blackmagic/scripts/shopee_get_friend_crop_and_upload.js, requires-body=true
+
+[MITM]
+hostname = %APPEND% games.shopee.tw

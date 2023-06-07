@@ -59,21 +59,14 @@ function cookieToString(cookieObject) {
 async function updateSpcEc() {
   return new Promise((resolve, reject) => {
     let shopeeInfo = getSaveObject('ShopeeInfo');
-    let shopeeToken;
     if (isEmptyObject(shopeeInfo)) {
-      // 可能沒有新版資料，用舊的試試
-      shopeeToken = $persistentStore.read('ShopeeToken');
-      console.log('⚠️ 找不到新版 token，使用舊版 token');
-      // return reject(['取得 token 失敗 ‼️', '找不到儲存的 token']);
-    } else {
-      shopeeToken = shopeeInfo.shopeeToken;
-      console.log('✅ 找到新版 token，使用新版 token');
+      return reject(['取得 token 失敗 ‼️', '找不到儲存的 token']);
     }
 
     const request = {
       url: 'https://mall.shopee.tw/api/v4/client/refresh',
       headers: {
-        'Cookie': `shopee_token=${shopeeToken};`,
+        'Cookie': `shopee_token=${shopeeInfo.shopeeToken};`,
         'Content-Type': 'application/json',
       },
     };
@@ -92,17 +85,7 @@ async function updateSpcEc() {
             if (cookie) {
               const filteredCookie = cookie.replaceAll('HttpOnly;', '').replaceAll('Secure,', '');
               const cookieObject = parseCookie(filteredCookie);
-
-              // 舊方法，2/1 之後廢棄
-              const spcEc = cookieObject.SPC_EC;
-              const saveSpcEc = $persistentStore.write(spcEc, 'SPC_EC');
-
-              if (!(saveSpcEc)) {
-                return reject(['更新 SPC_EC 失敗 ‼️', '無法儲存舊版 SPC_EC']);
-              } else {
-                console.log('⚠️ 儲存舊版 SPC_EC 成功');
-              }
-              return resolve(spcEc);
+              return resolve(cookieObject.SPC_EC);
             } else {
               return reject(['更新 SPC_EC 失敗 ‼️', '找不到回應的 token']);
             }
@@ -121,21 +104,14 @@ async function updateCookie(spcEc) {
   return new Promise((resolve, reject) => {
     try {
       let shopeeInfo = getSaveObject('ShopeeInfo');
-      let shopeeToken;
       if (isEmptyObject(shopeeInfo)) {
-        // 可能沒有新版資料，用舊的試試
-        shopeeToken = $persistentStore.read('CookieSP') + ';SPC_EC=' + $persistentStore.read('SPC_EC') + ';shopee_token=' + $persistentStore.read('ShopeeToken');
-        console.log('⚠️ 找不到新版 token，使用舊版 token');
-        // return reject(['取得 token 失敗 ‼️', '找不到儲存的 token']);
-      } else {
-        shopeeToken = `${cookieToString(shopeeInfo.token)}SPC_EC=${spcEc};shopee_token=${shopeeInfo.shopeeToken};`;
-        console.log('✅ 找到新版 token，使用新版 token');
+        return reject(['取得 token 失敗 ‼️', '找不到儲存的 token']);
       }
 
       const request = {
         url: 'https://shopee.tw/api/v2/user/account_info?from_wallet=false&skip_address=1&need_cart=1',
         headers: {
-          'Cookie': shopeeToken,
+          'Cookie': `${cookieToString(shopeeInfo.token)}SPC_EC=${spcEc};shopee_token=${shopeeInfo.shopeeToken};`,
         },
       };
 
@@ -152,15 +128,6 @@ async function updateCookie(spcEc) {
             if (cookie) {
               const filteredCookie = cookie.replaceAll('HttpOnly;', '').replaceAll('Secure,', '');
               const cookieObject = parseCookie(filteredCookie);
-
-              // 舊方法，2/1 之後廢棄
-              const saveCookie = $persistentStore.write(filteredCookie, 'CookieSP');
-              if (!(saveCookie)) {
-                return reject(['更新 token 失敗 ‼️', '無法儲存舊版 token']);
-              } else {
-                console.log('⚠️ 儲存舊版 token 成功');
-              }
-
               const tokenInfo = {
                 SPC_EC: spcEc,
                 SPC_R_T_ID: cookieObject.SPC_R_T_ID,
@@ -169,17 +136,29 @@ async function updateCookie(spcEc) {
                 SPC_ST: cookieObject.SPC_ST,
                 SPC_T_ID: cookieObject.SPC_T_ID,
                 SPC_T_IV: cookieObject.SPC_T_IV,
+                SPC_F: cookieObject.SPC_F,
                 SPC_U: cookieObject.SPC_U,
+              };
+              if (shopeeInfo.token.SPC_EC === tokenInfo.SPC_EC) {
+                console.log('⚠️ SPC_EC 新舊內容一致，並未更新');
               }
-
-              if (isEmptyObject(shopeeInfo)) {
-                const oldShopeeToken = $persistentStore.read('ShopeeToken');
-                if (!oldShopeeToken || oldShopeeToken.length === 0) {
-                  return reject(['保存失敗', '無法儲存新版 token，請重新取得 token']);
-                }
-                shopeeInfo.shopeeToken = oldShopeeToken;
-                shopeeInfo.userName = obj.data.username;
-                console.log('✅ 建立新版 token');
+              if (shopeeInfo.token.SPC_R_T_ID === tokenInfo.SPC_R_T_ID) {
+                console.log('⚠️ SPC_R_T_ID 新舊內容一致，並未更新');
+              }
+              if (shopeeInfo.token.SPC_R_T_IV === tokenInfo.SPC_R_T_IV) {
+                console.log('⚠️ SPC_R_T_IV 新舊內容一致，並未更新');
+              }
+              if (shopeeInfo.token.SPC_SI === tokenInfo.SPC_SI) {
+                console.log('⚠️ SPC_SI 新舊內容一致，並未更新');
+              }
+              if (shopeeInfo.token.SPC_ST === tokenInfo.SPC_ST) {
+                console.log('⚠️ SPC_ST 新舊內容一致，並未更新');
+              }
+              if (shopeeInfo.token.SPC_T_ID === tokenInfo.SPC_T_ID) {
+                console.log('⚠️ SPC_T_ID 新舊內容一致，並未更新');
+              }
+              if (shopeeInfo.token.SPC_T_IV === tokenInfo.SPC_T_IV) {
+                console.log('⚠️ SPC_T_IV 新舊內容一致，並未更新');
               }
 
               shopeeInfo.token = tokenInfo;
@@ -203,9 +182,26 @@ async function updateCookie(spcEc) {
   });
 }
 
+async function deleteOldKeys() {
+  return new Promise((resolve, reject) => {
+    try {
+      $persistentStore.write(null, 'CSRFTokenSP');
+      $persistentStore.write(null, 'CookieSP');
+      $persistentStore.write(null, 'SPC_EC');
+      $persistentStore.write(null, 'ShopeeToken');
+      $persistentStore.write(null, 'Shopee_SPC_U');
+      return resolve();
+    } catch (error) {
+      return reject(['刪除舊的 key 失敗 ‼️', error]);
+    }
+  });
+}
+
 (async () => {
-  console.log('ℹ️ 蝦皮更新 token v20230115.1');
+  console.log('ℹ️ 蝦皮更新 token v20230131.1');
   try {
+    await deleteOldKeys();
+    console.log('✅ 刪除舊的 key 成功');
     const spcEc = await updateSpcEc();
     console.log('✅ SPC_EC 更新成功');
     await updateCookie(spcEc);

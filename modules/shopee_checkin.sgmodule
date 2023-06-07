@@ -1,12 +1,14 @@
 #!name=蝦皮每日自動簽到
-#!desc=每天早上自動簽到 + 開蝦幣寶箱 + 開免運寶箱。第一次使用前先到「我的」→「蝦皮實名認證」取得 token。 v20230112
+#!desc=每天早上自動簽到 + 開蝦幣寶箱 + 開免運寶箱。第一次使用前先到「我的」→「蝦皮實名認證」取得 token。簽到功能必須先手動簽到一次。 v20230607
+#[蝦皮]每日簽到 = type=cron, cronexp="16 0 * * *", script-path=https://kinta.ma/surge/scripts/shopee_checkin.js, wake-system=1, timeout=5
 
 [Script]
-[蝦皮]更新token = type=cron, cronexp="10 0 * * *", script-path=https://kinta.ma/surge/scripts/shopee_update_token.js, wake-system=1, timeout=10
 [蝦皮]每日簽到 = type=cron, cronexp="16 0 * * *", script-path=https://kinta.ma/surge/scripts/shopee_checkin.js, wake-system=1, timeout=5
+[蝦皮]更新token = type=cron, cronexp="10 */8 * * *", script-path=https://kinta.ma/surge/scripts/shopee_update_token.js, wake-system=1, timeout=10
 [蝦皮]蝦幣寶箱 = type=cron, cronexp="17 0 * * *", script-path=https://kinta.ma/surge/scripts/shopee_coin_lucky_draw.js, wake-system=1, timeout=10
 [蝦皮]免運寶箱 = type=cron, cronexp="17 0 * * *", script-path=https://kinta.ma/surge/scripts/shopee_shipping_lucky_draw.js, wake-system=1, timeout=10
 [蝦皮]取得token = type=http-request, pattern=^https:\/\/mall\.shopee\.tw\/api\/v2\/user\/profile\/get\/$, script-path=https://kinta.ma/surge/scripts/shopee_token.js
+[蝦皮]取得簽到資訊 = type=http-request, pattern=^https:\/\/games-dailycheckin\.shopee\.tw\/mkt\/coins\/api\/v2\/checkin_new$, script-path=https://kinta.ma/surge/scripts/shopee_get_checkin.js
 
 [MITM]
-hostname = %APPEND% mall.shopee.tw
+hostname = %APPEND% mall.shopee.tw games-dailycheckin.shopee.tw

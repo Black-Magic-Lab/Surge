@@ -41,7 +41,7 @@ async function preCheck() {
   return new Promise((resolve, reject) => {
     const shopeeInfo = getSaveObject('ShopeeInfo');
     if (isEmptyObject(shopeeInfo)) {
-      return reject(['檢查失敗 ‼️', '沒有新版 token']);
+      return reject(['檢查失敗 ‼️', '找不到 token']);
     }
     const shopeeHeaders = {
       'Cookie': cookieToString(shopeeInfo.token),
@@ -59,7 +59,9 @@ async function getWaterStoreItem() {
   return new Promise((resolve, reject) => {
     try {
       const waterStoreItemListRequest = {
-        url: `https://games.shopee.tw/farm/api/prop/list?storeType=2&typeId=&isShowRevivalPotion=true&t=${new Date().getTime()}`,
+        // Type=1 道具商店
+        // Type=2 免費水滴商店 
+        url: `https://games.shopee.tw/farm/api/prop/list?storeType=1&typeId=&isShowRevivalPotion=true&t=${new Date().getTime()}`,
         headers: config.shopeeHeaders,
       };
       $httpClient.get(waterStoreItemListRequest, function (error, response, data) {
@@ -119,6 +121,9 @@ async function buyFreeItem() {
             const obj = JSON.parse(data);
             if (obj.msg === 'success') {
               return resolve();
+            }
+            else if (obj.code === 409049) {
+              return reject(['購買道具失敗 ‼️', `此道具持有數量已滿，請先使用道具再領取。`]);
             }
             else {
               return reject(['購買道具失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);

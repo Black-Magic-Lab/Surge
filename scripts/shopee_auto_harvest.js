@@ -40,18 +40,12 @@ async function preCheck() {
   return new Promise((resolve, reject) => {
     const shopeeInfo = getSaveObject('ShopeeInfo');
     if (isEmptyObject(shopeeInfo)) {
-      return reject(['檢查失敗 ‼️', '沒有新版 token']);
+      return reject(['檢查失敗 ‼️', '找不到 token']);
     }
 
-    let currentCrop = null;
     const shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
     if (isEmptyObject(shopeeFarmInfo)) {
-      console.log('⚠️ 沒有新版蝦蝦果園資訊，使用舊版');
-      currentCrop = JSON.parse($persistentStore.read('ShopeeCrop')) || {};
-      // return reject(['檢查失敗 ‼️', '沒有新版 token']);
-    } else {
-      currentCrop = shopeeFarmInfo.currentCrop;
-      console.log('ℹ️ 找到新版蝦蝦果園資訊');
+      return reject(['檢查失敗 ‼️', '沒有蝦蝦果園資料']);
     }
 
     const shopeeHeaders = {
@@ -60,8 +54,8 @@ async function preCheck() {
     }
     config = {
       shopeeInfo: shopeeInfo,
+      shopeeFarmInfo: shopeeFarmInfo,
       shopeeHeaders: shopeeHeaders,
-      currentCrop: currentCrop,
     }
     return resolve();
   });
@@ -70,10 +64,15 @@ async function preCheck() {
 async function harvest() {
   return new Promise((resolve, reject) => {
     try {
+      if (!config.shopeeFarmInfo.currentCrop || config.shopeeFarmInfo.currentCrop.cropId === 0) {
+        showNotification = false;
+        return reject(['收成失敗 ‼️', '目前沒有作物']);
+      }
+
       const request = {
         url: 'https://games.shopee.tw/farm/api/orchard/crop/harvest',
         headers: config.shopeeHeaders,
-        body: config.currentCrop,
+        body: config.shopeeFarmInfo.currentCrop,
       };
 
       $httpClient.post(request, function (error, response, data) {
@@ -89,6 +88,15 @@ async function harvest() {
                 return resolve(cropName);
               } else {
                 showNotification = false;
+
+                // 刪除作物資料
+                let shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
+                shopeeFarmInfo.currentCrop.cropId = 0;
+                const save = $persistentStore.write(JSON.stringify(shopeeFarmInfo, null, 4), 'ShopeeFarmInfo');
+                if (!save) {
+                  console.log('⚠️ 儲存失敗，無法更新作物資料');
+                }
+
                 return reject(['收成失敗 ‼️', `已經收成過 ${cropName} 了`]);
               }
             }
@@ -101,7 +109,7 @@ async function harvest() {
               return reject(['收成失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);
             }
           } else {
-            response.status
+            return reject(['收成失敗 ‼️', response.status]);
           }
         }
       });
@@ -112,7 +120,7 @@ async function harvest() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦蝦果園自動收成 v20230124.1');
+  console.log('ℹ️ 蝦蝦果園自動收成 v20230210.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');

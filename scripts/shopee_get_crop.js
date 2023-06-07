@@ -36,11 +36,6 @@ async function getCropData() {
     try {
       const body = JSON.parse($request.body);
       if (body && body.cropId && body.resourceId && body.s) {
-        const saveCrop = $persistentStore.write($request.body, 'ShopeeCrop');
-        if (saveCrop) {
-          console.log('⚠️ 舊版作物資料儲存成功')
-        }
-
         let shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
         shopeeFarmInfo.currentCrop = body;
         const save = $persistentStore.write(JSON.stringify(shopeeFarmInfo, null, 4), 'ShopeeFarmInfo');
@@ -58,7 +53,7 @@ async function getCropData() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦蝦果園作物資料 v20230124.1');
+  console.log('ℹ️ 蝦蝦果園作物資料 v20230206.1');
   try {
     if (isManualRun(true, false)) {
       throw '請勿手動執行此腳本';

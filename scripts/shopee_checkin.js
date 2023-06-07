@@ -58,8 +58,9 @@ async function checkin() {
   return new Promise((resolve, reject) => {
     try {
       const request = {
-        url: 'https://shopee.tw/mkt/coins/api/v2/checkin',
+        url: 'https://games-dailycheckin.shopee.tw/mkt/coins/api/v2/checkin_new',
         headers: config.shopeeHeaders,
+        body: config.shopeeInfo.checkinPayload
       };
 
       $httpClient.post(request, function (error, response, data) {
@@ -89,7 +90,7 @@ async function checkin() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦皮每日簽到 v20230116.1');
+  console.log('ℹ️ 蝦皮每日簽到 v20230606.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');

@@ -109,7 +109,70 @@ async function eventListGetActivity() {
               }
             }
             if (!foundId) {
-              reject(['找不到蝦幣寶箱活動 ‼️', '']);
+              return resolve();
+            }
+          } else {
+            return reject(['無法取得活動列表 ‼️', response.status]);
+          }
+        }
+      });
+    } catch (error) {
+      return reject(['無法取得活動列表 ‼️', error]);
+    }
+  });
+}
+
+async function iframeListGetActivity() {
+  return new Promise((resolve, reject) => {
+    try {
+      const request = {
+        url: 'https://mall.shopee.tw/api/v4/market_coin/get_iframe_list?region=TW&offset=0&limit=10',
+        headers: config.shopeeHeaders,
+      };
+      $httpClient.get(request, function (error, response, data) {
+        if (error) {
+          return reject(['無法取得活動列表 ‼️', '連線錯誤']);
+        } else {
+          if (response.status === 200) {
+            const obj = JSON.parse(data);
+            let foundEvent = false;
+            const iframeList = obj.data.iframe_list;
+            for (const iframe of iframeList) {
+              // console.log(`活動名稱: ${iframe.title}，網址: ${iframe.url}`);
+              if ((iframe.title.includes('蝦幣')) && iframe.url.includes('luckydraw')) {
+                foundEvent = true;
+                const re = /activity\/(.*)\??/i;
+                let found = iframe.url.match(re);
+                if (!found) {
+                  const re = /activity=(.*)&/i;
+                  found = iframe.url.match(re);
+                }
+                const activityId = found[1];
+                console.log(`ℹ️ 在 iframe 找到蝦幣寶箱活動，活動名稱: ${iframe.title}，活動頁面 ID: ${activityId}`);
+
+                // 取得活動代碼
+                getIdRequest = {
+                  url: `https://games.shopee.tw/gameplatform/api/v1/game/activity/${activityId}/settings?appid=E9VFyxwmtgjnCR8uhL&basic=false`,
+                  headers: config.shopeeHeaders,
+                };
+
+                // 真正領取蝦幣寶箱
+                luckyDrawRequest = {
+                  url: '',
+                  headers: config.shopeeHeaders,
+                  body: {
+                    request_id: (Math.random() * 10 ** 20).toFixed(0).substring(0, 16),
+                    app_id: 'E9VFyxwmtgjnCR8uhL',
+                    activity_code: activityId,
+                    source: 0,
+                  },
+                };
+
+                return resolve();
+              }
+            }
+            if (!foundEvent) {
+              return reject(['無法取得活動列表 ‼️', '找不到免運寶箱活動']);
             }
           } else {
             return reject(['無法取得活動列表 ‼️', response.status]);
@@ -183,12 +246,17 @@ async function coinLuckyDraw() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦幣寶箱 v20230116.1');
+  console.log('ℹ️ 蝦幣寶箱 v20230301.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');
     await eventListGetActivity();
     console.log('✅ banner 取得活動列表');
+    if (!getIdRequest) {
+      console.log('⚠️ 在 banner 找不到蝦幣寶箱活動，繼續嘗試搜尋 iframe');
+      await iframeListGetActivity();
+      console.log('✅ iframe 取得活動列表');
+    }
     await coinLuckyDrawGetId();
     console.log('✅ 取得活動代碼');
     const reward = await coinLuckyDraw();

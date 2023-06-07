@@ -80,12 +80,16 @@ async function eventListGetActivity() {
                 const title = banner.navigate_params.navbar.title;
                 const url = banner.navigate_params.url;
                 // console.log(`活動名稱: ${title}，網址: ${url}`);
-                if (title.includes('抽免運券')) {
+                if (title.includes('抽免運券') || title.includes('免運寶箱')) {
                   foundEvent = true;
                   const re = /activity\/(.*)\??/i;
                   let found = url.match(re);
                   if (!found) {
                     const re = /activity=(.*)&/i;
+                    found = url.match(re);
+                  }
+                  if (!found) {
+                    const re = /activity=(.*)/i;
                     found = url.match(re);
                   }
                   const activityId = found[1];
@@ -143,7 +147,7 @@ async function iframeListGetActivity() {
             const iframeList = obj.data.iframe_list;
             for (const iframe of iframeList) {
               // console.log(`活動名稱: ${iframe.title}，網址: ${iframe.url}`);
-              if (iframe.title.includes('免運') && iframe.url.includes('luckydraw')) {
+              if ((iframe.title.includes('免運') || iframe.title.includes('玩遊戲天天抽')) && iframe.url.includes('luckydraw')) {
                 foundEvent = true;
                 const re = /activity\/(.*)\??/i;
                 let found = iframe.url.match(re);
@@ -152,7 +156,7 @@ async function iframeListGetActivity() {
                   found = iframe.url.match(re);
                 }
                 const activityId = found[1];
-                console.log(`ℹ️ 在 iframe 找到蝦幣寶箱活動，活動名稱: ${iframe.title}，活動頁面 ID: ${activityId}`);
+                console.log(`ℹ️ 在 iframe 找到免運寶箱活動，活動名稱: ${iframe.title}，活動頁面 ID: ${activityId}`);
 
                 // 取得活動代碼
                 getIdRequest = {
@@ -176,7 +180,7 @@ async function iframeListGetActivity() {
               }
             }
             if (!foundEvent) {
-              return reject(['無法取得活動列表 ‼️', '找不到蝦幣寶箱活動']);
+              return reject(['無法取得活動列表 ‼️', '找不到免運寶箱活動']);
             }
           } else {
             return reject(['無法取得活動列表 ‼️', response.status]);
@@ -251,7 +255,7 @@ async function shippingLuckyDraw() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦皮免運寶箱 v20230115.3');
+  console.log('ℹ️ 蝦皮免運寶箱 v20230301.2');
   try {
     await preCheck();
     console.log('✅ 檢查成功');

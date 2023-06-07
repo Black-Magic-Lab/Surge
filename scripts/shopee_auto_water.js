@@ -40,18 +40,12 @@ async function preCheck() {
   return new Promise((resolve, reject) => {
     const shopeeInfo = getSaveObject('ShopeeInfo');
     if (isEmptyObject(shopeeInfo)) {
-      return reject(['檢查失敗 ‼️', '沒有新版 token']);
+      return reject(['檢查失敗 ‼️', '找不到 token']);
     }
 
-    let currentCrop = null;
     const shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
     if (isEmptyObject(shopeeFarmInfo)) {
-      console.log('⚠️ 沒有新版蝦蝦果園資訊，使用舊版');
-      currentCrop = JSON.parse($persistentStore.read('ShopeeCrop')) || {};
-      // return reject(['檢查失敗 ‼️', '沒有新版 token']);
-    } else {
-      currentCrop = shopeeFarmInfo.currentCrop;
-      console.log('ℹ️ 找到新版蝦蝦果園資訊');
+      return reject(['檢查失敗 ‼️', '沒有蝦蝦果園資料']);
     }
 
     const shopeeHeaders = {
@@ -60,44 +54,81 @@ async function preCheck() {
     }
     config = {
       shopeeInfo: shopeeInfo,
+      shopeeFarmInfo: shopeeFarmInfo,
       shopeeHeaders: shopeeHeaders,
-      currentCrop: currentCrop,
     }
     return resolve();
   });
 }
 
-async function updatePersistentStore() {
+async function deleteOldData() {
   return new Promise((resolve, reject) => {
     try {
+      $persistentStore.write(null, 'ShopeeAutoCropName');
+      $persistentStore.write(null, 'ShopeeCrop');
+      $persistentStore.write(null, 'ShopeeCropState');
+      $persistentStore.write(null, 'ShopeeCropName');
+      $persistentStore.write(null, 'ShopeeCropToken');
+      $persistentStore.write(null, 'ShopeeGroceryStoreToken');
+
       let shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
-      const currentCrop = JSON.parse($persistentStore.read('ShopeeCrop')) || {};
-      const autoCropSeedName = $persistentStore.read('ShopeeCropName') || '';
-      const groceryStoreToken = $persistentStore.read('ShopeeGroceryStoreToken') || '';
-
-      shopeeFarmInfo.currentCrop = currentCrop;
-      shopeeFarmInfo.autoCropSeedName = autoCropSeedName;
-      shopeeFarmInfo.groceryStoreToken = groceryStoreToken;
-
+      delete shopeeFarmInfo['autoCropSeedName'];
       const save = $persistentStore.write(JSON.stringify(shopeeFarmInfo, null, 4), 'ShopeeFarmInfo');
       if (!save) {
         return reject(['保存失敗 ‼️', '無法更新作物資料']);
       } else {
         return resolve();
       }
+      
+      return resolve();
     } catch (error) {
-      return reject(['更新儲存資料失敗 ‼️', error]);
+      return reject(['刪除舊資料發生錯誤 ‼️', error]);
     }
   });
 }
 
+// async function updatePersistentStore() {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       let shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
+//       const currentCrop = JSON.parse($persistentStore.read('ShopeeCrop')) || {};
+//       const autoCropSeedName = $persistentStore.read('ShopeeCropName') || '';
+//       const groceryStoreToken = $persistentStore.read('ShopeeGroceryStoreToken') || '';
+
+//       if (!shopeeFarmInfo.currentCrop) {
+//         shopeeFarmInfo.currentCrop = currentCrop;
+//       }
+//       if (!shopeeFarmInfo.autoCropSeedName) {
+//         shopeeFarmInfo.autoCropSeedName = autoCropSeedName;
+//       }
+//       if (!shopeeFarmInfo.groceryStoreToken) {
+//         shopeeFarmInfo.groceryStoreToken = groceryStoreToken;
+//       }
+
+//       const save = $persistentStore.write(JSON.stringify(shopeeFarmInfo, null, 4), 'ShopeeFarmInfo');
+//       if (!save) {
+//         return reject(['保存失敗 ‼️', '無法更新作物資料']);
+//       } else {
+//         return resolve();
+//       }
+//     } catch (error) {
+//       return reject(['更新儲存資料失敗 ‼️', error]);
+//     }
+//   });
+// }
+
 async function water() {
   return new Promise((resolve, reject) => {
     try {
+      if (!config.shopeeFarmInfo.currentCrop || config.shopeeFarmInfo.currentCrop.cropId === 0) {
+        showNotification = false;
+        return reject(['澆水失敗 ‼️', '目前沒有作物']);
+      }
+
       const waterRequest = {
         url: 'https://games.shopee.tw/farm/api/orchard/crop/water?t=' + new Date().getTime(),
         headers: config.shopeeHeaders,
-        body: config.currentCrop,
+        body: config.shopeeFarmInfo.currentCrop,
       };
 
       $httpClient.post(waterRequest, function (error, response, data) {
@@ -124,15 +155,6 @@ async function water() {
               return reject(['澆水失敗 ‼️', '作物狀態錯誤，請先手動澆水一次']);
             } else if (obj.code === 409004) {
               return reject(['澆水失敗 ‼️', '作物狀態錯誤，請檢查是否已收成']);
-              // 出錯三次之後才跳警告
-              // const cropState = parseInt($persistentStore.read('ShopeeCropState'));
-              // if (cropState < 3) {
-              //   $persistentStore.write((cropState + 1).toString(), 'ShopeeCropState');
-              //   surgeNotify(
-              //     '澆水失敗 ‼️',
-              //     '作物狀態錯誤，請檢查是否已收成'
-              //   );
-              // }
             } else {
               return reject(['澆水失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);
             }
@@ -148,12 +170,14 @@ async function water() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦蝦果園自動澆水 v20230131.1');
+  console.log('ℹ️ 蝦蝦果園自動澆水 v20230210.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');
-    await updatePersistentStore();
-    console.log('✅ 更新儲存資料成功');
+    await deleteOldData();
+    console.log('✅ 刪除舊資料成功');
+    // await updatePersistentStore();
+    // console.log('✅ 更新儲存資料成功');
     const result = await water();
     console.log('✅ 澆水成功');
 
