@@ -48,13 +48,17 @@ async function checkIn() {
         } else {
           if (response.status === 200) {
             const obj = JSON.parse(data);
-            if (obj.info.check_success === 1) {
-              return resolve(obj.info.daily_reward);
-            } else if (obj.info.check_success === 2) {
-              showNotification = false;
-              return reject(['簽到失敗 ‼️', '今日已簽到']);
+            if (obj.info) {
+              if (obj.info.check_success === 1) {
+                return resolve(obj.info.daily_reward);
+              } else if (obj.info.check_success === 2) {
+                showNotification = false;
+                return reject(['簽到失敗 ‼️', '今日已簽到']);
+              } else {
+                return reject(['簽到失敗 ‼️', 'Error: ' + obj.info]);
+              }
             } else {
-              return reject(['簽到失敗 ‼️', 'Error: ' + obj.info.check_success]);
+              return reject(['簽到失敗 ‼️', 'Error: ' + obj.info]);
             }
           } else {
             return reject(['簽到失敗 ‼️', response.status]);
@@ -68,7 +72,7 @@ async function checkIn() {
 }
 
 (async () => {
-  console.log('ℹ️ SHEIN 自動簽到 v20230115.1');
+  console.log('ℹ️ SHEIN 自動簽到 v20230215.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');
