@@ -233,7 +233,7 @@
                     <label>
                         <p>麥當勞取得 token</p>
                     </label>
-                    <span class="description">登入後先去個人資料那邊按修改，但什麼都不要改，直接儲存就可以獲得 token。或者根據網站教學文搭配 mcdonalds_set_token.js 手動設定 token。</span><br>
+                    <span class="description">v3.1.0 以下：登入後先去個人資料那邊按修改，但什麼都不要改，直接儲存就可以獲得 token。<br>v3.1.0 以上：根據網站教學文搭配 mcdonalds_set_token.js 手動設定 token。</span><br>
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
@@ -245,26 +245,6 @@
                     </label>
                     <span class="description">僅限 3.1.0 以下使用。</span><br>
                     <span class="author">作者: hirakujira</span><br>
-                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
-                </div>
-            </div>
-            <div>
-                <div onclick="copyToClipBoard('mcdonalds')">
-                    <label>
-                        <p>麥當勞每日自動簽到（已失效）</p>
-                    </label>
-                    <span class="description">每天自動簽到 + 參加活動。</span><br>
-                    <span class="author">作者: hirakujira & jkgtw</span><br>
-                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
-                </div>
-            </div>
-            <div>
-                <div onclick="copyToClipBoard('mcdonalds_use_point')">
-                    <label>
-                        <p>麥當勞每日自動簽到（花費積分）（已失效）</p>
-                    </label>
-                    <span class="description">每天早上自動簽到 + 參加活動。此版本會自動參加花費積分的活動。</span><br>
-                    <span class="author">作者: hirakujira & jkgtw</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
             </div>
@@ -289,11 +269,41 @@
                 </div>
             </div>
             <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/coreanige/surge/master/modules/abcMart_checkin.sgmodule')">
+                    <label>
+                        <p>ABC Mart 每日自動簽到</p>
+                    </label>
+                    <span class="description">每天自動簽到，第一次使用請先手動到個人資訊 → 累計點數以取得token。</span><br>
+                    <span class="author">作者: coreanige</span><br>
+                    <span class="url">來源: https://github.com/coreanige/surge</span>
+                </div>
+            </div>
+            <div>
                 <div onclick="copyToClipBoard('momo_checkin')">
                     <label>
                         <p>Momo 每日簽到（停止維護）</p>
                     </label>
                     <span class="description">每天早上自動簽到。第一次使用前先到「天天簽到」→「活動紀錄」取得 Cookie。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('fet_get_token')">
+                    <label>
+                        <p>遠傳心生活取得 token</p>
+                    </label>
+                    <span class="description">操作步驟：<br>1. 啟用本模組。<br>2. 登出「遠傳心生活」，再重新登入。<br>3. 登入後會跳出「成功取得 token 」通知。<br>4. 關閉本模組。<br>5. 刪除遠傳心生活 App。<br>6. 重新安裝 App 並登入。<br>未按照步驟操作會造成登入衝突導致失效。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('fet_checkin')">
+                    <label>
+                        <p>遠傳心生活每日簽到</p>
+                    </label>
+                    <span class="description">請先確定關閉取得 token 功能。</span><br>
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
