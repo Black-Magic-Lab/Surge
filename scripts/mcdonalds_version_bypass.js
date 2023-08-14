@@ -1,5 +1,5 @@
-const version = '3.5.1';
-const ua = 'Mcdonalds/3.5.1';
+const version = '3.6.0';
+const ua = 'Mcdonalds/3.6.0';
 
 $request.headers['version'] = version;
 
