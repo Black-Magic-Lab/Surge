@@ -57,6 +57,10 @@ async function preCheck() {
 async function checkin() {
   return new Promise((resolve, reject) => {
     try {
+      if (!config.shopeeInfo.checkinPayload) {
+        return reject(['簽到失敗 ‼️', '請先手動簽到一次']);
+      }
+
       const request = {
         url: 'https://games-dailycheckin.shopee.tw/mkt/coins/api/v2/checkin_new',
         headers: config.shopeeHeaders,
@@ -90,7 +94,7 @@ async function checkin() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦皮每日簽到 v20230606.1');
+  console.log('ℹ️ 蝦皮每日簽到 v20230608.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');
