@@ -40,24 +40,14 @@ async function preCheck() {
   return new Promise((resolve, reject) => {
     const shopeeInfo = getSaveObject('ShopeeInfo');
     if (isEmptyObject(shopeeInfo)) {
-      return reject(['檢查失敗 ‼️', '沒有新版 token']);
+      return reject(['檢查失敗 ‼️', '找不到 token']);
     }
 
-    let shopeeGroceryStoreToken = null;
     const shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
-    if (isEmptyObject(shopeeFarmInfo)) {
-      console.log('⚠️ 沒有新版蝦蝦果園資訊，使用舊版');
-      shopeeGroceryStoreToken = $persistentStore.read('ShopeeGroceryStoreToken') || '';
-
-      // return reject(['檢查失敗 ‼️', '沒有新版 token']);
-    } else {
-      shopeeGroceryStoreToken = shopeeFarmInfo.groceryStoreToken;
-      console.log('ℹ️ 找到新版蝦蝦果園資訊');
-    }
-
-    if (!shopeeGroceryStoreToken.length) {
+    if (isEmptyObject(shopeeFarmInfo) || !shopeeFarmInfo.groceryStoreToken.length) {
       return reject(['檢查失敗 ‼️', '請先在道具商店領取一次水滴，以儲存 token']);
     }
+    const shopeeGroceryStoreToken = shopeeFarmInfo?.groceryStoreToken;
 
     const shopeeHeaders = {
       'Cookie': cookieToString(shopeeInfo.token),
@@ -92,8 +82,8 @@ async function claimGroceryStoreWater() {
             if (obj.msg === 'success') {
               return resolve();
             }
-            else if (obj.msg === 'has claimed') {
-              return reject(['領取失敗 ‼️', '每日只能領一次']);
+            else if (obj.code === 430007) {
+              return reject(['領取失敗 ‼️', '超過每日領取上限']);
             }
             else if (obj.code === 409004) {
               return reject(['領取失敗 ‼️', '請檢查作物是否已經收成']);
@@ -117,7 +107,7 @@ async function claimGroceryStoreWater() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦蝦果園道具商店水滴 v20230124.2');
+  console.log('ℹ️ 蝦蝦果園道具商店水滴 v20230807.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');
