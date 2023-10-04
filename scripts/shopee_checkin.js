@@ -43,6 +43,7 @@ async function preCheck() {
       return reject(['檢查失敗 ‼️', '沒有新版 token']);
     }
     const shopeeHeaders = {
+      'User-Agent': 'iOS app iPhone Shopee',
       'Cookie': cookieToString(shopeeInfo.token),
       'Content-Type': 'application/json',
     }
@@ -94,7 +95,7 @@ async function checkin() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦皮每日簽到 v20230608.1');
+  console.log('ℹ️ 蝦皮每日簽到 v20231004.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');

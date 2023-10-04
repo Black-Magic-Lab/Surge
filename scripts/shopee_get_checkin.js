@@ -1,7 +1,7 @@
 let showNotification = true;
 
 function surgeNotify(subtitle = '', message = '') {
-  $notification.post('🍤 蝦皮 token', subtitle, message, { 'url': 'shopeetw://' });
+  $notification.post('🍤 蝦皮簽到 token', subtitle, message, { 'url': 'shopeetw://' });
 };
 
 function handleError(error) {
@@ -36,11 +36,10 @@ function isManualRun(checkRequest = false, checkResponse = false) {
 async function getCheckinPayload() {
   return new Promise((resolve, reject) => {
     try {
-      const body = JSON.parse($request.body);
+      const payload = JSON.parse($request.body);
       if (payload) {
         let shopeeInfo = getSaveObject('ShopeeInfo');
         shopeeInfo.checkinPayload = payload;
-
         const save = $persistentStore.write(JSON.stringify(shopeeInfo, null, 4), 'ShopeeInfo');
         if (!save) {
           return reject(['保存失敗 ‼️', '無法儲存簽到資料']);
@@ -57,7 +56,7 @@ async function getCheckinPayload() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦皮取得簽到資料 v20230606.1');
+  console.log('ℹ️ 蝦皮取得簽到資料 v20230608.1');
   try {
     if (isManualRun(true, false)) {
       throw '請勿手動執行此腳本';
@@ -68,6 +67,7 @@ async function getCheckinPayload() {
     surgeNotify('保存成功 🍪', '');
   } catch (error) {
     handleError(error);
+    return;
   }
   $done({});
 })();
