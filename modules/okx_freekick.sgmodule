@@ -1,0 +1,8 @@
+#!name=OKX 自由球 2026
+#!desc=自動完美進球，隨便踢球即可。踢完球後要關掉不然 App 可能會運作不正常。 v20260630
+
+[Script]
+[OKX]FreeKick = type=http-request, pattern=^https:\/\/www\.okx\.com\/priapi\/v1\/card\/outer\/okx\/campaign\/task\/progress$, requires-body=true, script-path=https://kinta.ma/surge/scripts/okx_freekick.js
+
+[MITM]
+hostname = %APPEND% www.okx.com

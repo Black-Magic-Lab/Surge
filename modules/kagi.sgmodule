@@ -1,0 +1,15 @@
+#!name=Safari Kagi 搜尋
+#!desc=替換搜尋 Escosia 引擎為 Kagi。v20250107
+#!category=Tweaks
+#!arguments=session_link
+#!arguments-desc=登入 Kagi 後，在設定頁面找到「Session Link」，按下「Copy」後，直接貼上
+
+[Script]
+[Kagi] 搜尋重導向 = type=http-request, pattern=^https:\/\/kagi\.com\/search\?q=.*, script-path=https://kinta.ma/surge/scripts/kagi_token.js, argument={{{session_link}}}
+[Kagi] 搜尋自動完成 = type=http-response, pattern=^https://ac\.ecosia\.org\/autocomplete\?q=.*, requires-body=1, script-path=https://kinta.ma/surge/scripts/kagi_autocomplete.js, argument={{{session_link}}}
+
+[URL Rewrite]
+^https:\/\/www\.ecosia\.org\/search https://kagi.com/search 307
+
+[MITM]
+hostname = %APPEND% www.ecosia.org, ac.ecosia.org, kagi.com
