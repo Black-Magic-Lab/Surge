@@ -89,7 +89,7 @@ async function getBrandList() {
               let brandStores = [];
               const tasks = obj.data.userTasks.concat(obj.data.shopAdsTask);
               for (const store of tasks) {
-                if (store.taskFinishStatus < 3) {
+                if (store != null && store.taskFinishStatus < 3) {
                   const storeInfo = store.taskInfo
                   const storeUserName = store.rcmd_shop_info ? store.rcmd_shop_info.shop_user_name : storeInfo.taskName;
                   const moduleId = store.taskInfo.moduleId.toString();
@@ -262,7 +262,7 @@ async function delay(seconds) {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦蝦果園自動澆水 v20230501.1');
+  console.log('ℹ️ 蝦蝦果園自動澆水 v20230628.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');

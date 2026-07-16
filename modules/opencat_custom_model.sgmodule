@@ -1,0 +1,11 @@
+#!name=OpenCat 自訂模型
+#!desc=輸入自訂模型後在 OpenCat 選擇指定的 Deprecated 模型即可。 v20240809
+#!category=Tweaks
+#!arguments=openai_model,claude_model
+#!arguments-desc=輸入自訂模型，沒在用的服務隨便填就好，想用自訂模型的話 OpenAI 選「gpt-3.5-turbo-0613」，Claude 選「claude-2」。
+
+[Script]
+[OpenCat] OpenCat自訂模型 = type=http-request, pattern=^https:\/\/api\.openai\.com\/v1\/chat\/completions$|^https:\/\/api\.anthropic\.com\/v1\/messages$, requires-body=1, script-path=https://kinta.ma/surge/scripts/opencat_custom_model.js, argument=openai_model={{{openai_model}}}&claude_model={{{claude_model}}}
+
+[MITM]
+hostname = %APPEND% api.openai.com, api.anthropic.com

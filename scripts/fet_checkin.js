@@ -109,8 +109,13 @@ async function checkIn() {
   return new Promise((resolve, reject) => {
     try {
       const now = Date.now().toString();
-      const mol = encrypt('E394CB3921E9E3059BDA5B7060900506', 'E7FF39C809AA4095D963837C5C7E2E03', config.userId + '|' + now);
-      const ppm = encrypt('35622FBEB61FB3C9AABCD01AE580C1BD', '54F209779A5B1CFE39A84EF35CEDB8FF', now);
+      // v1
+      // const mol = encrypt('E394CB3921E9E3059BDA5B7060900506', 'E7FF39C809AA4095D963837C5C7E2E03', config.userId + '|' + now);
+      // const ppm = encrypt('35622FBEB61FB3C9AABCD01AE580C1BD', '54F209779A5B1CFE39A84EF35CEDB8FF', now);
+
+      // v2
+      const mol = encrypt('B49450EE153C08A091417FE2BD9E85F3', 'F6E4BE05CA55849DD88F62AEDF7272D1', config.userId + '|' + now);
+      const ppm = encrypt('EAFADDA67A3960616194B593DDE83F4E', '3531D830CF7D1BFDA090981A1422B6D3', now);
 
       const request = {
         url: 'https://dspapi.fetnet.net:1443/dsp/api/campaign/user_LoginForPrize/v1/?client_id=78df8f6d-eb06-4405-a0c9-b56c45335307&mol=' + mol,
@@ -150,7 +155,7 @@ async function checkIn() {
 }
 
 (async () => {
-  console.log('ℹ️ 遠傳心生活每日簽到 v20230117.1');
+  console.log('ℹ️ 遠傳心生活每日簽到 v20230901.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');

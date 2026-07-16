@@ -1,0 +1,9 @@
+#!name=Chipper 取得入金地址
+#!desc=先關閉 Surge，打開 Chipper 後再打開 Surge，選擇 Chipper 右上角個人資料，出現通知之後回到 Surge 執行「[Chipper]取得 USDT 入金地址」腳本 v20240701
+
+[Script]
+[Chipper]取得 token = type=http-request, pattern=^https:\/\/compliance\.chippercash\.com\/user_info$, script-path=https://kinta.ma/surge/scripts/chipper_token.js
+[Chipper]取得 USDT 入金地址 = script-path=https://kinta.ma/surge/scripts/chipper_usdt_address.js
+
+[MITM]
+hostname = %APPEND% compliance.chippercash.com

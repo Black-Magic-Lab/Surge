@@ -47,6 +47,7 @@ async function preCheck() {
     const shopeeHeaders = {
       'Cookie': cookieToString(shopeeInfo.token),
       'Content-Type': 'application/json',
+      'User-Agent': 'iOS appp iPhone Shopee appver=31109 language=zh-Hant app_type=1 Cronet/102.0.5005.61',
     }
     config = {
       shopeeInfo: shopeeInfo,
@@ -197,7 +198,7 @@ async function coinLuckyDrawGetId() {
             if (obj.msg === 'success') {
               const code = obj.data.basic.event_code;
               console.log(`✅ 活動代碼: ${code}`);
-              luckyDrawRequest.url = `https://games.shopee.tw/luckydraw/api/v1/lucky/event/${code}`;
+              luckyDrawRequest.url = `https://games.shopee.tw/api-gateway/luckydraw/api/v1/lucky/event/${code}`;
               return resolve();
             } else {
               return reject(['活動代碼查詢失敗 ‼️', obj.msg]);
@@ -246,7 +247,7 @@ async function coinLuckyDraw() {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦幣寶箱 v20230301.1');
+  console.log('ℹ️ 蝦幣寶箱 v20231023.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');

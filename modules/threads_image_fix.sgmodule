@@ -1,0 +1,9 @@
+#!name=Threads 圖片修復
+#!desc=只對電腦網頁版有效。 v20250324
+#!category=Tweaks
+
+[Header Rewrite]
+http-response ^https://(.*).(fbcdn.net|cdninstagram.com)/(.*) header-replace cross-origin-resource-policy cross-origin
+
+[MITM]
+hostname = %APPEND% *.cdninstagram.com, *.fbcdn.net
