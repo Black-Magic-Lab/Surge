@@ -1,5 +1,6 @@
 #!name=FutaDNS 檢查面板
 #!desc=檢查是否已連上 FutaDNS
+#!category=Panels
 #!system=ios
 
 [Panel]

@@ -1,5 +1,5 @@
 #!name=iPhone/iPad 直營店庫存檢查
-#!desc=每分鐘檢查一次直營店庫存。 v20220910
+#!desc=每分鐘檢查一次直營店庫存。 v20250916
 
 [Script]
-cron "* * * * *" script-path=https://kinta.ma/surge/scripts/iphone_check_store.js, wake-system=1, timeout=10
+[直營店庫存檢查]自動檢查 = type=cron, cronexp="* * * * *",  script-path=https://kinta.ma/surge/scripts/iphone_check_store.js, wake-system=1, timeout=10

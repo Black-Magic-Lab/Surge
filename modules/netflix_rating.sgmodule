@@ -1,5 +1,6 @@
 #!name=Netflix IMDB 評分
 #!desc=在 Netflix App 顯示評分。 v20200627
+#!category=Tweaks
 #!system=ios
 
 [Script]

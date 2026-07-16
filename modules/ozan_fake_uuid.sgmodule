@@ -1,5 +1,6 @@
 #!name=Ozan 偽造 UUID
 #!desc=在原本不能登入 Ozan 的裝置安裝此模組。複製原本裝置的 OzanUUID 後，修改「[Ozan]設定新裝置UUID」的內容，並執行腳本即可使用。 v20221129
+#!category=Tweaks
 
 [Script]
 [Ozan]設定新裝置UUID = script-path=https://kinta.ma/surge/scripts/ozan_set_uuid.js

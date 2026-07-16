@@ -1,10 +1,9 @@
 #!name=PTT Imgur 修正
-#!desc=修正 PTT 網頁版無法顯示 Imgur 圖片的問題 v20210816
+#!desc=修正 PTT 網頁版無法顯示 Imgur 圖片的問題 v20250324
+#!category=Tweaks
 
-[Header Rewrite]
-^https://imgur.com header-del Referer
-^https://m.imgur.com header-del Referer
-^https://i.imgur.com header-del Referer
+[Script]
+ptt-imgur-fix.js = type=http-response,pattern=^https://www.ptt.cc/bbs/.*,requires-body=true,script-path=https://kinta.ma/surge/scripts/ptt_imgur_fix.js
 
 [MITM]
-hostname = %APPEND% imgur.com, m.imgur.com, i.imgur.com
+hostname = %APPEND% ptt.cc, www.ptt.cc
