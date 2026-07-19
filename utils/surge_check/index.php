@@ -73,7 +73,7 @@
         安裝連結：
         <span onclick="copyToClipBoard('surge_check')">Surge</span>
         、
-        <span onclick="window.open('loon://import?plugin=https://kinta.ma/loon/plugins/loon_check.plugin')">Loon</span>
+        <span onclick="window.open('loon://import?plugin=https://gginin.de/loon/plugins/loon_check.plugin')">Loon</span>
       </div>
     </div>
   </div>
@@ -81,7 +81,7 @@
 <script>
     function copyToClipBoard(module_name) {
         /* Get the text field */
-        var copyText = "https://kinta.ma/surge/modules/" + module_name + ".sgmodule";
+        var copyText = "https://gginin.de/surge/modules/" + module_name + ".sgmodule";
         if (module_name.includes('http')) {
             copyText = module_name;
         }

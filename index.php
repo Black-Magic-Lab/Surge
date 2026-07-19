@@ -126,13 +126,23 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/ptntp/self-rule/main/Panel/Ecosia-to-Kagi.sgmodule')">
+                <div onclick="copyToClipBoard('kagi')">
                     <label>
-                        <p>Ecosia to Kagi</p>
+                        <p>Safari Kagi 搜尋</p>
                     </label>
                     <span class="description">把 Ecosia 搜尋轉址到 kagi.com</span><br>
-                    <span class="author">作者: ptntp</span><br>
-                    <span class="url">來源: https://github.com/ptntp/self-rule</span>
+                    <span class="author">作者: BeeeeeMo, hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/zeuikli/Surge-scripts/main/Q-Search.sgmodule')">
+                    <label>
+                        <p>Q-Search-All in one</p>
+                    </label>
+                    <span class="description">Safari內輸入 "命令 + 空格 + 搜尋字詞或內容" 來指定搜尋方式。詳細指令請看模組內說明</span><br>
+                    <span class="author">作者: zeuikli</span><br>
+                    <span class="url">來源: https://github.com/zeuikli/Surge-scripts</span>
                 </div>
             </div>
         </fieldset>
@@ -159,13 +169,23 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/VirgilClyne/iRingo/main/sgmodule/Weather.sgmodule')">
+                <div onclick="copyToClipBoard('threads_image_fix')">
+                    <label>
+                        <p>Threads 網頁版圖片修正</p>
+                    </label>
+                    <span class="description">修正 Threads 網頁版無法顯示圖片的問題</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('https://github.com/NSRingo/WeatherKit/releases/latest/download/iRingo.WeatherKit.sgmodule')">
                     <label>
                         <p>天氣功能增強</p>
                     </label>
-                    <span class="description">解鎖天氣資料類型，包括每小時降雨、空氣品質。iOS 16 以上不可用。</span><br>
+                    <span class="description">解鎖天氣資料類型，包括每小時降雨、空氣品質。</span><br>
                     <span class="author">作者: VirgilClyne</span><br>
-                    <span class="url">來源: https://github.com/VirgilClyne/iRingo</span>
+                    <span class="url">來源: https://github.com/NSRingo/WeatherKit</span>
                 </div>
             </div>
             <div>
@@ -209,11 +229,41 @@
                 </div>
             </div>
             <div>
+                <div onclick="copyToClipBoard('opencat_custom_model')">
+                    <label>
+                        <p>OpenCat 自訂模型</p>
+                    </label>
+                    <span class="description">輸入自訂模型後在 OpenCat 選擇指定的 Deprecated 模型即可。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surgee</span>
+                </div>
+            </div>
+            <div>
+                <div onclick="copyToClipBoard('chipper_usdt')">
+                    <label>
+                        <p>Chipper 獲得 USDT 入金地址</p>
+                    </label>
+                    <span class="description">獲得 Chipper 入金地址。</span><br>
+                    <span class="author">作者: hirakujira</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surgee</span>
+                </div>
+            </div>
+            <!-- <div>
+                <div onclick="copyToClipBoard('shopee_token')">
+                    <label>
+                        <p>蝦皮取得 token</p>
+                    </label>
+                    <span class="description">取得所有蝦皮系列模組的共通 token。開啟後到「我的」→「蝦皮實名認證」取得 token。 </span><br>
+                    <span class="author">作者: hirakujira & jkgtw</span><br>
+                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div>
+            <div>
                 <div onclick="copyToClipBoard('shopee_checkin')">
                     <label>
                         <p>蝦皮每日自動簽到</p>
                     </label>
-                    <span class="description">每天早上自動簽到 + 開蝦幣寶箱 + 開免運寶箱。第一次使用前先到「我的」→「蝦皮實名認證」取得 token。</span><br>
+                    <span class="description">每天早上自動簽到 + 開蝦幣寶箱 + 開免運寶箱。</span><br>
                     <span class="author">作者: hirakujira & jkgtw</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
@@ -237,8 +287,8 @@
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
-            </div>
-            <div>
+            </div> -->
+            <!-- <div>
                 <div onclick="copyToClipBoard('mcdonalds_version_bypass')">
                     <label>
                         <p>麥當勞繞過版本檢查</p>
@@ -246,6 +296,16 @@
                     <span class="description">僅限 3.1.0 以下使用。</span><br>
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
+                </div>
+            </div> -->
+            <div>
+                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/jkgtw/Surge/refs/heads/master/Modules/PChome_Daily_Sign.sgmodule')">
+                    <label>
+                        <p>PCHome 每日自動簽到</p>
+                    </label>
+                    <span class="description">PCHome 每日自動簽到</span><br>
+                    <span class="author">作者: jkgtw</span><br>
+                    <span class="url">來源: https://github.com/jkgtw/Surge</span>
                 </div>
             </div>
             <div>
@@ -278,7 +338,7 @@
                     <span class="url">來源: https://github.com/coreanige/surge</span>
                 </div>
             </div>
-            <div>
+            <!-- <div>
                 <div onclick="copyToClipBoard('momo_checkin')">
                     <label>
                         <p>Momo 每日簽到（停止維護）</p>
@@ -307,7 +367,7 @@
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
-            </div>
+            </div> -->
             <div>
                 <div onclick="copyToClipBoard('https://raw.githubusercontent.com/jkgtw/Surge/master/Modules/boostbandwidth.sgmodule')">
                     <label>
@@ -444,7 +504,7 @@
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
             </div>
-            <div>
+            <!-- <div>
                 <div onclick="window.open('utils/mcdonalds_token')">
                     <label>
                         <p>麥當勞 token 取得工具</p>
@@ -453,7 +513,7 @@
                     <span class="author">作者: hirakujira</span><br>
                     <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
                 </div>
-            </div>
+            </div> -->
         </fieldset>
     </panel>
     <panel>

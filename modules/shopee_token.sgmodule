@@ -1,0 +1,8 @@
+#!name=蝦皮取得 token
+#!desc=取得所有蝦皮系列模組的共通 token。開啟後到「我的」→「蝦皮實名認證」取得 token。 v20231011.1
+
+[Script]
+[蝦皮]取得token = type=http-request, pattern=^https:\/\/mall\.shopee\.tw\/api\/v2\/user\/profile\/get\/$, script-path=https://kinta.ma/surge/scripts/shopee_token.js
+
+[MITM]
+hostname = %APPEND% mall.shopee.tw

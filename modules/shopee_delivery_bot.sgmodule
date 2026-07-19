@@ -1,0 +1,5 @@
+#!name=蝦皮自動追蹤物流
+#!desc=模組與腳本內建您的 API key，請勿直接分享給其他人使用。需搭配「蝦皮每日自動簽到」模組以取得蝦皮 token。 v20230808
+
+[Script]
+[物流機器人]登記蝦皮包裹 = type=cron, cronexp="0 0 * * *", script-path=https://kinta.ma/surge/scripts/shopee_delivery_bot_query.js, wake-system=1, timeout=30
