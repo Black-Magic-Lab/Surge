@@ -1,17 +1,18 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="cytyle-flat">
+<!doctype html>
+<html lang="zh-Hant">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f766e">
+    <meta property="og:image" content="favicon-120.png">
     <title>Surge Modules</title>
+    <link rel="icon" href="favicon-120.png" sizes="120x120">
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<base target="_top" />
-<link rel="stylesheet" type="text/css" href="style.css" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="format-detection" content="telephone=no" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta property="og:image" content="favicon-120.png">
-<link rel="icon" href="favicon-120.png" sizes="120x120">
 <body class="pinstripe">
-    <panel>
+    <header class="site-header">
         <div id="header">
             <div id="icon">
                 <div>
@@ -19,11 +20,12 @@
                 </div>
             </div>
             <div id="content">
+                <p class="eyebrow">Surge Configurations</p>
                 <p id="name">Surge Modules</p>
                 <p id="latest">iOS Surge 5 專用模組列表</p>
             </div>
         </div>
-    </panel>
+    </header>
     <panel>
         <block style="font-size: 12px;">
             <p>部份模組為網路上收集而來，請自行判定該模組內容與安全性，此類模組已標上原作者與原始網址。</p>
@@ -53,7 +55,7 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/jkgtw/Surge/master/Modules/LINE-ADs-OLD.sgmodule')">
+                <div class="deprecated" onclick="copyToClipBoard('https://raw.githubusercontent.com/jkgtw/Surge/master/Modules/LINE-ADs-OLD.sgmodule')">
                     <label>
                         <p>LINE 去廣告（舊版）</p>
                     </label>
@@ -83,7 +85,7 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('facebook_block_sdk')">
+                <div class="deprecated" onclick="copyToClipBoard('facebook_block_sdk')">
                     <label>
                         <p>Facebook SDK 阻擋</p>
                     </label>
@@ -93,7 +95,7 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('https://raw.githubusercontent.com/jimmyorz/Surge/master/YouTube.sgmodule')">
+                <div class="deprecated" onclick="copyToClipBoard('https://raw.githubusercontent.com/jimmyorz/Surge/master/YouTube.sgmodule')">
                     <label>
                         <p>YouTube 去廣告</p>
                     </label>
@@ -169,7 +171,7 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('threads_image_fix')">
+                <div class="deprecated" onclick="copyToClipBoard('threads_image_fix')">
                     <label>
                         <p>Threads 網頁版圖片修正</p>
                     </label>
@@ -239,7 +241,7 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('chipper_usdt')">
+                <div class="deprecated" onclick="copyToClipBoard('chipper_usdt')">
                     <label>
                         <p>Chipper 獲得 USDT 入金地址</p>
                     </label>
@@ -338,36 +340,6 @@
                     <span class="url">來源: https://github.com/coreanige/surge</span>
                 </div>
             </div>
-            <!-- <div>
-                <div onclick="copyToClipBoard('momo_checkin')">
-                    <label>
-                        <p>Momo 每日簽到（停止維護）</p>
-                    </label>
-                    <span class="description">每天早上自動簽到。第一次使用前先到「天天簽到」→「活動紀錄」取得 Cookie。</span><br>
-                    <span class="author">作者: hirakujira</span><br>
-                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
-                </div>
-            </div>
-            <div>
-                <div onclick="copyToClipBoard('fet_get_token')">
-                    <label>
-                        <p>遠傳心生活取得 token</p>
-                    </label>
-                    <span class="description">操作步驟：<br>1. 啟用本模組。<br>2. 登出「遠傳心生活」，再重新登入。<br>3. 登入後會跳出「成功取得 token 」通知。<br>4. 關閉本模組。<br>5. 刪除遠傳心生活 App。<br>6. 重新安裝 App 並登入。<br>未按照步驟操作會造成登入衝突導致失效。</span><br>
-                    <span class="author">作者: hirakujira</span><br>
-                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
-                </div>
-            </div>
-            <div>
-                <div onclick="copyToClipBoard('fet_checkin')">
-                    <label>
-                        <p>遠傳心生活每日簽到</p>
-                    </label>
-                    <span class="description">請先確定關閉取得 token 功能。</span><br>
-                    <span class="author">作者: hirakujira</span><br>
-                    <span class="url">來源: https://github.com/Black-Magic-Lab/Surge</span>
-                </div>
-            </div> -->
             <div>
                 <div onclick="copyToClipBoard('https://raw.githubusercontent.com/jkgtw/Surge/master/Modules/boostbandwidth.sgmodule')">
                     <label>
@@ -409,7 +381,7 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('ozan_get_uuid')">
+                <div class="deprecated" onclick="copyToClipBoard('ozan_get_uuid')">
                     <label>
                         <p>Ozan 取得 UUID</p>
                     </label>
@@ -419,7 +391,7 @@
                 </div>
             </div>
             <div>
-                <div onclick="copyToClipBoard('ozan_fake_uuid')">
+                <div class="deprecated" onclick="copyToClipBoard('ozan_fake_uuid')">
                     <label>
                         <p>Ozan 偽造 UUID</p>
                     </label>
@@ -523,84 +495,65 @@
             <!-- blackmagic.php -->
         </block>
     </panel>
-    <style>
-        #icon {
-            display: inline-block;
-            vertical-align: top;
-            height: 64px;
-            width: 64px;
-            padding-left: 5px;
-            padding-top: 5px;
-        }
-
-        #content {
-            display: inline-block;
-            padding: 6px;
-            height: 64px;
-            max-width: 400px;
-            position: relative;
-        }
-
-        #name {
-            margin-bottom: 8px;
-            font-weight: bold;
-            font-size: 17px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .description {
-            color: #555;
-            font-size: 11px;
-        }
-
-        .url,
-        .author {
-            color: #888;
-            font-size: 11px;
-            /* These are technically the same, but use both */
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-
-            -ms-word-break: break-all;
-            /* This is the dangerous one in WebKit, as it breaks things wherever */
-            word-break: break-all;
-            /* Instead use this non-standard one: */
-            word-break: break-word;
-
-            /* Adds a hyphen where the word breaks, if supported (No Blink) */
-            -ms-hyphens: auto;
-            -moz-hyphens: auto;
-            -webkit-hyphens: auto;
-            hyphens: auto;
-        }
-    </style>
 </body>
 <script>
-    function copyToClipBoard(module_name) {
-        /* Get the text field */
-        var copyText = "https://kinta.ma/surge/modules/" + module_name + ".sgmodule";
-        if (module_name.includes('http')) {
-            copyText = module_name;
+    function showCopyStatus(message) {
+        var status = document.querySelector(".copy-status");
+
+        if (!status) {
+            status = document.createElement("div");
+            status.className = "copy-status";
+            status.setAttribute("role", "status");
+            status.setAttribute("aria-live", "polite");
+            document.body.appendChild(status);
         }
-        var dummy = document.createElement("textarea");
-        dummy.type = "hidden";
-        // to avoid breaking orgain page when copying more words
-        // cant copy when adding below this code
-        document.body.appendChild(dummy);
-        //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". – Eduard
-        dummy.value = copyText;
-        dummy.select();
-        dummy.setSelectionRange(0, 99999); /*For mobile devices*/
 
-        /* Copy the text inside the text field */
-        document.execCommand("copy");
-        dummy.style.display = 'none';
-
-        /* Alert the copied text */
-        alert("網址已複製：" + dummy.value);
+        status.textContent = message;
+        status.classList.add("is-visible");
+        window.clearTimeout(showCopyStatus.timeout);
+        showCopyStatus.timeout = window.setTimeout(function () {
+            status.classList.remove("is-visible");
+        }, 2600);
     }
+
+    function copyToClipBoard(moduleName) {
+        var copyText = moduleName.includes("http")
+            ? moduleName
+            : "https://kinta.ma/surge/modules/" + moduleName + ".sgmodule";
+
+        function copied() {
+            showCopyStatus("網址已複製到剪貼簿");
+        }
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(copyText).then(copied);
+            return;
+        }
+
+        var textarea = document.createElement("textarea");
+        textarea.value = copyText;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+        copied();
+    }
+
+    document.querySelectorAll("fieldset > div > div[onclick]").forEach(function (item) {
+        var title = item.querySelector("label > p");
+        item.setAttribute("role", "button");
+        item.setAttribute("tabindex", "0");
+        item.setAttribute("aria-label", (title ? title.textContent : "模組") + "，點擊使用");
+        item.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                item.click();
+            }
+        });
+    });
 </script>
 
 </html>
