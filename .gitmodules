@@ -1,0 +1,3 @@
+[submodule "blackmagic"]
+	path = blackmagic
+	url = git@github.com:Black-Magic-Lab/Surge-BlackMagic.git
