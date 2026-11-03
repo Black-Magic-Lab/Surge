@@ -4,9 +4,9 @@ const model = $persistentStore.read("iPhoneModel");
 var checkRequest = {
   url: "",
   headers: {
-    "X-Ma-Pcmh": "REL-6.5.1",
+    "X-Ma-Pcmh": "REL-6.9",
     "X-Deviceconfiguration":
-      "ss=3.00;dim=0x0;m=iPhone;v=iPhone16,2;vv=6.5.1;sv=18.6.2",
+      "ss=3.00;dim=0x0;m=iPhone;v=iPhone18,2;vv=6.9;sv=27.0.1",
   },
 };
 
@@ -24,6 +24,7 @@ function checkStore(model, index) {
   $httpClient.get(checkRequest, function (error, response, data) {
     if (error) {
       $notification.post("🍎 直營店庫存檢查失敗 ❌", "", "連線錯誤‼️");
+      $done();
     } else {
       if (response.status == 200) {
         let obj = JSON.parse(data);
@@ -39,12 +40,16 @@ function checkStore(model, index) {
         }
       } else {
         $notification.post("🍎 直營店庫存檢查失敗 ❌", "", "連線錯誤‼️");
+        $done();
       }
     }
   });
 }
 
-if (Date.now() < 1758225600000) {
+if (!model) {
+  console.log("尚未設定機型，請先用「獲得機型代碼」模組取得");
+  $done();
+} else if (Date.now() < 1758225600000) {
   console.log("還沒開賣");
   $done();
 } else if (new Date().getHours() < 6 || new Date().getHours() > 21) {

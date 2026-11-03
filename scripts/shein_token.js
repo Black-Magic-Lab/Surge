@@ -20,10 +20,10 @@ function handleError(error) {
 
 function isManualRun(checkRequest = false, checkResponse = false) {
   if (checkRequest) {
-    return !$request || ($request.body && JSON.parse($request.body).foo === 'bar');
+    return typeof $request === 'undefined' || ($request.body && JSON.parse($request.body).foo === 'bar');
   }
   if (checkResponse) {
-    return !$response || ($response.body && JSON.parse($response.body).foo === 'bar');
+    return typeof $response === 'undefined' || ($response.body && JSON.parse($response.body).foo === 'bar');
   }
   return false;
 }

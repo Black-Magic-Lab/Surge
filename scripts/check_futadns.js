@@ -22,21 +22,12 @@ const successMessage = {
     $httpClient.get('https://check.futa.gg', function (error, response, data) {
       if (error) {
         errorMessage.content += `\n錯誤： ${error}`
-        $done(errorMessage);
-      }
-      if (response.status == 200) {
-        if (data) {
-          if (data.includes('正在正確地運作')) {
-            $done(successMessage);
-          } else {
-            $done(errorMessage);
-          }
-        } else {
-          errorMessage += `\n錯誤：無法連接到檢查頁面`
-          $done(errorMessage);
-        }
-      } else {
+      } else if (response.status != 200) {
         errorMessage.content += `\n錯誤：無法連接到檢查頁面 ${response.status}`
+      } else if (!data) {
+        errorMessage.content += `\n錯誤：無法連接到檢查頁面`
+      } else if (data.includes('正在正確地運作')) {
+        return $done(successMessage);
       }
       $done(errorMessage);
     });

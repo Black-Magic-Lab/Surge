@@ -5,15 +5,6 @@ function surgeNotify(subtitle = '', message = '') {
   $notification.post('遠傳心生活取得 token', subtitle, message, { 'url': '' });
 };
 
-function getSaveObject(key) {
-  const string = $persistentStore.read(key);
-  return !string || string.length === 0 ? {} : JSON.parse(string);
-}
-
-function isEmptyObject(obj) {
-  return Object.keys(obj).length === 0 && obj.constructor === Object ? true : false;
-}
-
 function isManualRun(checkRequest = false, checkResponse = false) {
   if (checkRequest) {
     return typeof $request === 'undefined' || ($request.body && JSON.parse($request.body).foo === 'bar');
@@ -107,11 +98,11 @@ function getUserLevel() {
       '保存成功 🍪',
       '請先關閉本模組，再刪除「遠傳心生活」並重新安裝，以避免 session 衝突。'
     );
-    $done({});
   } catch (error) {
-    console.log(`❌ ${error[0]} ${error[1]}`);
+    const [title, message] = Array.isArray(error) ? error : [error, ''];
+    console.log(`❌ ${title} ${message}`);
     if (showNotification) {
-      shopeeNotify(error[0], error[1]);
+      surgeNotify(title, message);
     }
   }
   $done({});

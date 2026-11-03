@@ -1,4 +1,5 @@
 let fakeUuid = '';
+let showNotification = true;
 
 function surgeNotify(subtitle = '', message = '') {
   $notification.post('Ozan 偽造 UUID', subtitle, message, { 'url': '' });

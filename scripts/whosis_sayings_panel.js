@@ -15,8 +15,8 @@ if (!v4.primaryAddress && !v6.primaryAddress) {
   });
 } else {
   $httpClient.get('https://raw.githubusercontent.com/tasi788/Whosis-Sayings/master/public/saying.txt', function (error, response, data) {
-    if (error) {
-      $done({
+    if (error || !data) {
+      return $done({
         title: '發生錯誤',
         content: '無法成功獲得資料\n請檢查網際網路狀態後重試',
         icon: 'wifi.exclamationmark',

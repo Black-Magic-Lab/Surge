@@ -136,11 +136,12 @@ async function checkIn() {
             if (!obj.error && obj.f_coin_amount > 0) {
               return resolve(obj.f_coin_amount);
             } else {
-              if (obj.error[0].error_msg === 'Not 1st time login') {
+              const errorMessage = obj.error?.[0]?.error_msg;
+              if (errorMessage === 'Not 1st time login') {
                 showNotification = false;
                 return reject(['簽到失敗 ‼️', '本日已簽到']);
               } else {
-                return reject(['簽到失敗 ‼️', obj.error[0].error_msg]);
+                return reject(['簽到失敗 ‼️', errorMessage || data]);
               }
             }
           } else {

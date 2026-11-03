@@ -126,7 +126,7 @@ function requestIMDbRating(title, year, type) {
                 } else if (response.status == 401) {
                     if (IMDbApikeys.length > 1) {
                         updateIMDbApikey();
-                        requestIMDbRating(title, year, type);
+                        requestIMDbRating(title, year, type).then(resolve, reject);
                     } else {
                         reject(errorTip().noData);
                     }

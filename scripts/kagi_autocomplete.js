@@ -1,6 +1,6 @@
 const _url = new URL($request.url);
 const qValue = _url.searchParams.get("q");
-let url = "https://kagi.com/autosuggest/?q=" + qValue;
+let url = "https://kagi.com/autosuggest/?q=" + encodeURIComponent(qValue);
 let headers = {
   Accept: "*/*",
   "User-Agent":
@@ -19,12 +19,12 @@ var params = {
 };
 
 $httpClient.get(params, function (errormsg, response, data) {
-  if (errormsg) {
-    console.log(errormsg);
-  } else {
+  try {
+    if (errormsg) throw errormsg;
     const suggestions = JSON.parse(data).map((item) => item.t);
-    const result = [qValue, suggestions];
-    const modifiedBody = JSON.stringify(result);
-    $done({ body: modifiedBody });
+    $done({ body: JSON.stringify([qValue, suggestions]) });
+  } catch (error) {
+    console.log(error);
+    $done({});
   }
 });

@@ -1,3 +1,5 @@
+let showNotification = true;
+
 function surgeNotify(subtitle = '', message = '') {
   $notification.post('🍤 蝦蝦果園作物資料', subtitle, message, { 'url': 'shopeetw://' });
 };

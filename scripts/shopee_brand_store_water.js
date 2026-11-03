@@ -104,11 +104,7 @@ async function getBrandList() {
                   });
                 }
               }
-              if (!brandStores.length) {
-                return reject(['取得品牌商店列表失敗 ‼️', '今天沒有品牌商店水滴活動']);
-              } else {
-                return resolve(brandStores);
-              }
+              return resolve(brandStores);
             } else {
               return reject(['取得品牌商店列表失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);
             }
@@ -242,7 +238,7 @@ async function componentReport(store, token) {
             store.module_id = obj.data.user_task.task.module_id;
             return resolve(store);
           } else {
-            return reject([`取得品牌商店 ${store.brandName} 活動 ID 失敗 ‼️`, response.statusCode]);
+            return reject([`取得品牌商店 ${store.brandName} 活動 ID 失敗 ‼️`, response.status]);
           }
         }
       });
@@ -262,7 +258,7 @@ async function delay(seconds) {
 }
 
 (async () => {
-  console.log('ℹ️ 蝦蝦果園自動澆水 v20230628.1');
+  console.log('ℹ️ 蝦蝦果園品牌商店水滴 v20230628.1');
   try {
     await preCheck();
     console.log('✅ 檢查成功');

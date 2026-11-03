@@ -206,7 +206,6 @@ async function deleteOldKeys() {
     console.log('✅ SPC_EC 更新成功');
     await updateCookie(spcEc);
     console.log('✅ token 更新成功');
-    $done();
   } catch (error) {
     handleError(error);
   }

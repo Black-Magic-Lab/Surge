@@ -67,7 +67,6 @@ async function getCheckinPayload() {
     surgeNotify('保存成功 🍪', '');
   } catch (error) {
     handleError(error);
-    return;
   }
   $done({});
 })();

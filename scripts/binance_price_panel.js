@@ -37,26 +37,19 @@ async function getSymbols() {
   })
 }
 
-async function fetchPrice(symbol) {
+function fetchPrice(symbol) {
   return new Promise((resolve, reject) => {
-    try {
-      const request = {
-        url: `https://api.binance.com/api/v3/ticker/price?symbol=${symbol}USDT`,
-      };
-      $httpClient.get(request, function (error, response, data) {
-        if (error) {
-          return reject([`無法取得 ${symbol}/USDT 交易對`, error]);
-        } else {
-          if (response.status === 200) {
-            const price = JSON.parse(data).price;
-            message.content = `${message.content}${symbol}: $${Number(price).toFixed(2)}\n`;
-          }
-          return resolve();
-        }
-      });
-    } catch (error) {
-      return reject([`無法取得 ${symbol}/USDT 交易對`, error]);
-    }
+    const request = {
+      url: `https://api.binance.com/api/v3/ticker/price?symbol=${symbol}USDT`,
+    };
+    $httpClient.get(request, function (error, response, data) {
+      try {
+        if (error) throw error;
+        resolve(response.status === 200 ? `${symbol}: $${Number(JSON.parse(data).price).toFixed(2)}` : null);
+      } catch (error) {
+        reject([`無法取得 ${symbol}/USDT 交易對`, error]);
+      }
+    });
   })
 }
 
@@ -64,14 +57,10 @@ async function fetchPrice(symbol) {
   try {
     console.log('ℹ️ 幣安報價資訊面板 v20230130.1');
     await getSymbols();
-    for (const symbol of symbols) {
-      await fetchPrice(symbol);
-    }
-    message.content = message.content.slice(0, -1);
+    const lines = await Promise.all(symbols.map(fetchPrice));
+    message.content = lines.filter(Boolean).join('\n');
     $done(message);
   } catch (error) {
     $done(handleError(error));
   }
-  $done(handleError('未知錯誤'));
-  fetchPrice(0);
 })();

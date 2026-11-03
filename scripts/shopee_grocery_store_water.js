@@ -44,7 +44,7 @@ async function preCheck() {
     }
 
     const shopeeFarmInfo = getSaveObject('ShopeeFarmInfo');
-    if (isEmptyObject(shopeeFarmInfo) || !shopeeFarmInfo.groceryStoreToken.length) {
+    if (isEmptyObject(shopeeFarmInfo) || !shopeeFarmInfo.groceryStoreToken?.length) {
       return reject(['檢查失敗 ‼️', '請先在道具商店領取一次水滴，以儲存 token']);
     }
     const shopeeGroceryStoreToken = shopeeFarmInfo?.groceryStoreToken;
@@ -92,13 +92,9 @@ async function claimGroceryStoreWater() {
               return reject(['領取失敗 ‼️', `錯誤代號：${obj.code}，訊息：${obj.msg}`]);
             }
           } else {
-            surgeNotify(
-              'Cookie 已過期 ‼️',
-              '請重新登入'
-            );
+            return reject(['Cookie 已過期 ‼️', '請重新登入']);
           }
         }
-        $done();
       });
     } catch (error) {
       return reject(['領取失敗 ‼️', error]);

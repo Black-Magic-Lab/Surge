@@ -64,6 +64,7 @@ function getEventPageUrl() {
                 eventPageRequest.url = actionUrl;
                 eventPageRequest.headers.cookie = '';
                 getJavascriptUrl();
+                break;
                 // 舊版
                 // for (const adInfo of info.adInfo) {
                 //   if (adInfo.adTitle && adInfo.adTitle === '天天簽到') {

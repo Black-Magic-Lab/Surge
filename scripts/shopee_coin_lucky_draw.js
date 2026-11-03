@@ -82,7 +82,7 @@ async function eventListGetActivity() {
                 const url = banner.navigate_params.url;
                 // console.log(`活動名稱: ${title}，網址: ${url}`);
                 if (title.includes('蝦幣寶箱') || title.includes('天天領蝦幣')) {
-                  const re = /activity\/(.*)\??/i;
+                  const re = /activity\/([^?&]+)/i;
                   const found = url.match(re);
                   const activityId = found[1];
                   foundId = true;
@@ -142,7 +142,7 @@ async function iframeListGetActivity() {
               // console.log(`活動名稱: ${iframe.title}，網址: ${iframe.url}`);
               if ((iframe.title.includes('蝦幣')) && iframe.url.includes('luckydraw')) {
                 foundEvent = true;
-                const re = /activity\/(.*)\??/i;
+                const re = /activity\/([^?&]+)/i;
                 let found = iframe.url.match(re);
                 if (!found) {
                   const re = /activity=(.*)&/i;
@@ -173,7 +173,7 @@ async function iframeListGetActivity() {
               }
             }
             if (!foundEvent) {
-              return reject(['無法取得活動列表 ‼️', '找不到免運寶箱活動']);
+              return reject(['無法取得活動列表 ‼️', '找不到蝦幣寶箱活動']);
             }
           } else {
             return reject(['無法取得活動列表 ‼️', response.status]);

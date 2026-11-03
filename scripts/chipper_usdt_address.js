@@ -1,4 +1,3 @@
-let showNotification = true;
 let token = null;
 
 function handleError(error) {
@@ -20,34 +19,28 @@ async function preCheck() {
   });
 }
 
-async function getAddresses(chain) {
+function getAddresses(chain) {
   return new Promise((resolve, reject) => {
-    try {
-      const request = {
-        url: 'https://api.chippercash.com/v1/crypto/deposit/address?asset=USDT&chain=' + chain,
-        headers: {
-          'Authorization': token,
-        }
-      };
-      $httpClient.get(request, function (error, response, data) {
-        if (error) {
-          return reject(['取得地址失敗 ‼️', '連線錯誤']);
-        } else {
-          if (response.status === 200) {
-            const obj = JSON.parse(data);
-            if (obj.address) {
-              return resolve(obj.address);
-            } else {
-              return reject(['取得地址失敗 ‼️', 'Error: ' + obj.error]);
-            }
-          } else {
-            return reject(['取得地址失敗 ‼️', 'Error: ' + obj.error]);
-          }
-        }
-      });
-    } catch (error) {
-      return reject(['取得地址失敗 ‼️', 'Error: ' + error]);
-    }
+    const request = {
+      url: 'https://api.chippercash.com/v1/crypto/deposit/address?asset=USDT&chain=' + chain,
+      headers: {
+        'Authorization': token,
+      }
+    };
+    $httpClient.get(request, function (error, response, data) {
+      if (error) {
+        return reject(['取得地址失敗 ‼️', '連線錯誤']);
+      }
+      if (response.status !== 200) {
+        return reject(['取得地址失敗 ‼️', 'Error: ' + response.status]);
+      }
+      try {
+        const obj = JSON.parse(data);
+        return obj.address ? resolve(obj.address) : reject(['取得地址失敗 ‼️', 'Error: ' + obj.error]);
+      } catch (error) {
+        return reject(['取得地址失敗 ‼️', 'Error: ' + error]);
+      }
+    });
   });
 }
 
@@ -56,10 +49,9 @@ async function getAddresses(chain) {
   try {
     await preCheck();
     console.log('✅ Token 取得成功');
-    const ethereumAddress = await getAddresses('ETHEREUM');
-    const polygonAddress = await getAddresses('POLYGON');
-    const tronAddress = await getAddresses('TRON');
-    const solanaAddress = await getAddresses('SOLANA_MAINNET_BETA');
+    const [ethereumAddress, polygonAddress, tronAddress, solanaAddress] = await Promise.all(
+      ['ETHEREUM', 'POLYGON', 'TRON', 'SOLANA_MAINNET_BETA'].map(getAddresses)
+    );
     console.log('\n\nEthereum: ' + ethereumAddress + '\nPolygon: ' + polygonAddress + '\nTron: ' + tronAddress + '\nSolana: ' + solanaAddress + '\n\n');
   } catch (error) {
     handleError(error);

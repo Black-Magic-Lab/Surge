@@ -104,10 +104,7 @@ async function fetchParcelList() {
               return reject(['取得包裹列表失敗 ‼️', `錯誤代號：${obj.error}`]);
             }
           } else {
-            surgeNotify(
-              'Cookie 已過期 ‼️',
-              '請重新登入'
-            );
+            return reject(['Cookie 已過期 ‼️', '請重新登入']);
           }
         }
       });
@@ -160,10 +157,7 @@ async function getParcelDeliveryInfo(order) {
               return reject(['取得包裹資訊失敗 ‼️', `錯誤代號：${obj.error}`]);
             }
           } else {
-            surgeNotify(
-              'Cookie 已過期 ‼️',
-              '請重新登入'
-            );
+            return reject(['Cookie 已過期 ‼️', '請重新登入']);
           }
         }
       });
