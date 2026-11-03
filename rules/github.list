@@ -1,0 +1,10 @@
+DOMAIN-SUFFIX,github.com
+DOMAIN-SUFFIX,githubusercontent.com
+DOMAIN-SUFFIX,githubassets.com
+IP-CIDR,140.82.112.0/20,no-resolve
+IP-CIDR,143.55.64.0/20,no-resolve
+IP-CIDR,192.30.252.0/22,no-resolve
+IP-CIDR,185.199.108.0/22,no-resolve
+IP-CIDR6,2620:112:3000::/44,no-resolve
+IP-CIDR6,2a0a:a440::/29,no-resolve
+IP-CIDR6,2606:50c0::/32,no-resolve
